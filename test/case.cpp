@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   case.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 21:07:34 by jdugoudr         ###   ########.fr       */
+/*   Created: 2021/02/08 21:07:51 by jdugoudr          #+#    #+#             */
+/*   Updated: 2021/02/08 22:06:52 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "n-puzzle.hpp"
+#include "Case.hpp"
 #include <iostream>
 
-int	main(int ac, char **av)
+int	main(void)
 {
-	if (ac > 2)
-		std::cout << "n-puzzle [argument]" << std::endl;
-	else if (ac == 1)
-		std::cout << "We have to generate a puzzle our self" << std::endl;
-	else
-		std::cout << "open : " << av[1] << std::endl;
+	Case	c(2, 0,0);
 
+	std::cout << c;
 	return 0;
 }

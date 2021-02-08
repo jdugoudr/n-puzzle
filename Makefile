@@ -6,7 +6,7 @@
 #    By: jmartel <jmartel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 23:08:04 by ldedier           #+#    #+#              #
-#    Updated: 2021/02/08 19:13:16 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/08 22:42:18 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ DEBUG		?= 0
 SRCDIR   = srcs
 OBJDIR   = objs/
 INCLUDESDIR = incs
+TESTDIR			=	test
 
 
 VPATH		= $(INCLUDESDIR) \
@@ -42,8 +43,12 @@ VPATH		= $(INCLUDESDIR) \
 
 
 SRCS			=	main.cpp \
+						Case.cpp \
+						Node.cpp
 
-INCLUDES	= n-puzzle.hpp
+INCLUDES	= n-puzzle.hpp \
+						Case.hpp \
+						Node.hpp
 
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
@@ -65,7 +70,6 @@ else
 #	COMP_COLOR =
 endif
 
-
 all:
 	@$(ECHO) $(SRCS)
 	@$(ECHO) $(OBJECTS)
@@ -83,11 +87,38 @@ $(OBJDIR)%.o:$(SRC_DIR)%.cpp $(INCLUDES)
 	@$(CC) -c $< -o $@ $(CFLAGS)
 	@$(ECHO) "${COMP_COLOR}$< ${EOC}"
 
+
+
+
+#######################################################
+## Add here rules for particular test
+.ONESHELL: # This is required to use variable on diff lines
+case: $(OBJDIR) $(OBJECTS) $(TESTDIR)/case.cpp
+	@TEST_OBJ=$(OBJDIR)$@.o #This is a shell variable
+	@$(CC) -c $(TESTDIR)/$@.cpp -o "$${TEST_OBJ}" $(CFLAGS)
+	@$(CC) -o $(TESTDIR)/$@ "$${TEST_OBJ}" $(filter-out $(OBJDIR)main.o,$(OBJECTS)) $(CFLAGS) $(LFLAGS)
+	@$(ECHO) "$(OK_COLOR)$@ test program linked with success !$(EOC)"
+
+
+.ONESHELL: # This is required to use variable on diff lines
+node: $(OBJDIR) $(OBJECTS) $(TESTDIR)/node.cpp
+	@TEST_OBJ=$(OBJDIR)$@.o #This is a shell variable
+	@$(CC) -c $(TESTDIR)/$@.cpp -o "$${TEST_OBJ}" $(CFLAGS)
+	@$(CC) -o $(TESTDIR)/$@ "$${TEST_OBJ}" $(filter-out $(OBJDIR)main.o,$(OBJECTS)) $(CFLAGS) $(LFLAGS)
+	@$(ECHO) "$(OK_COLOR)$@ test program linked with success !$(EOC)"
+#######################################################
+
+
+
 clean:
 	@$(RM) $(OBJECTS)
 	@$(RM) -r $(OBJDIR) && $(ECHO) "${OK_COLOR}Successfully cleaned $(NAME) objects files ${EOC}"
 
+#	@$(ECHO) $(filter-out $(wilcard $(TESTDIR)/*), "$${ALLTESTS}")
+ALLTESTS=$(wildcard $(TESTDIR)/*.cpp)
 fclean: clean
+	@$(RM) $(filter-out $(ALLTESTS), $(wildcard $(TESTDIR)/*)) \
+		&& $(ECHO) "${OK_COLOR}Successfully cleaned $(TESTDIR) ${EOC}"
 	@$(RM) $(NAME)  && $(ECHO) "${OK_COLOR}Successfully cleaned $(NAME) ${EOC}"
 
 re: fclean all
@@ -101,4 +132,4 @@ rere:
 os:
 	@$(ECHO) $(OS)
 
-.PHONY: all clean fclean re debug
+.PHONY: all clean fclean re debug case
