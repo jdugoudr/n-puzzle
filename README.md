@@ -1,6 +1,6 @@
 # N-Puzzle using A-star algorithm
 
-This is a school project for testing A-Start algorithm in a N-Puzzle context.
+This is a school project for testing A-Star algorithm in a N-Puzzle context.
 
 ## A-Star
 
