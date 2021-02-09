@@ -14,7 +14,8 @@
 
 Manhattan::Manhattan():
 	_name("Manhattan")
-{}
+{
+}
 
 Manhattan::~Manhattan()
 {

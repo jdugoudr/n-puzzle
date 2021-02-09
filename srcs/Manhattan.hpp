@@ -19,6 +19,9 @@
 
 class Manhattan : public IHeuristic{
 
+private:
+	std::string						_name;
+
 public:
 	Manhattan();
 	virtual ~Manhattan();
@@ -26,8 +29,6 @@ public:
 	virtual int						calculate(Node *current, Node *goal) const;
 	virtual std::string const		getName() const;
 
-private:
-	std::string						_name;
 };
 
 #endif

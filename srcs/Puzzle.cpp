@@ -17,14 +17,14 @@ using namespace	std;
 
 Puzzle::~Puzzle()
 {
-	// delete proprement ici
 }
 
 Puzzle::Puzzle(IHeuristic *heuristic):
 	_heuristic(heuristic),
 	_numberOfStates(0),
 	_numberOfMoves(0)
-{}
+{
+}
 
 IHeuristic const									*Puzzle::getHeuristic() const
 {

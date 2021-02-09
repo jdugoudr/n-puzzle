@@ -15,6 +15,7 @@
 
 #include "IHeuristic.hpp"
 #include "Node.hpp"
+
 #include <iostream>
 #include <string>
 #include <list>
@@ -23,9 +24,6 @@
 class Puzzle{
 
 private:
-	//std::string								_heuristic;
-	// faire une map<string, IHeuristic *> ou map<string, Puzzle::*createHeuristic> 
-	//std::map<std::string, IHeuristic *>		_heuristicMap;
 	IHeuristic								*_heuristic;
 	Node									*_startNode;
 	Node									*_endNode;
