@@ -15,15 +15,17 @@
 
 using namespace	std;
 
+static IHeuristic		*createManhattanHeuristic();
+
 Puzzle::~Puzzle()
 {
 }
 
-Puzzle::Puzzle(IHeuristic *heuristic):
-	_heuristic(heuristic),
+Puzzle::Puzzle(std::string heuristic_name):
 	_numberOfStates(0),
 	_numberOfMoves(0)
 {
+	_heuristic = createHeuristic(heuristic_name);
 }
 
 IHeuristic const									*Puzzle::getHeuristic() const
@@ -68,6 +70,7 @@ int													Puzzle::getNumberOfMoves() const
 
 
 
+
 void												Puzzle::setStartNode(Node *node)
 {
 	_startNode = node;
@@ -101,4 +104,32 @@ void												Puzzle::setNumberOfStates(int nb)
 void												Puzzle::setNumberOfMoves(int nb)
 {
 	_numberOfMoves = nb;
+}
+
+
+
+IHeuristic											*Puzzle::createHeuristic(std::string heuristic_name)
+{
+	typedef IHeuristic *(*func)();
+	typedef struct {std::string name; func heuristic_func;} HeurCreateType;
+
+	HeurCreateType			array[1] =
+	{
+		{"Manhattan", &createManhattanHeuristic}
+	};
+
+	IHeuristic		*ret;
+
+	for (auto &it : array)
+	{
+		if (!it.name.compare(heuristic_name))
+			ret = it.heuristic_func();
+	}
+
+	return (ret);
+}
+
+static IHeuristic									*createManhattanHeuristic()
+{
+	return (new Manhattan);
 }
