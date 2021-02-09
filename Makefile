@@ -44,14 +44,20 @@ VPATH		= $(INCLUDESDIR) \
 
 SRCS			=	main.cpp \
 						Case.cpp \
-						Node.cpp
+						Node.cpp \
+						Puzzle.cpp \
+						Manhattan.cpp
 
 INCLUDES	= n-puzzle.hpp \
 						Case.hpp \
-						Node.hpp
+						Node.hpp \
+						Puzzle.hpp \
+						IHeuristic.hpp \
+						Manhattan.hpp \
 
 TEST_UNARY=	case \
-					 	node
+					 	node \
+						puzzle
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
 OBJECTS			=	$(addprefix $(OBJDIR),  $(SRCS:.cpp=.o))
