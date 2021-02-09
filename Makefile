@@ -6,7 +6,7 @@
 #    By: jmartel <jmartel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/11 23:08:04 by ldedier           #+#    #+#              #
-#    Updated: 2021/02/08 22:42:18 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/09 13:43:42 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,6 +50,8 @@ INCLUDES	= n-puzzle.hpp \
 						Case.hpp \
 						Node.hpp
 
+TEST_UNARY=	case \
+					 	node
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
 OBJECTS			=	$(addprefix $(OBJDIR),  $(SRCS:.cpp=.o))
@@ -92,17 +94,11 @@ $(OBJDIR)%.o:$(SRC_DIR)%.cpp $(INCLUDES)
 
 #######################################################
 ## Add here rules for particular test
-.ONESHELL: # This is required to use variable on diff lines
-case: $(OBJDIR) $(OBJECTS) $(TESTDIR)/case.cpp
-	@TEST_OBJ=$(OBJDIR)$@.o #This is a shell variable
-	@$(CC) -c $(TESTDIR)/$@.cpp -o "$${TEST_OBJ}" $(CFLAGS)
-	@$(CC) -o $(TESTDIR)/$@ "$${TEST_OBJ}" $(filter-out $(OBJDIR)main.o,$(OBJECTS)) $(CFLAGS) $(LFLAGS)
-	@$(ECHO) "$(OK_COLOR)$@ test program linked with success !$(EOC)"
 
-
+# TEST_OBJ is a shell variable
 .ONESHELL: # This is required to use variable on diff lines
-node: $(OBJDIR) $(OBJECTS) $(TESTDIR)/node.cpp
-	@TEST_OBJ=$(OBJDIR)$@.o #This is a shell variable
+$(TEST_UNARY): $(OBJDIR) $(OBJECTS)
+	@TEST_OBJ=$(OBJDIR)$@.o
 	@$(CC) -c $(TESTDIR)/$@.cpp -o "$${TEST_OBJ}" $(CFLAGS)
 	@$(CC) -o $(TESTDIR)/$@ "$${TEST_OBJ}" $(filter-out $(OBJDIR)main.o,$(OBJECTS)) $(CFLAGS) $(LFLAGS)
 	@$(ECHO) "$(OK_COLOR)$@ test program linked with success !$(EOC)"
@@ -114,10 +110,8 @@ clean:
 	@$(RM) $(OBJECTS)
 	@$(RM) -r $(OBJDIR) && $(ECHO) "${OK_COLOR}Successfully cleaned $(NAME) objects files ${EOC}"
 
-#	@$(ECHO) $(filter-out $(wilcard $(TESTDIR)/*), "$${ALLTESTS}")
-ALLTESTS=$(wildcard $(TESTDIR)/*.cpp)
 fclean: clean
-	@$(RM) $(filter-out $(ALLTESTS), $(wildcard $(TESTDIR)/*)) \
+	@$(RM) $(addprefix $(TESTDIR)/, $(TEST_UNARY)) \
 		&& $(ECHO) "${OK_COLOR}Successfully cleaned $(TESTDIR) ${EOC}"
 	@$(RM) $(NAME)  && $(ECHO) "${OK_COLOR}Successfully cleaned $(NAME) ${EOC}"
 
@@ -132,4 +126,4 @@ rere:
 os:
 	@$(ECHO) $(OS)
 
-.PHONY: all clean fclean re debug case
+.PHONY: all clean fclean re debug
