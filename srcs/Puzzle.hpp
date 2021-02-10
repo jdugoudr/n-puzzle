@@ -29,9 +29,6 @@ private:
 	Node									*_startNode;
 	Node									*_endNode;
 	int										_mapSize;
-	std::list<Node *>							_openList;
-	std::list<Node *>						_closedList;
-	//int									_solvable;
 	int										_numberOfStates;	// complexity in size
 	int										_numberOfMoves;
 

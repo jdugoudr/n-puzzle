@@ -15,11 +15,13 @@
 
 using namespace	std;
 
-Node::Node():_map()
+Node::Node():_map(),
+															_mapSize(0)
 {
 }
 
-Node::Node(Node const &other):_map()
+Node::Node(Node const &other):_map(),
+															_mapSize(0)
 {
 	*this = other;
 }
@@ -37,20 +39,28 @@ Node	&Node::operator=(Node const &other)
 	return *this;
 }
 
-Node::Node(array<array<Case *, 2>, 2> map):_map(map),
+Node::Node(vector<vector<Case *>> map, int mapSize):
+															_map(map),
+															_mapSize(mapSize),
 															_costSoFar(0),
 															_costToReach(0)
 {}
 
-Node::Node(array<array<Case *, 2>, 2> map, int costSoFar):
+Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar):
 																				_map(map),
+																				_mapSize(mapSize),
 																				_costSoFar(costSoFar),
 																				_costToReach(0)
 {}
 
-array<array<Case *, 2>, 2> const	Node::getMap() const
+vector<vector<Case *>> const						Node::getMap() const
 {
 	return _map;
+}
+
+int													Node::getMapSize() const
+{
+	return _mapSize;
 }
 
 int													Node::getCostSoFar() const
@@ -63,6 +73,11 @@ int													Node::getCostToReach() const
 	return _costToReach;
 }
 
+Case												*Node::getEmpty() const
+{
+	return _empty;
+}
+
 void												Node::setCostSoFar(int nc)
 {
 	_costSoFar = nc;
@@ -73,6 +88,11 @@ void												Node::setCostToReach(int nc)
 {
 	_costToReach = nc;
 	return ;
+}
+
+void												Node::setEmpty(Case *empty)
+{
+	_empty = empty;
 }
 
 bool												Node::operator<(Node const &other)
@@ -95,8 +115,11 @@ bool												Node::operator==(Node const &other)
 std::ostream	&operator<<(std::ostream &o, Node const &c)
 {
 	(void)c;
-	o << "Have to implement a beautyful display of the map"
-		<< std::endl;
+	for (auto &it1: c.getMap())
+	{
+		for (auto &it2: it1)
+			o << it2->getValue() << " ";
+		o << std::endl;
+	}
 	return o;
 }
-

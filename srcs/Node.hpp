@@ -15,29 +15,34 @@
 
 #include "Case.hpp"
 #include <iostream>
-#include <array>
+#include <vector>
 
 class Node{
 
 private:
-	std::array<std::array<Case *, 2>, 2> const	_map;
+	std::vector<std::vector<Case *>> const												_map;
+	int const																			_mapSize;
 	int																					_costSoFar;
 	int																					_costToReach;
+	Case																				*_empty;
 
 	Node();
 	Node(Node const &other);
 	Node	&operator=(Node const &other);
 
 public:
-	Node(std::array<std::array<Case *, 2>, 2> map);
-	Node(std::array<std::array<Case *, 2>, 2> map, int costSoFar);
+	Node(std::vector<std::vector<Case *>> map, int mapSize);
+	Node(std::vector<std::vector<Case *>> map, int mapSize, int costSoFar);
 	virtual ~Node();
 
-	std::array<std::array<Case *, 2>, 2> const	getMap() const;
+	std::vector<std::vector<Case *>> const				getMap() const;
+	int													getMapSize() const;
 	int													getCostSoFar() const;
 	int													getCostToReach() const;
+	Case												*getEmpty() const;
 	void												setCostSoFar(int nc);
 	void												setCostToReach(int nc);
+	void												setEmpty(Case *);
 
 	bool												operator<(Node const &other);
 	bool												operator==(Node const &other);

@@ -48,16 +48,6 @@ int													Puzzle::getMapSize() const
 	return _mapSize;
 }
 
-list<Node *>										Puzzle::getOpenList() const
-{
-	return _openList;
-}
-
-list<Node *>										Puzzle::getClosedList() const
-{
-	return _closedList;
-}
-
 int													Puzzle::getNumberOfStates() const
 {
 	return _numberOfStates;
@@ -84,16 +74,6 @@ void												Puzzle::setEndNode(Node *node)
 void												Puzzle::setMapSize(int size)
 {
 	_mapSize = size;
-}
-
-void												Puzzle::setOpenList(list<Node *> open_list)
-{
-	_openList = open_list;
-}
-
-void												Puzzle::setClosedList(list<Node *> closed_list)
-{
-	_closedList = closed_list;
 }
 
 void												Puzzle::setNumberOfStates(int nb)
