@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:48:15 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 21:11:38 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/10 22:03:57 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ private:
 public:
 	Case(int value, int posX, int posY);
 	virtual ~Case();
+
+	bool			operator!=(Case const &other) const;
+	bool			operator==(Case const &other) const;
 
 	int				getValue() const;
 	int				getPosX() const;

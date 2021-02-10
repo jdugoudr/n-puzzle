@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 16:38:23 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/10 21:57:33 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,47 +29,27 @@ AStar::AStar(Node &start, Node const &goal, IHeuristic &h):
 	(void)_h;
 }
 
+Node			*AStar::swapMap(size_t csrc, size_t lsrc, size_t cdest, size_t ldest)
+{
+	std::vector<std::vector<Case*>> newMap = _curr->getMap();
+	std::swap(newMap[csrc][lsrc], newMap[cdest][ldest]);
+	Node *neighbor = new Node(newMap, _curr->getMapSize(),
+							_curr->getCostSoFar() + 1, _curr);
+	return neighbor;	
+}
+
 void									AStar::createNeighbor(std::list<Node*> &lst,
 																						size_t i,
 																						size_t j)
 {
-	std::cout << _curr->getMap() << std::endl;
-	std::cout << "you find it at : " << i << "-" << j << std::endl;
-	std::cout << "neighbor :" << std::endl;
-
 	if (j + 1 < 2)
-	{
-		std::array<std::array<Case*, 2>, 2> newMap = _curr->getMap();
-		std::swap(newMap[i][j], newMap[i][j+1]);
-		Node *neighbor = new Node(newMap, _curr->getCostSoFar() + 1, _curr);
-		lst.push_front(neighbor);
-		std::cout << newMap << std::endl;
-	}
+		lst.push_front(swapMap(i, j, i, j+1));
 	if (j > 0)
-	{
-		std::array<std::array<Case*, 2>, 2> newMap = _curr->getMap();
-		std::swap(newMap[i][j], newMap[i][j-1]);
-		Node *neighbor = new Node(newMap, _curr->getCostSoFar() + 1, _curr);
-		lst.push_front(neighbor);
-		std::cout << newMap << std::endl;
-	}
+		lst.push_front(swapMap(i, j, i, j-1));
 	if (i > 0)
-	{
-		std::array<std::array<Case*, 2>, 2> newMap = _curr->getMap();
-		std::swap(newMap[i][j], newMap[i-1][j]);
-		Node *neighbor = new Node(newMap, _curr->getCostSoFar() + 1, _curr);
-		lst.push_front(neighbor);
-		std::cout << newMap << std::endl;
-	}
+		lst.push_front(swapMap(i, j, i-1, j));
 	if (i + 1 < 2)
-	{
-		std::array<std::array<Case*, 2>, 2> newMap = _curr->getMap();
-		std::swap(newMap[i][j], newMap[i-1][j]);
-		Node *neighbor = new Node(newMap, _curr->getCostSoFar() + 1, _curr);
-		lst.push_front(neighbor);
-		std::cout << newMap << std::endl;
-	}
-	std::cout << "====================="<< std::endl;
+		lst.push_front(swapMap(i, j, i+1, j));
 	
 	return ;
 }
@@ -80,7 +60,7 @@ std::list<Node *>					AStar::getNeighbor()
 	size_t	j = 0;
 	std::list<Node*> lst;
 
-	std::array<std::array<Case*, 2>, 2>	const map = _curr->getMap();
+	std::vector<std::vector<Case*>>	const map = _curr->getMap();
 	while (i < 2)
 	{
 		while (j < 2)
@@ -109,7 +89,7 @@ void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
 		(void)curr;
 		//int	tentative_score = curr->getCostSoFar() + 1;
 		//need to check if neighbor is in openLst and if tentative_score is better than the one record.
-		(*it)->setCostToReach(_h.calculate(*it, &_goal));
+		(*it)->setCostToReach(_h.calculate(**it, _goal));
 		_openList.push(*it);
 		it++;
 	}
@@ -117,9 +97,12 @@ void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
 
 void							AStar::run()
 {
+	std::cout << "you give the map :" << std::endl << _start;
+	std::cout << "you search for :" << std::endl << _goal;
+	std::cout <<"==============================" << std::endl;
 	_openList.push(&_start);
 
-	_start.setCostToReach(_h.calculate(&_start, &_goal));
+	_start.setCostToReach(_h.calculate(_start, _goal));
 
 	while (!_openList.empty())
 	{
@@ -127,10 +110,13 @@ void							AStar::run()
 		if (*_curr == _goal)
 		{
 			std::cout << "You got it !!!" << std::endl;
+std::cout <<"==============================" << std::endl;
+			std::cout << *_curr;
+			std::cout << _goal;
 			return ;
 		}
 		_openList.pop();
-//		std::cout << *_curr << std::endl;
+		std::cout << *_curr << std::endl;
 		for_each_neighbor(_curr, getNeighbor());
 	}
 

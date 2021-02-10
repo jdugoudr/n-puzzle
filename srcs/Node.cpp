@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 22:09:44 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/10 22:03:33 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,16 @@ Node::Node(vector<vector<Case *>> map, int mapSize):
 															_costToReach(0)
 {}
 
-Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar):
+Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar, Node *prev):
 																				_map(map),
 																				_mapSize(mapSize),
 																				_costSoFar(costSoFar),
-																				_costToReach(0)
-{}
+																				_costToReach(0),
+																				_comeFrom(prev)
+
+{
+	(void)_comeFrom;
+}
 
 vector<vector<Case *>> const						Node::getMap() const
 {
@@ -103,14 +107,31 @@ bool												Node::operator<(Node const &other)
 	return totalT < totalO;
 }
 
-bool												Node::operator==(Node const &other)
+bool												Node::operator>(Node const &other)
 {
-	(void)other;
-	std::cerr << "have to implement a map comparaison"
-		<< std::endl;
-	return false;
+	int	totalO = other.getCostSoFar() + other.getCostToReach();
+	int	totalT = this->_costSoFar + this->_costToReach;
+
+	return totalT > totalO;
 }
 
+bool												Node::operator==(Node const &other)
+{
+	for (int i = 0; i < _mapSize; i++)
+	{
+		for (int j = 0; j < _mapSize; j++)
+		{
+			if (*(other._map[i][j]) != *(_map[i][j]))
+				return false;
+		}
+	}
+	return true;
+}
+
+bool												Node::comp(Node *a, Node *b)
+{
+	return *a > *b;
+}
 
 std::ostream	&operator<<(std::ostream &o, Node const &c)
 {

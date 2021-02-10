@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 22:09:27 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/10 19:30:45 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ private:
 	int																					_costSoFar;
 	int																					_costToReach;
 	Case																				*_empty;
+	Node																				*_comeFrom;
 
 	Node();
 	Node(Node const &other);
@@ -32,7 +33,7 @@ private:
 
 public:
 	Node(std::vector<std::vector<Case *>> map, int mapSize);
-	Node(std::vector<std::vector<Case *>> map, int mapSize, int costSoFar);
+	Node(std::vector<std::vector<Case *>> map, int mapSize, int costSoFar, Node *prev);
 	virtual ~Node();
 
 	std::vector<std::vector<Case *>> const				getMap() const;
@@ -45,8 +46,10 @@ public:
 	void												setEmpty(Case *);
 
 	bool												operator<(Node const &other);
+	bool												operator>(Node const &other);
 	bool												operator==(Node const &other);
 
+	static bool									comp(Node *a, Node *b);
 };
 
 std::ostream	&operator<<(std::ostream &o, Node const &c);

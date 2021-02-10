@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/10 18:27:15 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/10 20:09:39 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,10 @@ SRCS			=	main.cpp \
 						Node.cpp \
 						Puzzle.cpp \
 						Manhattan.cpp \
-						AStar.cpp
+						AStar.cpp \
+						from_file.cpp \
+						generate_puzzle.cpp \
+						create_start_end_nodes.cpp 
 
 INCLUDES	= n-puzzle.hpp \
 						Case.hpp \
@@ -94,8 +97,8 @@ all:
 	@$(MAKE) $(NAME) $(SPEED)
 
 $(NAME): $(OBJDIR) $(OBJECTS)
-	@$(CC) -o $@ $(OBJECTS) $(CFLAGS) $(LFLAGS)
-	@$(ECHO) "$(OK_COLOR)$(NAME) linked with success !$(EOC)"
+	@$(CC) -o $@ $(OBJECTS) $(CFLAGS) $(LFLAGS) \
+		&& $(ECHO) "$(OK_COLOR)$(NAME) linked with success !$(EOC)"
 
 $(OBJDIR):
 	@$(MKDIR) $@
