@@ -14,6 +14,7 @@
 # define PUZZLE_HPP
 
 #include "IHeuristic.hpp"
+#include "Manhattan.hpp"
 #include "Node.hpp"
 
 #include <iostream>
@@ -28,14 +29,13 @@ private:
 	Node									*_startNode;
 	Node									*_endNode;
 	int										_mapSize;
-	std::list<Node *>							_openList;
-	std::list<Node *>						_closedList;
-	//int									_solvable;
 	int										_numberOfStates;	// complexity in size
 	int										_numberOfMoves;
 
+	IHeuristic								*createHeuristic(std::string heuristic_name);
+
 public:
-	Puzzle(IHeuristic *heuristic);
+	Puzzle(std::string heuristic);
 	virtual ~Puzzle();
 
 	IHeuristic const		*getHeuristic() const;

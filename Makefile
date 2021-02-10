@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmartel <jmartel@student.42.fr>            +#+  +:+       +#+         #
+#    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/04/11 23:08:04 by ldedier           #+#    #+#              #
-#    Updated: 2021/02/09 13:43:42 by jdugoudr         ###   ########.fr        #
+#    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
+#    Updated: 2021/02/10 18:27:15 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,8 @@ TESTDIR			=	test
 
 
 VPATH		= $(INCLUDESDIR) \
-					$(SRCDIR)
+					$(SRCDIR) \
+					$(SRCDIR)/AStar
 
 
 
@@ -46,7 +47,8 @@ SRCS			=	main.cpp \
 						Case.cpp \
 						Node.cpp \
 						Puzzle.cpp \
-						Manhattan.cpp
+						Manhattan.cpp \
+						AStar.cpp
 
 INCLUDES	= n-puzzle.hpp \
 						Case.hpp \
@@ -54,15 +56,18 @@ INCLUDES	= n-puzzle.hpp \
 						Puzzle.hpp \
 						IHeuristic.hpp \
 						Manhattan.hpp \
+						AStar.hpp \
+						p_queue_custom.hpp
 
 TEST_UNARY=	case \
 					 	node \
-						puzzle
+						puzzle \
+						astar
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
 OBJECTS			=	$(addprefix $(OBJDIR),  $(SRCS:.cpp=.o))
 #OBJECTS			=	$(SRCS:.cpp=.o)
-INC 				=	-I $(INCLUDESDIR) -I $(SRCDIR)/instructions -I $(SRCDIR)
+INC 				=	-I $(INCLUDESDIR) -I $(SRCDIR)/AStar -I $(SRCDIR)
 
 EOC = \033[0m
 ifeq ($(OS),Linux)
@@ -76,6 +81,10 @@ else
 	#COMP_COLOR = \x1b[34;01m
 	FLAGS_COLOR = \x1b[34;01m
 #	COMP_COLOR =
+endif
+
+ifeq ($(DEBUG),1)
+	CFLAGS += -g3
 endif
 
 all:
@@ -106,8 +115,8 @@ $(OBJDIR)%.o:$(SRC_DIR)%.cpp $(INCLUDES)
 $(TEST_UNARY): $(OBJDIR) $(OBJECTS)
 	@TEST_OBJ=$(OBJDIR)$@.o
 	@$(CC) -c $(TESTDIR)/$@.cpp -o "$${TEST_OBJ}" $(CFLAGS)
-	@$(CC) -o $(TESTDIR)/$@ "$${TEST_OBJ}" $(filter-out $(OBJDIR)main.o,$(OBJECTS)) $(CFLAGS) $(LFLAGS)
-	@$(ECHO) "$(OK_COLOR)$@ test program linked with success !$(EOC)"
+	@$(CC) -o $(TESTDIR)/$@ "$${TEST_OBJ}" $(filter-out $(OBJDIR)main.o,$(OBJECTS)) $(CFLAGS) $(LFLAGS) \
+	&& $(ECHO) "$(OK_COLOR)$@ test program linked with success !$(EOC)"
 #######################################################
 
 
