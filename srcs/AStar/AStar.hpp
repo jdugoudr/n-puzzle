@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 19:44:11 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/10 22:26:44 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 class AStar{
 
 private:
+	int	const								_size;
 	Node										&_start;
 	Node const							&_goal;
 	IHeuristic							&_h;

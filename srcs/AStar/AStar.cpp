@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 21:57:33 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/10 22:27:22 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ AStar::~AStar()
 }
 
 AStar::AStar(Node &start, Node const &goal, IHeuristic &h):
+																				_size(start.getMapSize()),
 																				_start(start),
 																				_goal(goal),
 																				_h(h),
@@ -56,14 +57,14 @@ void									AStar::createNeighbor(std::list<Node*> &lst,
 
 std::list<Node *>					AStar::getNeighbor()
 {
-	size_t	i = 0;
-	size_t	j = 0;
+	int	i = 0;
+	int	j = 0;
 	std::list<Node*> lst;
 
 	std::vector<std::vector<Case*>>	const map = _curr->getMap();
-	while (i < 2)
+	while (i < _size)
 	{
-		while (j < 2)
+		while (j < _size)
 		{
 			if (map[i][j]->getValue() == 0)
 			{
