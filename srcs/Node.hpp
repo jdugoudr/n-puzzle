@@ -13,9 +13,10 @@
 #ifndef	NODE_HPP
 # define NODE_HPP
 
-#include "Case.hpp"
-#include <iostream>
-#include <vector>
+# include "Case.hpp"
+# include <iomanip>
+# include <iostream>
+# include <vector>
 
 class Node{
 
