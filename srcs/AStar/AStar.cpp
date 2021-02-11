@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 22:27:22 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 20:51:33 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,14 @@ Node			*AStar::swapMap(size_t csrc, size_t lsrc, size_t cdest, size_t ldest)
 {
 	std::vector<std::vector<Case*>> newMap = _curr->getMap();
 	std::swap(newMap[csrc][lsrc], newMap[cdest][ldest]);
+
+
+	newMap[csrc][lsrc]->setPosX(lsrc);
+	newMap[csrc][lsrc]->setPosY(csrc);
+	newMap[cdest][ldest]->setPosX(ldest);
+	newMap[cdest][ldest]->setPosY(cdest);
+
+
 	Node *neighbor = new Node(newMap, _curr->getMapSize(),
 							_curr->getCostSoFar() + 1, _curr);
 	return neighbor;	
@@ -69,6 +77,7 @@ std::list<Node *>					AStar::getNeighbor()
 			if (map[i][j]->getValue() == 0)
 			{
 				createNeighbor(lst, i, j);
+				isAlreadyKnown(&lst);
 				return lst;
 			}
 			j++;
@@ -108,6 +117,8 @@ void							AStar::run()
 	while (!_openList.empty())
 	{
 		_curr = _openList.top();
+		std::cout << _curr << " coast :" << _curr->getCostToReach() 
+			<< " parent : " << _curr->getPrev()<< std::endl;
 		if (*_curr == _goal)
 		{
 			std::cout << "You got it !!!" << std::endl;
@@ -116,11 +127,15 @@ std::cout <<"==============================" << std::endl;
 			std::cout << _goal;
 			return ;
 		}
-		_openList.pop();
 		std::cout << *_curr << std::endl;
+		_openList.pop();
+		_closedList.push(_curr);
+		char c;
+		std::cin >> c;
 		for_each_neighbor(_curr, getNeighbor());
 	}
 
+	throw AStar::NoSolution();
 	return ;
 }
 
@@ -132,6 +147,32 @@ std::list<Node*>	AStar::getPath() const
 Node const	*AStar::getCurrent() const
 {
 	return _curr;
+}
+
+void							AStar::isAlreadyKnown(std::list<Node*> *lst)
+{
+LOOP:for (Node *curr: *lst)
+		 {
+			for (Node *item: _openList)
+			{
+				if (*item == *curr)
+				{
+					lst->remove(curr);
+					delete curr;
+					goto LOOP;
+				}
+			}
+			for (Node *item: _closedList)
+			{
+				if (*item == *curr)
+				{
+					lst->remove(curr);
+					delete curr;
+					goto LOOP;
+				}
+			}
+		 }
+	return ;
 }
 
 std::ostream	&operator<<(std::ostream &o, AStar const &c)
@@ -147,3 +188,11 @@ std::ostream	&operator<<(std::ostream &o, AStar const &c)
 	return o;
 }
 
+AStar::NoSolution::NoSolution() throw(): std::exception(){}
+
+AStar::NoSolution::~NoSolution() throw() {}
+
+const char	*AStar::NoSolution::what() const throw()
+{
+	return "No solution found... :'(";
+}

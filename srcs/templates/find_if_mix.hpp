@@ -1,35 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Manhattan.hpp                                      :+:      :+:    :+:   */
+/*   find_if_mix.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/08 20:48:15 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 19:47:51 by jdugoudr         ###   ########.fr       */
+/*   Created: 2021/02/11 18:39:01 by jdugoudr          #+#    #+#             */
+/*   Updated: 2021/02/11 20:44:56 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	MANHATTAN_HPP
-# define MANHATTAN_HPP
+#ifndef FIND_IF_CMP_HPP
+# define FIND_IF_CMP_HPP
 
-# include "IHeuristic.hpp"
-
-# include <string>
-
-class Manhattan : public IHeuristic{
-
-private:
-	std::string						_name;
-
-public:
-	Manhattan();
-	virtual ~Manhattan();
-
-	virtual int					calculate(Node const &current, Node const &goal) const;
-	virtual std::string const		getName() const;
-
-};
+template<class C, class T>
+C	find_if_mix(C start, C end,
+								T const &val, bool (*f)( T, T))
+{
+	while (start != end)
+	{
+		if (f(*start, val))
+			break ;
+		start++;
+	}
+	return start;
+}
 
 #endif
-

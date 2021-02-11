@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/09 22:10:08 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 15:16:51 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,18 @@ private:
 public:
 	p_queue_custom<T>(bool (*f)(T,T)):std::priority_queue<T, std::vector<T>, bool (*)(T,T)>(f){}
 	virtual ~p_queue_custom(){}
+	typedef typename std::priority_queue<T>::container_type::iterator	iterator;
+
+	iterator	begin(){return std::priority_queue<T, std::vector<T>, bool (*)(T,T)>::c.begin();}
+	iterator	end(){return std::priority_queue<T, std::vector<T>, bool (*)(T,T)>::c.end();}
+
+
 	void		push(const T& val){
-		typedef typename std::priority_queue<T>::container_type::iterator	iterator;
 		iterator	it;
 		iterator	end;
 
-		it = std::priority_queue<T, std::vector<T>, bool (*)(T,T)>::c.begin();
-		end = std::priority_queue<T, std::vector<T>, bool (*)(T,T)>::c.end();
+		it = this->begin();
+		end = this->end();
 		while (it != end)
 		{
 			if (**it == *val)
@@ -47,6 +52,7 @@ public:
 		std::priority_queue<T, std::vector<T>, bool (*)(T,T)>::push(val);
 		return ;
 	}
+
 };
 
 #endif

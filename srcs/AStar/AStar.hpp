@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 22:26:44 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 15:55:19 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ private:
 //	std::forward_list<Node *>	_openList;
 //	std::forward_list<Node *>	_closedList;
 
+	void		isAlreadyKnown(std::list<Node*> *lst);
 	void		for_each_neighbor(Node *curr, std::list<Node*> neighbors);
 	Node							*swapMap(size_t, size_t, size_t, size_t);
 	std::list<Node *>	getNeighbor();
@@ -49,6 +50,13 @@ public:
 	std::list<Node*>	getPath() const;
 	Node const				*getCurrent() const;
 	
+
+	class NoSolution: public std::exception{
+		public:
+			NoSolution() throw();
+			~NoSolution() throw();
+			virtual const char *what() const throw();
+	};
 
 };
 

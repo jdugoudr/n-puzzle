@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/10 20:09:39 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/11 18:43:55 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,9 @@ TESTDIR			=	test
 
 VPATH		= $(INCLUDESDIR) \
 					$(SRCDIR) \
-					$(SRCDIR)/AStar
+					$(SRCDIR)/templates \
+					$(SRCDIR)/AStar \
+					$(SRCDIR)/AStar/heuristic
 
 
 
@@ -60,6 +62,7 @@ INCLUDES	= n-puzzle.hpp \
 						IHeuristic.hpp \
 						Manhattan.hpp \
 						AStar.hpp \
+						find_if_mix.hpp \
 						p_queue_custom.hpp
 
 TEST_UNARY=	case \
@@ -70,7 +73,7 @@ TEST_UNARY=	case \
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
 OBJECTS			=	$(addprefix $(OBJDIR),  $(SRCS:.cpp=.o))
 #OBJECTS			=	$(SRCS:.cpp=.o)
-INC 				=	-I $(INCLUDESDIR) -I $(SRCDIR)/AStar -I $(SRCDIR)
+INC 				=	-I $(INCLUDESDIR) -I $(SRCDIR)/AStar -I $(SRCDIR) -I $(SRCDIR)/AStar/heuristic -I $(SRCDIR)/templates
 
 EOC = \033[0m
 ifeq ($(OS),Linux)

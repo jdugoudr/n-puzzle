@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 22:06:28 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 20:18:07 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,15 @@ bool			Case::operator!=(Case const &other) const
 bool			Case::operator==(Case const &other) const
 {
 	return _value == other._value;
+}
+
+bool			Case::compare_ptr(Case *a, Case *b)
+{
+//	std::cout << "compare : "
+//						<< a->getValue() << b->getValue()
+//						<< std::endl
+//						<< *a << *b ;
+	return *a == *b;
 }
 
 

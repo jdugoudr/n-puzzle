@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:48:15 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 22:03:57 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 18:17:25 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ public:
 
 	void			setPosX(int posx);
 	void			setPosY(int posy);
+
+	static bool	compare_ptr(Case *a, Case *b);
 
 };
 

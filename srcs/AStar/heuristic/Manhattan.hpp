@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Manhattan.cpp                                      :+:      :+:    :+:   */
+/*   Manhattan.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 19:48:25 by jdugoudr         ###   ########.fr       */
+/*   Created: 2021/02/08 20:48:15 by jdugoudr          #+#    #+#             */
+/*   Updated: 2021/02/11 18:43:30 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Manhattan.hpp"
+#ifndef	MANHATTAN_HPP
+# define MANHATTAN_HPP
 
-Manhattan::Manhattan():
-	_name("Manhattan")
-{
-}
+# include "IHeuristic.hpp"
 
-Manhattan::~Manhattan()
-{
-}
+# include <string>
 
-int					Manhattan::calculate(Node const &current, Node const &goal) const
-{
-	(void)current;
-	(void)goal;
-	return 42;
-}
+class Manhattan : public IHeuristic{
 
-std::string	const	Manhattan::getName() const
-{
-	return _name;
-}
+private:
+	std::string				_name;
+
+	int								calculDiff(Case &curr, Case &goal) const;
+
+public:
+	Manhattan();
+	virtual ~Manhattan();
+
+	virtual int					calculate(Node const &current, Node const &goal) const;
+	virtual std::string const		getName() const;
+
+};
+
+#endif
+

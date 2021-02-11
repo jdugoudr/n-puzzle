@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 19:30:45 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 20:49:31 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ public:
 	int													getMapSize() const;
 	int													getCostSoFar() const;
 	int													getCostToReach() const;
+	Node												*getPrev() const;
 	Case												*getEmpty() const;
 	void												setCostSoFar(int nc);
 	void												setCostToReach(int nc);

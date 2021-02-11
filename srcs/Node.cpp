@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/10 22:03:33 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 20:51:11 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,10 @@ int													Node::getCostToReach() const
 Case												*Node::getEmpty() const
 {
 	return _empty;
+}
+Node												*Node::getPrev() const
+{
+	return _comeFrom;
 }
 
 void												Node::setCostSoFar(int nc)
