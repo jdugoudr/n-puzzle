@@ -13,6 +13,9 @@
 #ifndef NPUZZLE_HPP
 # define NPUZZLE_HPP
 
+# define	MAP_MIN_SIZE		3
+# define	MAP_MAX_SIZE		100
+
 # include "Node.hpp"
 # include "Case.hpp"
 

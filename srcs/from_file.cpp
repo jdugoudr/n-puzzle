@@ -58,7 +58,7 @@ std::vector<std::vector<int>>		parse_file(std::string filename, unsigned long &s
 				if (splitted.size() > 1)
 					throw ("Input file format error: wrong size definition");
 				size = splitted[0];
-				if (size < 3 || size > 100)
+				if (size < MAP_MIN_SIZE || size > MAP_MAX_SIZE)
 					throw ("Input file format error: wrong size definition");
 			}
 			else

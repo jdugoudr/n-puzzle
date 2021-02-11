@@ -73,10 +73,8 @@ int	main(int ac, char **av)
 		start_node = generate_puzzle();
 	}
 	else
-	{
-		//std::cout << "opening file \"" << av[1] << "\"" << std::endl;
 		start_node = get_node_from_file(av[1]);
-	}
+
 	if (start_node == NULL)
 	{
 		delete puzzle;
@@ -93,11 +91,8 @@ int	main(int ac, char **av)
 
 	// create end_node
 	puzzle->setEndNode(create_end_node(puzzle->getMapSize()));
-
-	//std::cout << "END NODE:" << std::endl;
-	//std::cout << *(puzzle->getEndNode()) << std::endl;
-
-
+	std::cout << "END NODE:" << std::endl;
+	std::cout << *(puzzle->getEndNode()) << std::endl;
 
 	// algo
 
