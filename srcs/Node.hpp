@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 15:08:23 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 20:26:13 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ private:
 	int const																_mapSize;
 	int																			_costSoFar;
 	int																			_costToReach;
-	Case																		*_empty;
+	Case 																		*_empty;
 	Node																		*_comeFrom;
 
 	Node();
@@ -48,6 +48,7 @@ public:
 	void							setCostSoFar(int nc);
 	void							setCostToReach(int nc);
 	void							setEmpty(Case *);
+	void							setComeFrom(Node *p);
 
 	bool							operator<(Node const &other);
 	bool							operator>(Node const &other);

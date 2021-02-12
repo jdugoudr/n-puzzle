@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 17:00:21 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 20:31:33 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ Node::Node(vector<vector<Case *>> map, int mapSize):
 															_mapSize(mapSize),
 															_costSoFar(0),
 															_costToReach(0)
-{}
+{
+}
 
 Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar, Node *prev):
 																				_map(map),
@@ -66,7 +67,6 @@ Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar, Node *prev):
 																				_comeFrom(prev)
 
 {
-	(void)_comeFrom;
 }
 
 vector<vector<Case *>> const						Node::getMap() const
@@ -113,6 +113,13 @@ void												Node::setCostToReach(int nc)
 void												Node::setEmpty(Case *empty)
 {
 	_empty = empty;
+	return ;
+}
+
+void												Node::setComeFrom(Node *p)
+{
+	_comeFrom = p;
+	return ;
 }
 
 void												Node::swap(size_t csrc, size_t lsrc,
