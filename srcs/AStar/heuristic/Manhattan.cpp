@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/11 20:43:39 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/11 22:07:43 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int		Manhattan::calculate(Node const &current, Node const &goal) const
 	{
 		for (auto git2: git)
 		{
+			if (git2->getValue() == 0)
+				continue ;
 			for (int i = 0; i < current.getMapSize() ;i++)
 			{
 				auto it = find_if_mix((cit[i]).begin(), (cit[i]).end(),
@@ -67,7 +69,9 @@ int		Manhattan::calculDiff(Case &curr, Case &goal) const
 
 
 	diff += x1 > x2 ? x1 - x2 : x2 - x1;
+//	std::cout << curr << x1 << x2 << " = " << diff << std::endl;
 	diff += y1 > y2 ? y1 - y2 : y2 - y1;
+//	std::cout << curr << x1 << x2 << " = " << diff << std::endl;
 
 	return diff;
 }

@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/11 20:51:11 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:31:26 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Node::Node():_map(),
 }
 
 Node::Node(Node const &other):_map(),
-															_mapSize(0)
+															_mapSize(other._mapSize)
 {
 	*this = other;
 }
@@ -34,7 +34,20 @@ Node	&Node::operator=(Node const &other)
 {
 	if (this != &other)
 	{
-		//put here whatever make your object equal to an other
+		_costSoFar = other._costSoFar;
+		_costToReach = other._costToReach;
+		_comeFrom = other._comeFrom;
+
+		for (int i = 0; i < _mapSize; i++)
+		{
+			std::vector<Case*>	tmp;
+			for (int j = 0; j < _mapSize; j++)
+			{
+				Case	*newCase = new Case(*other._map[i][j]);
+				tmp.push_back(newCase);
+			}
+			_map.push_back(tmp);
+		}
 	}
 	return *this;
 }
@@ -103,6 +116,19 @@ void												Node::setEmpty(Case *empty)
 	_empty = empty;
 }
 
+void												Node::swap(size_t csrc, size_t lsrc,
+																	size_t cdest, size_t ldest)
+{
+	std::swap(_map[csrc][lsrc], _map[cdest][ldest]);
+
+	_map[csrc][lsrc]->setPosX(lsrc);
+	_map[csrc][lsrc]->setPosY(csrc);
+	_map[cdest][ldest]->setPosX(ldest);
+	_map[cdest][ldest]->setPosY(cdest);
+
+	return ;
+}
+
 bool												Node::operator<(Node const &other)
 {
 	int	totalO = other.getCostSoFar() + other.getCostToReach();
@@ -146,5 +172,6 @@ std::ostream	&operator<<(std::ostream &o, Node const &c)
 			o << it2->getValue() << " ";
 		o << std::endl;
 	}
+	o << c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
 	return o;
 }

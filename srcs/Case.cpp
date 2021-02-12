@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/11 20:18:07 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 15:18:08 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Case::Case():_value(0)
 {
 }
 
-Case::Case(Case const &other):_value(0)
+Case::Case(Case const &other):_value(other._value)
 {
 	*this = other;
 }
@@ -30,12 +30,13 @@ Case	&Case::operator=(Case const &other)
 {
 	if (this != &other)
 	{
-		//put here whatever make your object equal to an other
+		_x = other._x;
+		_y = other._y;
 	}
 	return *this;
 }
 
-Case::Case(int value, int posX, int posY):_value(value),
+Case::Case(int value, int posY, int posX):_value(value),
 																					_x(posX),
 																					_y(posY)
 {}
@@ -90,8 +91,8 @@ bool			Case::compare_ptr(Case *a, Case *b)
 std::ostream	&operator<<(std::ostream &o, Case const &c)
 {
 	o << "[" << c.getValue()
-		<< "-" << c.getPosX()
 		<< "-" << c.getPosY()
+		<< "-" << c.getPosX()
 		<< "]" << std::endl;
 	return o;
 }

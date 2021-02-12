@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/11 20:51:33 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:38:56 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,36 +30,34 @@ AStar::AStar(Node &start, Node const &goal, IHeuristic &h):
 	(void)_h;
 }
 
-Node			*AStar::swapMap(size_t csrc, size_t lsrc, size_t cdest, size_t ldest)
+Node			*AStar::swapMap(int csrc, int lsrc, int cdest, int ldest)
 {
-	std::vector<std::vector<Case*>> newMap = _curr->getMap();
-	std::swap(newMap[csrc][lsrc], newMap[cdest][ldest]);
+	Node	*neighbor = new Node(*_curr);
 
+	neighbor->swap(csrc, lsrc, cdest, ldest);
+	neighbor->setCostSoFar(neighbor->getCostSoFar() + 1);
 
-	newMap[csrc][lsrc]->setPosX(lsrc);
-	newMap[csrc][lsrc]->setPosY(csrc);
-	newMap[cdest][ldest]->setPosX(ldest);
-	newMap[cdest][ldest]->setPosY(cdest);
-
-
-	Node *neighbor = new Node(newMap, _curr->getMapSize(),
-							_curr->getCostSoFar() + 1, _curr);
 	return neighbor;	
 }
 
-void									AStar::createNeighbor(std::list<Node*> &lst,
-																						size_t i,
-																						size_t j)
+void display(Node *el)
 {
-	if (j + 1 < 2)
+	std::cout << *el << std::endl;
+}
+
+void									AStar::createNeighbor(std::list<Node*> &lst,
+																						int i,
+																						int j)
+{
+	if (j + 1 < _size)
 		lst.push_front(swapMap(i, j, i, j+1));
 	if (j > 0)
 		lst.push_front(swapMap(i, j, i, j-1));
 	if (i > 0)
 		lst.push_front(swapMap(i, j, i-1, j));
-	if (i + 1 < 2)
+	if (i + 1 < _size)
 		lst.push_front(swapMap(i, j, i+1, j));
-	
+
 	return ;
 }
 
@@ -69,6 +67,10 @@ std::list<Node *>					AStar::getNeighbor()
 	int	j = 0;
 	std::list<Node*> lst;
 
+//	std::cout << "pos 0 : " << _curr->getEmpty()->getPosY() << _curr->getEmpty()->getPosX() << std::endl;
+//	createNeighbor(lst, _curr->getEmpty()->getPosY(), _curr->getEmpty()->getPosX());
+//	isAlreadyKnown(&lst);
+//	return lst;
 	std::vector<std::vector<Case*>>	const map = _curr->getMap();
 	while (i < _size)
 	{
@@ -100,25 +102,37 @@ void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
 		//int	tentative_score = curr->getCostSoFar() + 1;
 		//need to check if neighbor is in openLst and if tentative_score is better than the one record.
 		(*it)->setCostToReach(_h.calculate(**it, _goal));
-		_openList.push(*it);
+		_openList.push_uniq(*it);
 		it++;
 	}
+
+//	char c;
+//	std::cin >> c;
+//	if (c == 'd')
+//	{
+//		std::cout << "====================" << std::endl;
+//		std::cout << "==\tChildren\t==" << std::endl;
+//		for_each(neighbors.begin(), neighbors.end(), display);
+//		std::cout << "====================" << std::endl;
+//	}
+	
 }
+
 
 void							AStar::run()
 {
 	std::cout << "you give the map :" << std::endl << _start;
 	std::cout << "you search for :" << std::endl << _goal;
 	std::cout <<"==============================" << std::endl;
-	_openList.push(&_start);
 
 	_start.setCostToReach(_h.calculate(_start, _goal));
+
+	_openList.push_uniq(&_start);
 
 	while (!_openList.empty())
 	{
 		_curr = _openList.top();
-		std::cout << _curr << " coast :" << _curr->getCostToReach() 
-			<< " parent : " << _curr->getPrev()<< std::endl;
+//		std::cout << *_curr << std::endl;
 		if (*_curr == _goal)
 		{
 			std::cout << "You got it !!!" << std::endl;
@@ -127,11 +141,8 @@ std::cout <<"==============================" << std::endl;
 			std::cout << _goal;
 			return ;
 		}
-		std::cout << *_curr << std::endl;
 		_openList.pop();
-		_closedList.push(_curr);
-		char c;
-		std::cin >> c;
+		_closedList.push_uniq(_curr);
 		for_each_neighbor(_curr, getNeighbor());
 	}
 
@@ -151,8 +162,11 @@ Node const	*AStar::getCurrent() const
 
 void							AStar::isAlreadyKnown(std::list<Node*> *lst)
 {
+//	std::cout << "Open " <<  _openList;
+//	std::cout << "Closed " <<  _closedList;
 LOOP:for (Node *curr: *lst)
 		 {
+//			 std::cout << "Node :" << std::endl << *curr << std::endl;
 			for (Node *item: _openList)
 			{
 				if (*item == *curr)
@@ -195,4 +209,19 @@ AStar::NoSolution::~NoSolution() throw() {}
 const char	*AStar::NoSolution::what() const throw()
 {
 	return "No solution found... :'(";
+}
+
+std::ostream	&operator<<(std::ostream &o, p_queue_custom<Node*> &c)
+{
+	(void)c;
+	p_queue_custom<Node*>::iterator	it = c.begin();
+	p_queue_custom<Node*>::iterator	eit = c.end();
+	o << "IN QUEUE : " << std::endl;
+	while (it != eit)
+	{
+		o << **it << std::endl;
+		it++;
+	}
+	o << std::endl;
+	return o;
 }
