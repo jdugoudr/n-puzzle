@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 16:38:56 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 17:00:48 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ AStar::~AStar()
 {
 }
 
-AStar::AStar(Node &start, Node const &goal, IHeuristic &h):
+AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
 																				_size(start.getMapSize()),
 																				_start(start),
 																				_goal(goal),
@@ -67,7 +67,6 @@ std::list<Node *>					AStar::getNeighbor()
 	int	j = 0;
 	std::list<Node*> lst;
 
-//	std::cout << "pos 0 : " << _curr->getEmpty()->getPosY() << _curr->getEmpty()->getPosX() << std::endl;
 //	createNeighbor(lst, _curr->getEmpty()->getPosY(), _curr->getEmpty()->getPosX());
 //	isAlreadyKnown(&lst);
 //	return lst;
@@ -121,13 +120,9 @@ void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
 
 void							AStar::run()
 {
-	std::cout << "you give the map :" << std::endl << _start;
-	std::cout << "you search for :" << std::endl << _goal;
-	std::cout <<"==============================" << std::endl;
-
-	_start.setCostToReach(_h.calculate(_start, _goal));
-
-	_openList.push_uniq(&_start);
+	_curr	= new Node(_start);
+	_curr->setCostToReach(_h.calculate(_start, _goal));
+	_openList.push_uniq(_curr);
 
 	while (!_openList.empty())
 	{
@@ -138,7 +133,7 @@ void							AStar::run()
 			std::cout << "You got it !!!" << std::endl;
 std::cout <<"==============================" << std::endl;
 			std::cout << *_curr;
-			std::cout << _goal;
+//			std::cout << _goal;
 			return ;
 		}
 		_openList.pop();
@@ -162,11 +157,8 @@ Node const	*AStar::getCurrent() const
 
 void							AStar::isAlreadyKnown(std::list<Node*> *lst)
 {
-//	std::cout << "Open " <<  _openList;
-//	std::cout << "Closed " <<  _closedList;
 LOOP:for (Node *curr: *lst)
 		 {
-//			 std::cout << "Node :" << std::endl << *curr << std::endl;
 			for (Node *item: _openList)
 			{
 				if (*item == *curr)

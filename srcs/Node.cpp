@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 16:31:26 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 17:00:21 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,6 @@ std::ostream	&operator<<(std::ostream &o, Node const &c)
 			o << setw(width) << it2->getValue();
 		o << std::endl;
 	}
-	o << c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
+	o <<setw(width) <<  c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
 	return o;
 }

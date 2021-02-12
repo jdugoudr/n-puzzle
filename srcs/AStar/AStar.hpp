@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 16:15:09 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:55:12 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,12 @@ class AStar{
 
 private:
 	int	const								_size;
-	Node										&_start;
+	Node const							&_start;
 	Node const							&_goal;
-	IHeuristic							&_h;
+	IHeuristic const				&_h;
 	Node										*_curr;
 	p_queue_custom<Node *>	_openList;
 	p_queue_custom<Node *>	_closedList;
-//	std::forward_list<Node *>	_openList;
-//	std::forward_list<Node *>	_closedList;
 
 	void		isAlreadyKnown(std::list<Node*> *lst);
 	void		for_each_neighbor(Node *curr, std::list<Node*> neighbors);
@@ -43,7 +41,7 @@ private:
 																						int j);
 
 public:
-	AStar(Node &start, Node const &goal, IHeuristic &h);
+	AStar(Node const &start, Node const &goal, IHeuristic const &h);
 	virtual ~AStar();
 
 	void							run();

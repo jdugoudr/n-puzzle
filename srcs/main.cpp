@@ -6,12 +6,13 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 21:07:34 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:49:03 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "n-puzzle.hpp"
 #include "Puzzle.hpp"
+#include "AStar.hpp"
 
 #include <array>
 #include <iostream>
@@ -84,6 +85,16 @@ int	main(int ac, char **av)
 	std::cout << *(puzzle->getEndNode()) << std::endl;
 
 	// algo
+	AStar	star(*puzzle->getStartNode(),
+								*puzzle->getEndNode(),
+								*puzzle->getHeuristic());
+
+	try {
+		star.run();
+	} catch (std::exception &e){
+		std::cerr << e.what() << std::endl;
+	}
+
 
 	delete puzzle;
 	return 0;
