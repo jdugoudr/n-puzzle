@@ -22,9 +22,11 @@
 # include <iostream>
 # include <fstream>
 # include <string>
+# include <array>
+# include <algorithm>
 
 Node			*get_node_from_file(std::string filename);
-Node			*generate_puzzle(void);
+Node			*generate_start_node(void);
 Node			*create_start_node(std::vector<std::vector<int>> splitted, int size);
 Node			*create_end_node(int size);
 

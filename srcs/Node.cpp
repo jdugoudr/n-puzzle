@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "Node.hpp"
-#include <iostream>
 
 using namespace	std;
 
@@ -165,11 +164,19 @@ bool												Node::comp(Node *a, Node *b)
 
 std::ostream	&operator<<(std::ostream &o, Node const &c)
 {
-	(void)c;
+	int		width = 1;
+	int		total_size = c.getMapSize() * c.getMapSize() - 1;
+
+	while (total_size > 0)
+	{
+		total_size /= 10;
+		width++;
+	}
+
 	for (auto &it1: c.getMap())
 	{
 		for (auto &it2: it1)
-			o << it2->getValue() << " ";
+			o << setw(width) << it2->getValue();
 		o << std::endl;
 	}
 	o << c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;

@@ -52,7 +52,7 @@ SRCS			=	main.cpp \
 						Manhattan.cpp \
 						AStar.cpp \
 						from_file.cpp \
-						generate_puzzle.cpp \
+						generate_map.cpp \
 						create_start_end_nodes.cpp 
 
 INCLUDES	= n-puzzle.hpp \
