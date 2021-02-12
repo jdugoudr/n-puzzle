@@ -6,13 +6,11 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 20:31:33 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 22:36:32 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Node.hpp"
-
-using namespace	std;
 
 Node::Node():_map(),
 															_mapSize(0)
@@ -36,22 +34,12 @@ Node	&Node::operator=(Node const &other)
 		_costSoFar = other._costSoFar;
 		_costToReach = other._costToReach;
 		_comeFrom = other._comeFrom;
-
-		for (int i = 0; i < _mapSize; i++)
-		{
-			std::vector<Case*>	tmp;
-			for (int j = 0; j < _mapSize; j++)
-			{
-				Case	*newCase = new Case(*other._map[i][j]);
-				tmp.push_back(newCase);
-			}
-			_map.push_back(tmp);
-		}
+		_map = other._map;
 	}
 	return *this;
 }
 
-Node::Node(vector<vector<Case *>> map, int mapSize):
+Node::Node(std::vector<int> map, int mapSize):
 															_map(map),
 															_mapSize(mapSize),
 															_costSoFar(0),
@@ -59,7 +47,7 @@ Node::Node(vector<vector<Case *>> map, int mapSize):
 {
 }
 
-Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar, Node *prev):
+Node::Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev):
 																				_map(map),
 																				_mapSize(mapSize),
 																				_costSoFar(costSoFar),
@@ -69,7 +57,7 @@ Node::Node(vector<vector<Case *>> map, int mapSize, int costSoFar, Node *prev):
 {
 }
 
-vector<vector<Case *>> const						Node::getMap() const
+std::vector<int> const						Node::getMap() const
 {
 	return _map;
 }
@@ -89,9 +77,14 @@ int													Node::getCostToReach() const
 	return _costToReach;
 }
 
-Case												*Node::getEmpty() const
+int													Node::getEmpty() const
 {
-	return _empty;
+	for (int pos = 0 ; pos < _mapSize * _mapSize ; pos++)
+		if (_map[pos] == 0)
+			return pos;
+	throw std::out_of_range("Out of Range while looking for neighbor ");
+	return 0;
+	//return _empty;
 }
 Node												*Node::getPrev() const
 {
@@ -110,7 +103,7 @@ void												Node::setCostToReach(int nc)
 	return ;
 }
 
-void												Node::setEmpty(Case *empty)
+void												Node::setEmpty(int empty)
 {
 	_empty = empty;
 	return ;
@@ -122,16 +115,9 @@ void												Node::setComeFrom(Node *p)
 	return ;
 }
 
-void												Node::swap(size_t csrc, size_t lsrc,
-																	size_t cdest, size_t ldest)
+void												Node::swap(size_t src, size_t dest)
 {
-	std::swap(_map[csrc][lsrc], _map[cdest][ldest]);
-
-	_map[csrc][lsrc]->setPosX(lsrc);
-	_map[csrc][lsrc]->setPosY(csrc);
-	_map[cdest][ldest]->setPosX(ldest);
-	_map[cdest][ldest]->setPosY(cdest);
-
+	std::swap(_map[src], _map[dest]);
 	return ;
 }
 
@@ -153,15 +139,7 @@ bool												Node::operator>(Node const &other)
 
 bool												Node::operator==(Node const &other)
 {
-	for (int i = 0; i < _mapSize; i++)
-	{
-		for (int j = 0; j < _mapSize; j++)
-		{
-			if (*(other._map[i][j]) != *(_map[i][j]))
-				return false;
-		}
-	}
-	return true;
+	return _map == other._map;
 }
 
 bool												Node::comp(Node *a, Node *b)
@@ -172,7 +150,8 @@ bool												Node::comp(Node *a, Node *b)
 std::ostream	&operator<<(std::ostream &o, Node const &c)
 {
 	int		width = 1;
-	int		total_size = c.getMapSize() * c.getMapSize() - 1;
+	int		size = c.getMapSize();
+	int		total_size = size * size - 1;
 
 	while (total_size > 0)
 	{
@@ -180,12 +159,14 @@ std::ostream	&operator<<(std::ostream &o, Node const &c)
 		width++;
 	}
 
+	int	i = 0;
 	for (auto &it1: c.getMap())
 	{
-		for (auto &it2: it1)
-			o << setw(width) << it2->getValue();
-		o << std::endl;
+		o << std::setw(width) << it1;
+		i++;
+		if (i % size == 0)
+			o << std::endl;
 	}
-	o <<setw(width) <<  c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
+	o <<std::setw(width) <<  c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
 	return o;
 }

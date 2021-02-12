@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/12 18:55:59 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/12 22:42:48 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,24 +46,24 @@ VPATH		= $(INCLUDESDIR) \
 
 
 SRCS			=	main.cpp \
-						Case.cpp \
 						Node.cpp \
 						Puzzle.cpp \
 						Manhattan.cpp \
 						AStar.cpp \
 						from_file.cpp \
 						generate_map.cpp \
-						create_start_end_nodes.cpp 
+						create_start_end_nodes.cpp
+#						Case.cpp
 
 INCLUDES	= n-puzzle.hpp \
-						Case.hpp \
 						Node.hpp \
 						Puzzle.hpp \
 						IHeuristic.hpp \
 						Manhattan.hpp \
 						AStar.hpp \
-						find_if_mix.hpp \
 						p_queue_custom.hpp
+#						find_if_mix.hpp
+#						Case.hpp
 
 TEST_UNARY=	case \
 					 	node \

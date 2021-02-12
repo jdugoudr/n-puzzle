@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 20:24:43 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 22:41:59 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,13 @@ AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
 	(void)_h;
 }
 
-Node			*AStar::swapMap(int csrc, int lsrc, int cdest, int ldest)
+//Node			*AStar::swapMap(int csrc, int lsrc, int cdest, int ldest)
+Node			*AStar::swapMap(int src, int dest)
 {
 	Node	*neighbor = new Node(*_curr);
 
-	neighbor->swap(csrc, lsrc, cdest, ldest);
+//	neighbor->swap((csrc * _size) + lsrc, (cdest * _size) + ldest);
+	neighbor->swap(src, dest);
 	neighbor->setCostSoFar(neighbor->getCostSoFar() + 1);
 
 	return neighbor;	
@@ -47,48 +49,34 @@ void display(Node *el)
 
 void									AStar::createNeighbor(std::list<Node*> &lst,
 																						int i,
-																						int j)
+																						int j,
+																						int pos)
 {
 	if (j + 1 < _size)
-		lst.push_front(swapMap(i, j, i, j+1));
+		lst.push_front(swapMap(pos, pos + 1));
+	//	lst.push_front(swapMap(i, j, i, j+1));
 	if (j > 0)
-		lst.push_front(swapMap(i, j, i, j-1));
+		lst.push_front(swapMap(pos, pos - 1));
+	//	lst.push_front(swapMap(i, j, i, j-1));
 	if (i > 0)
-		lst.push_front(swapMap(i, j, i-1, j));
+		lst.push_front(swapMap(pos, pos - _size));
+	//	lst.push_front(swapMap(i, j, i-1, j));
 	if (i + 1 < _size)
-		lst.push_front(swapMap(i, j, i+1, j));
+		lst.push_front(swapMap(pos, pos + _size));
+	//	lst.push_front(swapMap(i, j, i+1, j));
 
 	return ;
 }
 
 std::list<Node *>					AStar::getNeighbor()
 {
-	int	i = 0;
-	int	j = 0;
 	std::list<Node*> lst;
 
-//	createNeighbor(lst, _curr->getEmpty()->getPosY(), _curr->getEmpty()->getPosX());
-//	isAlreadyKnown(&lst);
-//	return lst;
-	std::vector<std::vector<Case*>>	const map = _curr->getMap();
-	while (i < _size)
-	{
-		while (j < _size)
-		{
-			if (map[i][j]->getValue() == 0)
-			{
-				createNeighbor(lst, i, j);
-			//	isAlreadyKnown(&lst);
-				return lst;
-			}
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-	std::cerr << "Error : " << i << "-" << j << std::endl;
-
-	throw std::out_of_range("Out of Range while looking for neighbor ");
+//	std::vector<int>	const map = _curr->getMap();
+	int	posZero = _curr->getEmpty();
+	createNeighbor(lst, posZero / _size, posZero % _size, posZero);
+	//	isAlreadyKnown(&lst);
+	return lst;
 }
 
 void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)

@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 16:55:12 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 22:30:47 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,13 @@ private:
 
 	void		isAlreadyKnown(std::list<Node*> *lst);
 	void		for_each_neighbor(Node *curr, std::list<Node*> neighbors);
-	Node							*swapMap(int, int, int, int);
+//	Node							*swapMap(int, int, int, int);
+	Node							*swapMap(int src, int dest);
 	std::list<Node *>	getNeighbor();
 	void							createNeighbor(std::list<Node *> &lst,
 																						int i,
-																						int j);
+																						int j,
+																						int pos);
 
 public:
 	AStar(Node const &start, Node const &goal, IHeuristic const &h);

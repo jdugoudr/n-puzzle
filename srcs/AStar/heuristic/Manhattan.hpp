@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:48:15 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/11 18:43:30 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 22:29:06 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Manhattan : public IHeuristic{
 private:
 	std::string				_name;
 
-	int								calculDiff(Case &curr, Case &goal) const;
+//	int								calculDiff(int curr, int goal) const;
 
 public:
 	Manhattan();

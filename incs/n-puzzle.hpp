@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:13:48 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 19:16:57 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:00:27 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,15 @@
 # include <array>
 # include <algorithm>
 
+typedef struct	s_coord{
+	int						col;
+	int						lin;
+}								t_coord;
+
 Node			*get_node_from_file(std::string filename);
 Node			*generate_start_node(void);
-Node			*create_start_node(std::vector<std::vector<int>> splitted, int size);
+Node			*create_start_node(std::vector<int> splitted, int size);
+//Node			*create_start_node(std::vector<std::vector<int>> splitted, int size);
 Node			*create_end_node(int size);
 
 #endif

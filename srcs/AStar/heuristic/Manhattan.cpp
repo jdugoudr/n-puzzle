@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/11 22:07:43 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 22:30:02 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,48 +33,35 @@ Manhattan::~Manhattan()
 int		Manhattan::calculate(Node const &current, Node const &goal) const
 {
 	int	coast = 0;
+	int	size = goal.getMapSize();
 
-	std::vector<std::vector<Case*>> cit = current.getMap();
+	std::vector<int> map = current.getMap();
+	std::vector<int> gmap = goal.getMap();
 
-	for (auto git: goal.getMap())
+	for (int pos = 0 ;
+					pos < size * size ;
+					pos++)
 	{
-		for (auto git2: git)
+		if (map[pos] == 0)
+			continue ;
+		for (int gpos = 0 ;
+						gpos < size * size ;
+						gpos++)
 		{
-			if (git2->getValue() == 0)
-				continue ;
-			for (int i = 0; i < current.getMapSize() ;i++)
+			if (map[pos] == gmap[gpos])
 			{
-				auto it = find_if_mix((cit[i]).begin(), (cit[i]).end(),
-										git2, Case::compare_ptr);
-				if (it != (cit[i]).end())
-				{
-					coast += calculDiff(*(*it), *git2);
-					break ;
-				}
+				coast += pos > gpos ? pos - gpos : gpos - pos;
+				break ;
 			}
 		}
 	}
 	return coast;
 }
 
-int		Manhattan::calculDiff(Case &curr, Case &goal) const
-{
-	int	x1, x2, y1, y2;
-	int	diff = 0;
-
-	x1 = curr.getPosX();
-	x2 = goal.getPosX();
-	y1 = curr.getPosY();
-	y2 = goal.getPosY();
-
-
-	diff += x1 > x2 ? x1 - x2 : x2 - x1;
-//	std::cout << curr << x1 << x2 << " = " << diff << std::endl;
-	diff += y1 > y2 ? y1 - y2 : y2 - y1;
-//	std::cout << curr << x1 << x2 << " = " << diff << std::endl;
-
-	return diff;
-}
+//int		Manhattan::calculDiff(int curr, int goal) const
+//{
+//	return curr > goal ? curr - goal : goal - curr;
+//}
 
 std::string	const	Manhattan::getName() const
 {
