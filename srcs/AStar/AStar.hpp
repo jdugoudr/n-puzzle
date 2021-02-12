@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 22:30:47 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:36:49 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 # define ASTAR_HPP
 
 #include "Node.hpp"
-#include "Case.hpp"
 #include "IHeuristic.hpp"
 #include "p_queue_custom.hpp"
 #include <list>
-//#include <forward_list>
 #include <iostream>
 
 class AStar{

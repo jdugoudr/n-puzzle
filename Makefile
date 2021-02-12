@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/12 22:42:48 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/12 23:35:08 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,8 +62,6 @@ INCLUDES	= n-puzzle.hpp \
 						Manhattan.hpp \
 						AStar.hpp \
 						p_queue_custom.hpp
-#						find_if_mix.hpp
-#						Case.hpp
 
 TEST_UNARY=	case \
 					 	node \

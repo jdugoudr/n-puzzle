@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 22:41:59 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:34:42 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,10 @@ AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
 	(void)_h;
 }
 
-//Node			*AStar::swapMap(int csrc, int lsrc, int cdest, int ldest)
 Node			*AStar::swapMap(int src, int dest)
 {
 	Node	*neighbor = new Node(*_curr);
 
-//	neighbor->swap((csrc * _size) + lsrc, (cdest * _size) + ldest);
 	neighbor->swap(src, dest);
 	neighbor->setCostSoFar(neighbor->getCostSoFar() + 1);
 
@@ -54,16 +52,12 @@ void									AStar::createNeighbor(std::list<Node*> &lst,
 {
 	if (j + 1 < _size)
 		lst.push_front(swapMap(pos, pos + 1));
-	//	lst.push_front(swapMap(i, j, i, j+1));
 	if (j > 0)
 		lst.push_front(swapMap(pos, pos - 1));
-	//	lst.push_front(swapMap(i, j, i, j-1));
 	if (i > 0)
 		lst.push_front(swapMap(pos, pos - _size));
-	//	lst.push_front(swapMap(i, j, i-1, j));
 	if (i + 1 < _size)
 		lst.push_front(swapMap(pos, pos + _size));
-	//	lst.push_front(swapMap(i, j, i+1, j));
 
 	return ;
 }
@@ -72,7 +66,6 @@ std::list<Node *>					AStar::getNeighbor()
 {
 	std::list<Node*> lst;
 
-//	std::vector<int>	const map = _curr->getMap();
 	int	posZero = _curr->getEmpty();
 	createNeighbor(lst, posZero / _size, posZero % _size, posZero);
 	//	isAlreadyKnown(&lst);
@@ -145,13 +138,12 @@ void							AStar::run()
 	while (!_openList.empty())
 	{
 		_curr = _openList.top();
-//		std::cout << *_curr << std::endl;
 		if (*_curr == _goal)
 		{
 			std::cout << "You got it !!!" << std::endl;
 std::cout <<"==============================" << std::endl;
 			std::cout << *_curr;
-//			std::cout << _goal;
+
 			return ;
 		}
 		_openList.pop();

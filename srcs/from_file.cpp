@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/12 22:45:40 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 23:00:04 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:32:53 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ std::vector<int>					split_stoi(std::string line)
 	return (vec);
 }
 
-//std::vector<std::vector<int>>		parse_file(std::string filename, unsigned long &size)
 std::vector<int>		parse_file(std::string filename, unsigned long &size)
 {
 	std::ifstream					ifs(filename);
@@ -37,8 +36,7 @@ std::vector<int>		parse_file(std::string filename, unsigned long &size)
 	std::string						line;
 	std::size_t						found;
 	std::vector<int>			split_vec;
-//	std::vector<std::vector<int>>	split_vec;
-	std::vector<int>				splitted;
+	std::vector<int>			splitted;
 
 	if (!ifs.is_open())
 		throw ("Failed to open file");
@@ -72,40 +70,27 @@ std::vector<int>		parse_file(std::string filename, unsigned long &size)
 				if (splitted.size() != size)
 					throw ("Input file format error: wronged-sized line");
 				split_vec.insert(split_vec.end(), splitted.begin(), splitted.end());
-			//	split_vec.push_back(splitted);
 			}
 		}
 	}
 
 	if (split_vec.size() != size * size)
-//	if (split_vec.size() > size)
 		throw ("Input file format error: wrong-sized map");
 
 	return (split_vec);
 }
 
-//int				check_if_valid(std::vector<std::vector<int>> puzzle_vec, const int size)
 int				check_if_valid(std::vector<int> puzzle_vec, const int size)
 {
-//	int			i = 0;
 	int			size_array = size * size;
-//	int			array[size_array];
 
-//	for (auto &it: puzzle_vec)
-//	{
-//		for (auto &it2: it)
-//			array[i++] = it2;
-//	}
-//	std::sort(array, array + size_array);
 	std::sort(puzzle_vec.begin(), puzzle_vec.end());
 
-//	if (array[0] != 0 || array[size_array - 1] != size_array - 1)
 	if (puzzle_vec[0] != 0 || puzzle_vec[size_array - 1] != size_array - 1)
 		throw ("Invalid puzzle. Check for missing or duplicate numbers.");
 
 	for (int i = 0; i < size_array - 1; i++)
 	{
-//		if (array[i] != array[i + 1] - 1)
 		if (puzzle_vec[i] != puzzle_vec[i + 1] - 1)
 			throw ("Invalid puzzle. Check for missing or duplicate numbers.");
 	}
@@ -116,7 +101,6 @@ int				check_if_valid(std::vector<int> puzzle_vec, const int size)
 Node			*get_node_from_file(std::string filename)
 {
 	Node							*start_node = NULL;
-//	std::vector<std::vector<int>>	puzzle_vec;
 	std::vector<int>	puzzle_vec;
 	unsigned long 		size = 0;
 
