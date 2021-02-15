@@ -12,8 +12,8 @@
 
 #include "n-puzzle.hpp"
 
-Node			*generate_start_node(void)
+Node			*generate_start_node(Puzzle *puzzle)
 {
-	std::cout << "We have to generate a puzzle ourselves here" << std::endl;	
+	std::cout << "We have to generate a puzzle of size " << puzzle->getMapSize() << std::endl;	
 	return (NULL);
 }

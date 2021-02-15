@@ -31,11 +31,14 @@ private:
 	int										_mapSize;
 	int										_numberOfStates;	// complexity in size
 	int										_numberOfMoves;
+	std::string								_filename;
+	bool									_solvabilityCheck;
 
 	IHeuristic								*createHeuristic(std::string heuristic_name);
 
 public:
-	Puzzle(std::string heuristic);
+	//Puzzle(std::string heuristic);
+	Puzzle();
 	virtual ~Puzzle();
 
 	IHeuristic const		*getHeuristic() const;
@@ -46,7 +49,10 @@ public:
 	std::list<Node *>		getClosedList() const;
 	int						getNumberOfStates() const;
 	int						getNumberOfMoves() const;
+	std::string				getFilename() const;
+	bool					getSolvabilityCheck() const;
 
+	void					setHeuristic(std::string heuristic_name);
 	void					setStartNode(Node *node);
 	void					setEndNode(Node *node);
 	void					setMapSize(int size);
@@ -54,7 +60,9 @@ public:
 	void					setClosedList(std::list<Node *> closed_list);
 	void					setNumberOfStates(int nb);
 	void					setNumberOfMoves(int nb);
+	void					setFilename(std::string filename);
 
+	void					disableSolvabilityCheck();
 	bool					isSolvable(void) const;
 };
 

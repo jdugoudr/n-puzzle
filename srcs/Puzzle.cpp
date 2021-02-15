@@ -17,16 +17,23 @@ using namespace	std;
 
 static IHeuristic		*createManhattanHeuristic();
 
+Puzzle::Puzzle():
+	_numberOfStates(0),
+	_numberOfMoves(0),
+	_solvabilityCheck(1)
+{
+}
+
 Puzzle::~Puzzle()
 {
 }
 
-Puzzle::Puzzle(std::string heuristic_name):
+/*Puzzle::Puzzle(std::string heuristic_name):
 	_numberOfStates(0),
 	_numberOfMoves(0)
 {
 	_heuristic = createHeuristic(heuristic_name);
-}
+}*/
 
 IHeuristic const									*Puzzle::getHeuristic() const
 {
@@ -58,8 +65,41 @@ int													Puzzle::getNumberOfMoves() const
 	return _numberOfMoves;
 }
 
+std::string											Puzzle::getFilename() const
+{
+	return _filename;
+}
+
+bool												Puzzle::getSolvabilityCheck() const
+{
+	return _solvabilityCheck;
+}
 
 
+
+
+
+static IHeuristic									*createManhattanHeuristic()
+{
+	return (new Manhattan);
+}
+
+void												Puzzle::setHeuristic(std::string heuristic_name)
+{
+	typedef IHeuristic *(*func)();
+	typedef struct {std::string name; func heuristic_func;} HeurCreateType;
+
+	HeurCreateType			array[1] =
+	{
+		{"Manhattan", &createManhattanHeuristic}
+	};
+
+	for (auto &it: array)
+	{
+		if (!it.name.compare(heuristic_name))
+			_heuristic = it.heuristic_func();
+	}
+}
 
 void												Puzzle::setStartNode(Node *node)
 {
@@ -86,33 +126,18 @@ void												Puzzle::setNumberOfMoves(int nb)
 	_numberOfMoves = nb;
 }
 
-
-
-IHeuristic											*Puzzle::createHeuristic(std::string heuristic_name)
+void												Puzzle::setFilename(std::string filename)
 {
-	typedef IHeuristic *(*func)();
-	typedef struct {std::string name; func heuristic_func;} HeurCreateType;
-
-	HeurCreateType			array[1] =
-	{
-		{"Manhattan", &createManhattanHeuristic}
-	};
-
-	IHeuristic		*ret;
-
-	for (auto &it : array)
-	{
-		if (!it.name.compare(heuristic_name))
-			ret = it.heuristic_func();
-	}
-
-	return (ret);
+	_filename = filename;
 }
 
-static IHeuristic									*createManhattanHeuristic()
+void												Puzzle::disableSolvabilityCheck(void)
 {
-	return (new Manhattan);
+	_solvabilityCheck = 0;
 }
+
+
+
 
 static int											countInversions(std::vector<int> map, int size)
 {
