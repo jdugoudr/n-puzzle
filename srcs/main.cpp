@@ -25,9 +25,8 @@ static int				usage(int ret)
 	std::cout << std::endl;	
 	std::cout << "usage: " << std::endl;
 	std::cout << "   n-puzzle -h                 - print this help" << std::endl;
-	std::cout << "   n-puzzle -g [size]          - generate a random puzzle with given size" << std::endl;
-	std::cout << "                      -s       - randomly generated puzzle must be solvable" << std::endl;
-	std::cout << "                      -u       - randomly generated puzzle must be unsolvable" << std::endl;
+	std::cout << "   n-puzzle -g [size]          - generate a solvable random puzzle with given size" << std::endl;
+	std::cout << "                      -u       - randomly generated puzzle must be unsolvable (optionnal)" << std::endl;
 	std::cout << "   n-puzzle -f [file]          - use puzzle from file" << std::endl;
 	std::cout << "                      -n       - do not check if puzzle is solvable (optionnal)" << std::endl;
 	std::cout << std::endl;	
@@ -62,7 +61,7 @@ static std::string		choose_heuristic(void)
 
 static int				parse_arguments(int ac, char **av, Puzzle *puzzle)
 {
-    int 			opt, mask = 0;
+    int 			opt;
 
 	if (ac == 1)
 	{
@@ -70,7 +69,7 @@ static int				parse_arguments(int ac, char **av, Puzzle *puzzle)
 		exit (usage(0));
 	}
 
-    while ((opt = getopt(ac, av, "hf:g:usn")) != -1)
+    while ((opt = getopt(ac, av, "hf:g:un")) != -1)
 	{
         switch (opt)
         {
@@ -81,40 +80,33 @@ static int				parse_arguments(int ac, char **av, Puzzle *puzzle)
 			}
             case 'f':
 			{
-				if (mask & GENERATE_PUZZLE)
+				if (puzzle->getMapSize())
 					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
-				mask = mask | PUZZLE_FROM_FILE;
+				if (std::string(optarg).empty())
+					throw (invalid_argument("Wrong or missing argument"));
 				puzzle->setFilename(optarg);
 				break;
 			}
             case 'g':
 			{
-				if (mask & PUZZLE_FROM_FILE)
+				if (!puzzle->getFilename().empty())
 					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
-				mask = mask | GENERATE_PUZZLE;
 				puzzle->setMapSize(atoi(optarg));
 				break;
 			}
             case 'u':
 			{
-				if (mask & GENERATE_SOLVABLE)
-					return (usage(1));
-				mask = mask | GENERATE_UNSOLVABLE;
-				break;
-			}
-            case 's':
-			{
-				if (mask & GENERATE_UNSOLVABLE)
-					return (usage(1));
-				mask = mask | GENERATE_SOLVABLE;
+				if (!puzzle->getFilename().empty())
+					throw (invalid_argument("Incompatible arguments"));
+				puzzle->setMustBeSolvable(0);
+				puzzle->setSolvabilityCheck(0);
 				break;
 			}
             case 'n':
 			{
-				if (mask & GENERATE_PUZZLE)
-					return (usage(1));
-				mask = mask | DISABLE_SOLVABILITY_CHECK;
-				puzzle->disableSolvabilityCheck();
+				if (puzzle->getMapSize())
+					throw (invalid_argument("Incompatible arguments"));
+				puzzle->setSolvabilityCheck(0);
 				break;
 			}
 			case '?':
@@ -122,18 +114,12 @@ static int				parse_arguments(int ac, char **av, Puzzle *puzzle)
         }
 	}
 
-	if (mask & GENERATE_PUZZLE && !(mask & GENERATE_SOLVABLE || mask & GENERATE_UNSOLVABLE))
-		throw (invalid_argument("You must specify -u or -s when generating a puzzle"));
-
-	if (mask & GENERATE_PUZZLE && !puzzle->getMapSize())
-		throw (invalid_argument("You must specify a puzzle size"));
-
-	if (mask & GENERATE_PUZZLE && (puzzle->getMapSize() < MAP_MIN_SIZE
-				|| puzzle->getMapSize() > MAP_MAX_SIZE))
-		throw (invalid_argument("Wrong puzzle size"));
-
 	if (optind < ac)
 		throw (invalid_argument("Wrong argument"));
+	else if (puzzle->getFilename().empty() && !puzzle->getMapSize())
+		throw (invalid_argument("You must specify a puzzle size"));
+	else if (puzzle->getMapSize() < MAP_MIN_SIZE || puzzle->getMapSize() > MAP_MAX_SIZE)
+		throw (invalid_argument("Wrong puzzle size"));
 
 	return (0);
 }

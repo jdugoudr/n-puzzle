@@ -20,7 +20,8 @@ static IHeuristic		*createManhattanHeuristic();
 Puzzle::Puzzle():
 	_numberOfStates(0),
 	_numberOfMoves(0),
-	_solvabilityCheck(1)
+	_solvabilityCheck(1),
+	_mustBeSolvable(1)
 {
 }
 
@@ -74,6 +75,12 @@ bool												Puzzle::getSolvabilityCheck() const
 {
 	return _solvabilityCheck;
 }
+
+bool												Puzzle::getMustBeSolvable() const
+{
+	return _mustBeSolvable;
+}
+
 
 
 
@@ -131,10 +138,16 @@ void												Puzzle::setFilename(std::string filename)
 	_filename = filename;
 }
 
-void												Puzzle::disableSolvabilityCheck(void)
+void												Puzzle::setSolvabilityCheck(bool state)
 {
-	_solvabilityCheck = 0;
+	_solvabilityCheck = state;
 }
+
+void												Puzzle::setMustBeSolvable(bool state)
+{
+	_mustBeSolvable = state;
+}
+
 
 
 

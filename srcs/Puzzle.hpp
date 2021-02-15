@@ -31,8 +31,10 @@ private:
 	int										_mapSize;
 	int										_numberOfStates;	// complexity in size
 	int										_numberOfMoves;
+
 	std::string								_filename;
 	bool									_solvabilityCheck;
+	bool									_mustBeSolvable;		// 0 = generate unsolvable map 
 
 	IHeuristic								*createHeuristic(std::string heuristic_name);
 
@@ -51,6 +53,7 @@ public:
 	int						getNumberOfMoves() const;
 	std::string				getFilename() const;
 	bool					getSolvabilityCheck() const;
+	bool					getMustBeSolvable() const;
 
 	void					setHeuristic(std::string heuristic_name);
 	void					setStartNode(Node *node);
@@ -61,8 +64,9 @@ public:
 	void					setNumberOfStates(int nb);
 	void					setNumberOfMoves(int nb);
 	void					setFilename(std::string filename);
+	void					setSolvabilityCheck(bool state);
+	void					setMustBeSolvable(bool state);
 
-	void					disableSolvabilityCheck();
 	bool					isSolvable(void) const;
 };
 

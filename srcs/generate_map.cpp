@@ -14,6 +14,11 @@
 
 Node			*generate_start_node(Puzzle *puzzle)
 {
-	std::cout << "We have to generate a puzzle of size " << puzzle->getMapSize() << std::endl;	
+	std::cout << "We have to generate a ";
+	if (puzzle->getMustBeSolvable())
+		std::cout << "solvable ";
+	else
+		std::cout << "unsolvable ";
+	std::cout << "puzzle of size " << puzzle->getMapSize() << std::endl;	
 	return (NULL);
 }
