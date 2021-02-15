@@ -6,11 +6,12 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 23:34:42 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 17:15:55 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AStar.hpp"
+#include "find_if_mix.hpp"
 #include <iostream>
 
 AStar::~AStar()
@@ -35,7 +36,7 @@ Node			*AStar::swapMap(int src, int dest)
 	Node	*neighbor = new Node(*_curr);
 
 	neighbor->swap(src, dest);
-	neighbor->setCostSoFar(neighbor->getCostSoFar() + 1);
+	neighbor->setCostSoFar(_curr->getCostSoFar() + 1);
 
 	return neighbor;	
 }
@@ -45,7 +46,12 @@ void display(Node *el)
 	std::cout << *el << std::endl;
 }
 
-void									AStar::createNeighbor(std::list<Node*> &lst,
+bool find_in_queue(Node *el, Node *toFind)
+{
+	return *el == *toFind;
+}
+
+void							AStar::createNeighbor(std::list<Node*> &lst,
 																						int i,
 																						int j,
 																						int pos)
@@ -77,32 +83,30 @@ void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
 	std::list<Node*>::iterator	it = neighbors.begin();
 	std::list<Node*>::iterator	ite = neighbors.end();
 
-	(*it)->setCostToReach(_h.calculate(**it, _goal));
 	while (it != ite)
 	{
 		(void)curr;
 		//int	tentative_score = curr->getCostSoFar() + 1;
 		//need to check if neighbor is in openLst and if tentative_score is better than the one record.
 		p_queue_custom<Node*>::iterator	itOld;
-		if ((itOld = std::find(_openList.begin(), _openList.end(), *it)) != _openList.end())
+		if ((itOld = find_if_mix(_openList.begin(), _openList.end(), *it, find_in_queue)) != _openList.end())
 		{
 			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
 			{
-				std::cout << "est ce qu'on reach ici ?" << std::endl;
 				(*itOld)->setCostSoFar((*it)->getCostSoFar());
 				(*itOld)->setComeFrom(_curr);
 			}
 		}
-		else if ((itOld = std::find(_closedList.begin(), _closedList.end(), *it)) != _closedList.end())
+		else if ((itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, find_in_queue)) != _closedList.end())
 		{
 			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
 			{
-				std::cout << "on est deja dans closed list" << std::endl;
 				_openList.push_uniq(*it);
 			}
 		}
 		else
 		{
+			(*it)->setCostToReach(_h.calculate(**it, _goal));
 			_openList.push_uniq(*it);
 		}
 		it++;
@@ -116,7 +120,7 @@ void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
 //	std::cout << "============================" << std::endl;
 //		std::cout << "==\tClosed\t==" << std::endl;
 //	for_each(_closedList.begin(), _closedList.end(), display);
-////	if (c == 'd')
+//	if (c == 'd')
 //	{
 //		std::cout << "====================" << std::endl;
 //		std::cout << "==\tChildren\t==" << std::endl;

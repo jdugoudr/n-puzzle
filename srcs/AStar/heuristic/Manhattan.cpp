@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 23:37:05 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 16:39:25 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,15 @@ int		Manhattan::calculate(Node const &current, Node const &goal) const
 		{
 			if (map[pos] == gmap[gpos])
 			{
-				coast += pos > gpos ? pos - gpos : gpos - pos;
+				int valAbsolute = pos > gpos ? pos-gpos : gpos-pos;
+				coast += valAbsolute / size + valAbsolute % size;
+//				std::cout << "Pour : " << map[pos] 
+//									<< " Abs : " << valAbsolute 
+//									<< " div : " << valAbsolute / size 
+//									<< " modulo : " << valAbsolute % size
+//									<< " distance : "
+//									<< valAbsolute / size + valAbsolute % size
+//									<< std::endl;
 				break ;
 			}
 		}
