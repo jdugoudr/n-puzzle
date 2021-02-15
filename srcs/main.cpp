@@ -84,6 +84,14 @@ int	main(int ac, char **av)
 	std::cout << "END NODE:" << std::endl;
 	std::cout << *(puzzle->getEndNode()) << std::endl;
 
+	if (/*user did not ask to ignore solvability check && */!puzzle->isSolvable())
+	{
+		std::cout << "Puzzle is not solvable." << std::endl;
+		delete puzzle;
+		return (0);
+	}
+
+
 	// algo
 	AStar	star(*puzzle->getStartNode(),
 								*puzzle->getEndNode(),

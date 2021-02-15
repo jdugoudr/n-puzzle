@@ -54,6 +54,8 @@ public:
 	void					setClosedList(std::list<Node *> closed_list);
 	void					setNumberOfStates(int nb);
 	void					setNumberOfMoves(int nb);
+
+	bool					isSolvable(void) const;
 };
 
 #endif

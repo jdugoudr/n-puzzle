@@ -113,3 +113,36 @@ static IHeuristic									*createManhattanHeuristic()
 {
 	return (new Manhattan);
 }
+
+static int											countInversions(std::vector<int> map, int size)
+{
+	int		inversions = 0;
+
+	for (int i = 0; i < (size * size - 1); i++)
+	{
+		for (int j = i + 1; j < (size * size); j++)
+		{
+			if (map[i] && map[j] && map[i] > map[j])
+				inversions++;
+		}
+	}
+
+	return (inversions);
+}
+
+bool												Puzzle::isSolvable(void) const
+{
+	if (!this->_startNode || !this->_endNode)
+		return (0);
+
+	int start_inversions = countInversions(this->_startNode->getMap(), this->_mapSize);
+	int end_inversions = countInversions(this->_endNode->getMap(), this->_mapSize);
+
+	if (this->_mapSize % 2 == 0)
+	{
+		start_inversions += (this->_startNode->getEmpty() / this->_mapSize);
+		end_inversions += (this->_endNode->getEmpty() / this->_mapSize);
+	}
+
+	return (start_inversions % 2 == end_inversions % 2);
+}
