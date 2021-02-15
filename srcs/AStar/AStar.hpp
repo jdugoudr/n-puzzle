@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 19:46:22 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 20:37:27 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "Node.hpp"
 #include "IHeuristic.hpp"
 #include "p_queue_custom.hpp"
-#include <forward_list>
 #include <list>
 #include <iostream>
 
@@ -29,12 +28,13 @@ private:
 	IHeuristic const					&_h;
 	Node											*_curr;
 	p_queue_custom<Node *>		_openList;
-//	std::forward_list<Node *>	_closedList;
-	p_queue_custom<Node *>	_closedList;
+	std::list<Node *>					_closedList;
 
 	void							for_each_neighbor(std::list<Node*> neighbors);
 	Node							*swapMap(int src, int dest);
 	std::list<Node *>	getNeighbor();
+	bool							is_in_open(std::list<Node*>::iterator &it);
+	bool							is_in_closed(std::list<Node*>::iterator &it);
 
 	void							debug(std::list<Node*> neighbors) const;
 
@@ -46,6 +46,7 @@ public:
 	std::list<Node*>	getPath() const;
 	Node const				*getCurrent() const;
 	
+	static void				erase(Node *el);
 
 	class NoSolution: public std::exception{
 		public:

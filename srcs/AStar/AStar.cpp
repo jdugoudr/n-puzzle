@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 19:46:09 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 21:10:34 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 
 AStar::~AStar()
 {
+	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase);
+	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
+	while (_closedList.size() > 0)
+		_closedList.pop_front();
+//	while (_openList.size() > 0)
+//		_openList.pop();
 }
 
 AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
@@ -25,7 +31,7 @@ AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
 																				_h(h),
 																				_curr(nullptr),
 																				_openList(Node::comp),
-																				_closedList(Node::comp)
+																				_closedList()
 {
 }
 
@@ -62,7 +68,7 @@ std::cout <<"==============================" << std::endl;
 			return ;
 		}
 		_openList.pop();
-		_closedList.push_uniq(_curr);
+		_closedList.push_front(_curr);
 		std::list<Node*> neighbors = getNeighbor();
 		for_each_neighbor(getNeighbor());
 	}
@@ -78,35 +84,56 @@ void							AStar::for_each_neighbor(std::list<Node*> neighbors)
 
 	while (it != ite)
 	{
-		p_queue_custom<Node*>::iterator	itOld;
-		if ((itOld = find_if_mix(_openList.begin(), _openList.end(), *it, Node::find_in_queue)) != _openList.end())
+		if (!is_in_open(it))
 		{
-			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+			if (!(is_in_closed(it)))
 			{
-				(*itOld)->setCostSoFar((*it)->getCostSoFar());
-				(*itOld)->setComeFrom(_curr);
-				// Have to re-place itOld at the right new place in openList
-			}
-		}
-		else if ((itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue)) != _closedList.end())
-		{
-			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
-			{
+				(*it)->setCostToReach(_h.calculate(**it, _goal));
 				_openList.push_uniq(*it);
-				//have to remove itOld of closedList
-				//_closedList.erase(itOld);
 			}
-		}
-		else
-		{
-			(*it)->setCostToReach(_h.calculate(**it, _goal));
-			_openList.push_uniq(*it);
 		}
 		it++;
 	}
 	
-	//debug(neighbors);
+//	debug(neighbors);
 	
+}
+
+bool							AStar::is_in_open(std::list<Node*>::iterator &it)
+{
+	p_queue_custom<Node*>::iterator	itOld;
+
+	itOld = find_if_mix(_openList.begin(), _openList.end(), *it, Node::find_in_queue);
+	if (itOld != _openList.end())
+	{
+		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+		{
+			(*itOld)->setCostSoFar((*it)->getCostSoFar());
+			(*itOld)->setComeFrom(_curr);
+			// Have to re-place itOld at the right new place in openList
+		}
+		return true;
+	}
+	return false;
+}
+
+bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
+{
+	std::list<Node*>::iterator itOld;
+
+	itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue);
+	if (itOld != _closedList.end())
+	{
+		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+		{
+			_openList.push_uniq(*it);
+			//have to remove itOld of closedList
+			delete *itOld;
+			_closedList.erase(itOld);
+		}
+		return true;
+	}
+	return false;
 }
 
 std::list<Node *>					AStar::getNeighbor()
@@ -142,6 +169,11 @@ std::list<Node*>	AStar::getPath() const
 Node const	*AStar::getCurrent() const
 {
 	return _curr;
+}
+
+void				AStar::erase(Node *el)
+{
+	delete el;
 }
 
 void				AStar::debug(std::list<Node*> neighbors) const
