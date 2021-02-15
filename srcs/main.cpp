@@ -168,7 +168,7 @@ int						main(int ac, char **av)
 	if (start_node == NULL)
 	{
 		delete puzzle;
-		return (usage(1));
+		return (1);
 	}
 
 	puzzle->setStartNode(start_node);

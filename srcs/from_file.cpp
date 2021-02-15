@@ -31,10 +31,10 @@ std::vector<int>					split_stoi(std::string line)
 
 std::vector<int>		parse_file(std::string filename, unsigned long &size)
 {
-	std::ifstream					ifs(filename);
-	std::string						str;
-	std::string						line;
-	std::size_t						found;
+	std::ifstream				ifs(filename);
+	std::string					str;
+	std::string					line;
+	std::size_t					found;
 	std::vector<int>			split_vec;
 	std::vector<int>			splitted;
 
@@ -74,6 +74,9 @@ std::vector<int>		parse_file(std::string filename, unsigned long &size)
 		}
 	}
 
+	if (split_vec.empty())
+		throw ("Empty file");
+
 	if (split_vec.size() != size * size)
 		throw ("Input file format error: wrong-sized map");
 
@@ -111,7 +114,7 @@ Node			*get_node_from_file(std::string filename)
 	}
 	catch (const char *msg)
 	{
-		std::cerr << msg << std::endl;	
+		std::cerr << "Error: " << msg << std::endl;	
 		return (NULL);
 	}
 
