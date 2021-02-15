@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 22:21:07 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 00:31:18 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ Node			*AStar::swapMap(int src, int dest)
 
 	neighbor->swap(src, dest);
 	neighbor->setCostSoFar(_curr->getCostSoFar() + 1);
+	neighbor->setCostToReach(_h.calculate(*neighbor, _goal));
 
 	return neighbor;	
 }
@@ -83,17 +84,20 @@ void							AStar::for_each_neighbor(std::list<Node*> neighbors)
 {
 	std::list<Node*>::iterator	it = neighbors.begin();
 	std::list<Node*>::iterator	ite = neighbors.end();
+	p_queue_custom<Node*>::iterator	itPos;
 
 	while (it != ite)
 	{
-		if (is_in_open(it))
+		if (!is_in_closed(it))
 		{
-			delete *it;
-		}
-		else if (!is_in_closed(it))
-		{
-			(*it)->setCostToReach(_h.calculate(**it, _goal));
-			_openList.push_uniq(*it);
+			if (is_in_open(it, itPos))
+			{
+				delete *it;
+			}
+			else
+			{
+				_openList.insert(itPos, *it);
+			}
 		}
 		it++;
 	}
@@ -102,17 +106,23 @@ void							AStar::for_each_neighbor(std::list<Node*> neighbors)
 	
 }
 
-bool							AStar::is_in_open(std::list<Node*>::iterator &it)
+/*
+ * If it element is already in openList
+ * 	itPos is set to this position and return true
+ * 
+ * If it element is not in openList
+ *  itPos is set to the iterator just after the position it should be insert,
+ *  to use insert list function.
+*/
+bool							AStar::is_in_open(std::list<Node*>::iterator &it, p_queue_custom<Node*>::iterator	&itPos)
 {
-	p_queue_custom<Node*>::iterator	itOld;
-
-	itOld = find_if_mix(_openList.begin(), _openList.end(), *it, Node::find_in_queue);
-	if (itOld != _openList.end())
+	bool res = _openList.try_insert(*it, itPos);
+	if (!res)
 	{
-		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+		if ((*it)->getCostSoFar() < (*itPos)->getCostSoFar())
 		{
-			(*itOld)->setCostSoFar((*it)->getCostSoFar());
-			(*itOld)->setComeFrom(_curr);
+			(*itPos)->setCostSoFar((*it)->getCostSoFar());
+			(*itPos)->setComeFrom(_curr);
 			// Have to re-place itOld at the right new place in openList
 		}
 		return true;
@@ -130,7 +140,6 @@ bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
 		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
 		{
 			_openList.push_uniq(*it);
-			//have to remove itOld of closedList
 			delete *itOld;
 			_closedList.erase(itOld);
 		}
@@ -183,6 +192,7 @@ void				AStar::erase(Node *el)
 
 void				AStar::debug(std::list<Node*> neighbors) const
 {
+	(void)neighbors;
 //	std:: cout << *_curr->getEmpty() << std::endl;
 	std::cout << *_curr;
 //	std::cout << "============================" << std::endl;
@@ -191,10 +201,6 @@ void				AStar::debug(std::list<Node*> neighbors) const
 	std::cout << "============================" << std::endl;
 //		std::cout << "==\tClosed\t==" << std::endl;
 //	for_each(_closedList.begin(), _closedList.end(), display);
-	std::cout << "====================" << std::endl;
-	std::cout << "==\tChildren\t==" << std::endl;
-	for_each(neighbors.begin(), neighbors.end(), display);
-	std::cout << "====================" << std::endl;
 	char c;
 	std::cin >> c;
 }

@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 21:53:20 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 23:38:11 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,23 @@ public:
 //																bool (*)(T,T)>::c.end();
 //	}
 
+	bool	try_insert(const T &val, iterator &pos) {
+		iterator	it;
+		iterator	end = this->end();
+
+		pos = end;
+		for (it = this->begin() ; it != end ; it++)
+		{
+			if (pos == end && comp(val, *it))
+				pos = it;
+			if (*it == val)
+			{
+				pos = it;
+				return false;
+			}
+		}
+		return true;
+	}
 
 	void		push_uniq(const T& val){
 		iterator	it;
