@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 21:10:50 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 21:53:20 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,44 +14,63 @@
 # define P_QUEUE_CUSTOM_HPP
 
 #include "Node.hpp"
-#include <queue>
+#include <list>
 #include <algorithm>
 #include <iostream>
 
 template<typename T>
-class p_queue_custom: public std::priority_queue<T, std::vector<T>, bool (*)(T,T)>{
+class p_queue_custom: public std::list<T>{
 
 private:
+	bool	(*comp)(T,T);
 
 public:
-	p_queue_custom<T>(bool (*f)(T,T)):std::priority_queue<T, std::vector<T>, bool (*)(T,T)>(f){}
+	p_queue_custom<T>(bool (*f)(T,T)):std::list<T>()
+	{
+		comp = f;
+	}
 	virtual ~p_queue_custom(){}
 
 
-	typedef typename std::priority_queue<T, std::vector<T>, bool (*)(T,T)>::container_type::iterator	iterator;
-
-	iterator	begin(){
-		return std::priority_queue<T,
-					 											std::vector<T>,
-																bool (*)(T,T)>::c.begin();
-	}
-	iterator	end(){
-		return std::priority_queue<T,
-					 											std::vector<T>,
-																bool (*)(T,T)>::c.end();
-	}
+	typedef typename std::list<T>::iterator	iterator;
+//
+//	iterator	begin(){
+//		return std::priority_queue<T,
+//					 											std::vector<T>,
+//																bool (*)(T,T)>::c.begin();
+//	}
+//	iterator	end(){
+//		return std::priority_queue<T,
+//					 											std::vector<T>,
+//																bool (*)(T,T)>::c.end();
+//	}
 
 
 	void		push_uniq(const T& val){
 		iterator	it;
+		iterator	position;
 		iterator	end;
 
-		it = this->begin();
 		end = this->end();
-		if (std::find(it, end, val) == end)
-			this->push(val);
+		position = end;
+		for (it = this->begin() ; it != end ; it++)
+		{
+			if (position == end && comp(val, *it))
+				position = it;
+			if (val == *it)
+				return ;
+		}
+		this->insert(position, val);
 
 		return ;
+	}
+
+	void		pop(){
+		this->pop_front();
+	}
+
+	T				&top(){
+		return this->front();
 	}
 };
 

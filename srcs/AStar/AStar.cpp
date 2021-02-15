@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 21:10:34 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 22:21:07 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ AStar::~AStar()
 {
 	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase);
 	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
-	while (_closedList.size() > 0)
-		_closedList.pop_front();
+	_closedList.clear();
+	_openList.clear();
+//	while (_closedList.size() > 0)
+//		_closedList.pop_front();
 //	while (_openList.size() > 0)
 //		_openList.pop();
 }
@@ -70,7 +72,7 @@ std::cout <<"==============================" << std::endl;
 		_openList.pop();
 		_closedList.push_front(_curr);
 		std::list<Node*> neighbors = getNeighbor();
-		for_each_neighbor(getNeighbor());
+		for_each_neighbor(neighbors);
 	}
 
 	throw AStar::NoSolution();
@@ -84,18 +86,19 @@ void							AStar::for_each_neighbor(std::list<Node*> neighbors)
 
 	while (it != ite)
 	{
-		if (!is_in_open(it))
+		if (is_in_open(it))
 		{
-			if (!(is_in_closed(it)))
-			{
-				(*it)->setCostToReach(_h.calculate(**it, _goal));
-				_openList.push_uniq(*it);
-			}
+			delete *it;
+		}
+		else if (!is_in_closed(it))
+		{
+			(*it)->setCostToReach(_h.calculate(**it, _goal));
+			_openList.push_uniq(*it);
 		}
 		it++;
 	}
-	
-//	debug(neighbors);
+
+	//debug(neighbors);
 	
 }
 
@@ -131,6 +134,8 @@ bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
 			delete *itOld;
 			_closedList.erase(itOld);
 		}
+		else
+			delete *it;
 		return true;
 	}
 	return false;
@@ -181,9 +186,9 @@ void				AStar::debug(std::list<Node*> neighbors) const
 //	std:: cout << *_curr->getEmpty() << std::endl;
 	std::cout << *_curr;
 //	std::cout << "============================" << std::endl;
-//		std::cout << "==\tOpen\t==" << std::endl;
-//	for_each(_openList.begin(), _openList.end(), display);
-//	std::cout << "============================" << std::endl;
+		std::cout << "==\tOpen\t==" << std::endl;
+	for_each(_openList.begin(), _openList.end(), display);
+	std::cout << "============================" << std::endl;
 //		std::cout << "==\tClosed\t==" << std::endl;
 //	for_each(_closedList.begin(), _closedList.end(), display);
 	std::cout << "====================" << std::endl;
