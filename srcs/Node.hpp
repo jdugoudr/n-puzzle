@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 22:03:16 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 19:13:45 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ public:
 
 	void							swap(size_t src, size_t dest);
 	static bool				comp(Node *a, Node *b);
+	static bool				find_in_queue(Node *el, Node *toFind);
 };
 
 std::ostream	&operator<<(std::ostream &o, Node const &c);

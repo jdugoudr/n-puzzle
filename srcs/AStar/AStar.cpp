@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 17:15:55 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 19:46:09 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
 																				_openList(Node::comp),
 																				_closedList(Node::comp)
 {
-	(void)_goal;
-	(void)_h;
 }
 
 Node			*AStar::swapMap(int src, int dest)
@@ -45,93 +43,6 @@ void display(Node *el)
 {
 	std::cout << *el << std::endl;
 }
-
-bool find_in_queue(Node *el, Node *toFind)
-{
-	return *el == *toFind;
-}
-
-void							AStar::createNeighbor(std::list<Node*> &lst,
-																						int i,
-																						int j,
-																						int pos)
-{
-	if (j + 1 < _size)
-		lst.push_front(swapMap(pos, pos + 1));
-	if (j > 0)
-		lst.push_front(swapMap(pos, pos - 1));
-	if (i > 0)
-		lst.push_front(swapMap(pos, pos - _size));
-	if (i + 1 < _size)
-		lst.push_front(swapMap(pos, pos + _size));
-
-	return ;
-}
-
-std::list<Node *>					AStar::getNeighbor()
-{
-	std::list<Node*> lst;
-
-	int	posZero = _curr->getEmpty();
-	createNeighbor(lst, posZero / _size, posZero % _size, posZero);
-	//	isAlreadyKnown(&lst);
-	return lst;
-}
-
-void							AStar::for_each_neighbor(Node *curr, std::list<Node*> neighbors)
-{
-	std::list<Node*>::iterator	it = neighbors.begin();
-	std::list<Node*>::iterator	ite = neighbors.end();
-
-	while (it != ite)
-	{
-		(void)curr;
-		//int	tentative_score = curr->getCostSoFar() + 1;
-		//need to check if neighbor is in openLst and if tentative_score is better than the one record.
-		p_queue_custom<Node*>::iterator	itOld;
-		if ((itOld = find_if_mix(_openList.begin(), _openList.end(), *it, find_in_queue)) != _openList.end())
-		{
-			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
-			{
-				(*itOld)->setCostSoFar((*it)->getCostSoFar());
-				(*itOld)->setComeFrom(_curr);
-			}
-		}
-		else if ((itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, find_in_queue)) != _closedList.end())
-		{
-			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
-			{
-				_openList.push_uniq(*it);
-			}
-		}
-		else
-		{
-			(*it)->setCostToReach(_h.calculate(**it, _goal));
-			_openList.push_uniq(*it);
-		}
-		it++;
-	}
-
-//	std:: cout << *_curr->getEmpty() << std::endl;
-//	std::cout << *_curr;
-//	std::cout << "============================" << std::endl;
-//		std::cout << "==\tOpen\t==" << std::endl;
-//	for_each(_openList.begin(), _openList.end(), display);
-//	std::cout << "============================" << std::endl;
-//		std::cout << "==\tClosed\t==" << std::endl;
-//	for_each(_closedList.begin(), _closedList.end(), display);
-//	if (c == 'd')
-//	{
-//		std::cout << "====================" << std::endl;
-//		std::cout << "==\tChildren\t==" << std::endl;
-//		for_each(neighbors.begin(), neighbors.end(), display);
-//		std::cout << "====================" << std::endl;
-//	}
-//	char c;
-//	std::cin >> c;
-	
-}
-
 
 void							AStar::run()
 {
@@ -152,12 +63,76 @@ std::cout <<"==============================" << std::endl;
 		}
 		_openList.pop();
 		_closedList.push_uniq(_curr);
-		for_each_neighbor(_curr, getNeighbor());
+		std::list<Node*> neighbors = getNeighbor();
+		for_each_neighbor(getNeighbor());
 	}
 
 	throw AStar::NoSolution();
 	return ;
 }
+
+void							AStar::for_each_neighbor(std::list<Node*> neighbors)
+{
+	std::list<Node*>::iterator	it = neighbors.begin();
+	std::list<Node*>::iterator	ite = neighbors.end();
+
+	while (it != ite)
+	{
+		p_queue_custom<Node*>::iterator	itOld;
+		if ((itOld = find_if_mix(_openList.begin(), _openList.end(), *it, Node::find_in_queue)) != _openList.end())
+		{
+			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+			{
+				(*itOld)->setCostSoFar((*it)->getCostSoFar());
+				(*itOld)->setComeFrom(_curr);
+				// Have to re-place itOld at the right new place in openList
+			}
+		}
+		else if ((itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue)) != _closedList.end())
+		{
+			if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+			{
+				_openList.push_uniq(*it);
+				//have to remove itOld of closedList
+				//_closedList.erase(itOld);
+			}
+		}
+		else
+		{
+			(*it)->setCostToReach(_h.calculate(**it, _goal));
+			_openList.push_uniq(*it);
+		}
+		it++;
+	}
+	
+	//debug(neighbors);
+	
+}
+
+std::list<Node *>					AStar::getNeighbor()
+{
+	std::list<Node*> lst;
+
+	int posZero = _curr->getEmpty();
+	int i = posZero / _size;
+	int j = posZero % _size;
+
+	//Move to right
+	if (j + 1 < _size)
+		lst.push_front(swapMap(posZero, posZero + 1));
+	//Move to left
+	if (j > 0)
+		lst.push_front(swapMap(posZero, posZero - 1));
+	//Move down
+	if (i > 0)
+		lst.push_front(swapMap(posZero, posZero - _size));
+	//Move up
+	if (i + 1 < _size)
+		lst.push_front(swapMap(posZero, posZero + _size));
+
+	return lst;
+}
+
 
 std::list<Node*>	AStar::getPath() const
 {
@@ -169,30 +144,22 @@ Node const	*AStar::getCurrent() const
 	return _curr;
 }
 
-void							AStar::isAlreadyKnown(std::list<Node*> *lst)
+void				AStar::debug(std::list<Node*> neighbors) const
 {
-LOOP:for (Node *curr: *lst)
-		 {
-			for (Node *item: _openList)
-			{
-				if (*item == *curr)
-				{
-					lst->remove(curr);
-					delete curr;
-					goto LOOP;
-				}
-			}
-			for (Node *item: _closedList)
-			{
-				if (*item == *curr)
-				{
-					lst->remove(curr);
-					delete curr;
-					goto LOOP;
-				}
-			}
-		 }
-	return ;
+//	std:: cout << *_curr->getEmpty() << std::endl;
+	std::cout << *_curr;
+//	std::cout << "============================" << std::endl;
+//		std::cout << "==\tOpen\t==" << std::endl;
+//	for_each(_openList.begin(), _openList.end(), display);
+//	std::cout << "============================" << std::endl;
+//		std::cout << "==\tClosed\t==" << std::endl;
+//	for_each(_closedList.begin(), _closedList.end(), display);
+	std::cout << "====================" << std::endl;
+	std::cout << "==\tChildren\t==" << std::endl;
+	for_each(neighbors.begin(), neighbors.end(), display);
+	std::cout << "====================" << std::endl;
+	char c;
+	std::cin >> c;
 }
 
 std::ostream	&operator<<(std::ostream &o, AStar const &c)

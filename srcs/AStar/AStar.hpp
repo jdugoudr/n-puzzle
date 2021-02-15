@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 23:36:49 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 19:46:22 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,27 @@
 #include "Node.hpp"
 #include "IHeuristic.hpp"
 #include "p_queue_custom.hpp"
+#include <forward_list>
 #include <list>
 #include <iostream>
 
 class AStar{
 
 private:
-	int	const								_size;
-	Node const							&_start;
-	Node const							&_goal;
-	IHeuristic const				&_h;
-	Node										*_curr;
-	p_queue_custom<Node *>	_openList;
+	int	const									_size;
+	Node const								&_start;
+	Node const								&_goal;
+	IHeuristic const					&_h;
+	Node											*_curr;
+	p_queue_custom<Node *>		_openList;
+//	std::forward_list<Node *>	_closedList;
 	p_queue_custom<Node *>	_closedList;
 
-	void		isAlreadyKnown(std::list<Node*> *lst);
-	void		for_each_neighbor(Node *curr, std::list<Node*> neighbors);
-//	Node							*swapMap(int, int, int, int);
+	void							for_each_neighbor(std::list<Node*> neighbors);
 	Node							*swapMap(int src, int dest);
 	std::list<Node *>	getNeighbor();
-	void							createNeighbor(std::list<Node *> &lst,
-																						int i,
-																						int j,
-																						int pos);
+
+	void							debug(std::list<Node*> neighbors) const;
 
 public:
 	AStar(Node const &start, Node const &goal, IHeuristic const &h);

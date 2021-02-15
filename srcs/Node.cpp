@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 17:08:57 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/15 19:13:39 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <limits.h>
 
 Node::Node():_map(),
-															_mapSize(0)
+						_mapSize(0)
 {
 }
 
@@ -33,7 +33,6 @@ Node	&Node::operator=(Node const &other)
 	if (this != &other)
 	{
 		_costSoFar = other._costSoFar;
-	//	_costToReach = other._costToReach;
 		_costToReach = INT_MAX;
 		_comeFrom = other._comeFrom;
 		_map = other._map;
@@ -141,16 +140,17 @@ bool												Node::operator>(Node const &other)
 
 bool												Node::operator==(Node const &other)
 {
-
-//	std::cout << "Comparing : " <<std::endl
-//						<< *this << "with : " << std::endl
-//						<< other;
 	return _map == other._map;
 }
 
 bool												Node::comp(Node *a, Node *b)
 {
 	return *a > *b;
+}
+
+bool 					Node::find_in_queue(Node *el, Node *toFind)
+{
+	return *el == *toFind;
 }
 
 std::ostream	&operator<<(std::ostream &o, Node const &c)
