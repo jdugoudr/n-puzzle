@@ -152,7 +152,7 @@ void												Puzzle::setMustBeSolvable(bool state)
 
 
 
-static int											countInversions(std::vector<int> map, int size)
+int													Puzzle::countInversions(std::vector<int> const &map, int size) const
 {
 	int		inversions = 0;
 

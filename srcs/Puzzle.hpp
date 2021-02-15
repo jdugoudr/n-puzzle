@@ -37,6 +37,7 @@ private:
 	bool									_mustBeSolvable;		// 0 = generate unsolvable map 
 
 	IHeuristic								*createHeuristic(std::string heuristic_name);
+	int										countInversions(std::vector<int> const &map, int size) const;
 
 public:
 	//Puzzle(std::string heuristic);

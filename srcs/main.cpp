@@ -59,7 +59,7 @@ static std::string		choose_heuristic(void)
 	return (array[x - 1]);
 }
 
-static int				parse_arguments(int ac, char **av, Puzzle *puzzle)
+static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 {
     int 			opt;
 
@@ -120,8 +120,6 @@ static int				parse_arguments(int ac, char **av, Puzzle *puzzle)
 		throw (invalid_argument("You must specify a puzzle size"));
 	else if (puzzle->getMapSize() < MAP_MIN_SIZE || puzzle->getMapSize() > MAP_MAX_SIZE)
 		throw (invalid_argument("Wrong puzzle size"));
-
-	return (0);
 }
 
 int						main(int ac, char **av)
@@ -130,11 +128,9 @@ int						main(int ac, char **av)
 	Node			*start_node;
 	std::string		heuristic_name;
 
-	try
-	{
+	try {
 		parse_arguments(ac, av, puzzle);
-	}
-	catch (exception &e) {
+	} catch (exception &e) {
 		cout << "Exception: " << e.what() << endl;
 		return (usage(1));
 	}
@@ -146,6 +142,7 @@ int						main(int ac, char **av)
 	}
 	puzzle->setHeuristic(heuristic_name);
 
+	// mettre dans puzzle
 	if (puzzle->getFilename().empty())
 		start_node = generate_start_node(puzzle);
 	else
