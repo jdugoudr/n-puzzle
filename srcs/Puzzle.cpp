@@ -170,7 +170,7 @@ std::vector<int>									Puzzle::parse_file(std::string const filename, unsigned
 	std::string					str;
 	std::string					line;
 	std::size_t					hashtag_index;
-	std::size_t					line_start_index;
+	std::size_t					first_char_index;
 	std::vector<int>			splitted_line;
 	std::vector<int>			map;
 
@@ -184,37 +184,31 @@ std::vector<int>									Puzzle::parse_file(std::string const filename, unsigned
 		
 		if ((hashtag_index = line.find('#')) == std::string::npos)
 			str = line;
+		else if ((first_char_index = line.find_first_not_of(" ")) != hashtag_index)
+			str = line.substr(first_char_index, hashtag_index);
+		else
+			continue ;
+
+		if (str.find_first_not_of(" 0123456789") != std::string::npos)
+			throw ("non-numeric character found (only exceptions are space ' ' and hashtag '#')");
+		else if (str.find_first_of("0123456789") == std::string::npos)
+			throw ("empty line found");
+
+		splitted_line = split_stoi(str);
+
+		if (!size)
+		{
+			if (splitted_line.size() > 1)
+				throw ("wrong size definition");
+			size = splitted_line[0];
+			if (size < MAP_MIN_SIZE || size > MAP_MAX_SIZE)
+				throw ("wrong size definition");
+		}
 		else
 		{
-			if ((line_start_index = line.find_first_not_of(" ")) != hashtag_index)
-				str = line.substr(line_start_index, hashtag_index);
-			else
-				str = "";
-		}
-
-		if (!str.empty())
-		{
-			if (str.find_first_not_of(" 0123456789") != std::string::npos)
-				throw ("non-numeric character found (only exceptions are space ' ' and hashtag '#')");
-			else if (str.find_first_of("0123456789") == std::string::npos)
-				throw ("empty line found");
-
-			splitted_line = split_stoi(str);
-
-			if (!size)
-			{
-				if (splitted_line.size() > 1)
-					throw ("wrong size definition");
-				size = splitted_line[0];
-				if (size < MAP_MIN_SIZE || size > MAP_MAX_SIZE)
-					throw ("wrong size definition");
-			}
-			else
-			{
-				if (splitted_line.size() != size)
-					throw ("wronged-sized line");
-				map.insert(map.end(), splitted_line.begin(), splitted_line.end());
-			}
+			if (splitted_line.size() != size)
+				throw ("wronged-sized line");
+			map.insert(map.end(), splitted_line.begin(), splitted_line.end());
 		}
 	}
 
