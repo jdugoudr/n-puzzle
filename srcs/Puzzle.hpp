@@ -45,7 +45,7 @@ private:
 	Node					*generate_start_node(int size);
 	Node					*get_start_node_from_file(std::string filename);
 	int						count_inversions(std::vector<int> const &map, int size) const;
-	int						check_validity(std::vector<int> map, const int size);
+	void					check_validity(std::vector<int> map, const int size);
 	std::vector<int>		parse_file(std::string filename, unsigned long &size);
 	std::vector<int>		split_stoi(std::string line);
 	std::vector<int>		generate_resolved_array(int size);

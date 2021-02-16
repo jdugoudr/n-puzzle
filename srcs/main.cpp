@@ -50,10 +50,7 @@ static std::string		choose_heuristic(void)
 	std::cin >> x;
 
 	if (!(x >= 1 && x <= array.size()))
-	{
-		std::cout << "Invalid number" << std::endl;	
-		return ("");
-	}
+		throw (invalid_argument("Invalid number"));
 
 	return (array[x - 1]);
 }
@@ -119,19 +116,18 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 int						main(int ac, char **av)
 {
 	Puzzle			*puzzle = new Puzzle();
-	std::string		heuristic_name;
 
-	try {
+	try
+	{
 		parse_arguments(ac, av, puzzle);
-	} catch (exception &e) {
-		cout << "Exception: " << e.what() << endl;
+		puzzle->setHeuristic(choose_heuristic());
+	}
+	catch (exception &e)
+	{
+		std::cerr << "Invalid argument exception: " << e.what() << std::endl;
 		return (usage(1, puzzle));
 	}
 
-	if ((heuristic_name = choose_heuristic()).empty())
-		return (usage(1, puzzle));
-
-	puzzle->setHeuristic(heuristic_name);
 	puzzle->create_start_node();
 
 	if (puzzle->getStartNode() == NULL)
@@ -153,8 +149,6 @@ int						main(int ac, char **av)
 		return(0);
 	}
 
-
-	// algo
 	AStar	star(*puzzle->getStartNode(),
 								*puzzle->getEndNode(),
 								*puzzle->getHeuristic());
@@ -164,7 +158,6 @@ int						main(int ac, char **av)
 	} catch (std::exception &e){
 		std::cerr << e.what() << std::endl;
 	}
-
 
 	delete puzzle;
 	return (0);
