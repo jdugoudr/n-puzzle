@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 01:31:36 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 19:45:04 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 AStar::~AStar()
 {
-//	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase);
+	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase_pair);
 	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
 	_closedList.clear();
 	_openList.clear();
@@ -68,7 +68,6 @@ std::cout <<"==============================" << std::endl;
 		}
 		_openList.pop();
 		_closedList.insert(std::make_pair(_curr->getMap(), _curr));
-	//	_closedList.push_front(_curr);
 		std::list<Node*> neighbors = getNeighbor();
 		for_each_neighbor(neighbors);
 	}
@@ -111,16 +110,22 @@ void							AStar::for_each_neighbor(std::list<Node*> neighbors)
  *  itPos is set to the iterator just after the position it should be insert,
  *  to use insert list function.
 */
-bool							AStar::is_in_open(std::list<Node*>::iterator &it, p_queue_custom<Node*>::iterator	&itPos)
+bool							AStar::is_in_open(std::list<Node*>::iterator &it,
+																			p_queue_custom<Node*>::iterator	&itPos)
 {
 	bool res = _openList.try_insert(*it, itPos);
 	if (!res)
 	{
 		if ((*it)->getCostSoFar() < (*itPos)->getCostSoFar())
 		{
+		//	std::cout << "We have to replace" << std::endl;
+		//	char c;
+		//	std::cin >> c;
+		//	debug();
 			(*itPos)->setCostSoFar((*it)->getCostSoFar());
 			(*itPos)->setComeFrom(_curr);
-			// Have to re-place itOld at the right new place in openList
+			_openList.replace(itPos);
+		//	debug();
 		}
 		return true;
 	}
@@ -202,12 +207,16 @@ void				AStar::erase(Node *el)
 	delete el;
 }
 
-void				AStar::debug(std::list<Node*> neighbors) const
+void				AStar::erase_pair(std::pair<std::vector<int>, Node *> el)
 {
-	(void)neighbors;
+	delete std::get<1>(el);
+}
+
+void				AStar::debug() const
+{
 //	std:: cout << *_curr->getEmpty() << std::endl;
 	std::cout << *_curr;
-//	std::cout << "============================" << std::endl;
+	std::cout << "============================" << std::endl;
 		std::cout << "==\tOpen\t==" << std::endl;
 	for_each(_openList.begin(), _openList.end(), display);
 	std::cout << "============================" << std::endl;

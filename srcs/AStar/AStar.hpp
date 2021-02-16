@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 01:14:27 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 15:42:07 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ private:
 																	p_queue_custom<Node*>::iterator	&itPos);
 	bool							is_in_closed(std::list<Node*>::iterator &it);
 
-	void							debug(std::list<Node*> neighbors) const;
+	void							debug() const;
 
 public:
 	AStar(Node const &start, Node const &goal, IHeuristic const &h);
@@ -50,6 +50,7 @@ public:
 	Node const				*getCurrent() const;
 	
 	static void				erase(Node *el);
+	static void				erase_pair(std::pair<std::vector<int>, Node *> el);
 
 	class NoSolution: public std::exception{
 		public:

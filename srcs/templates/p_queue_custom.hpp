@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 23:38:11 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 19:25:58 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,21 @@ public:
 
 	T				&top(){
 		return this->front();
+	}
+
+	void	replace(iterator &el) {
+		iterator	it = this->begin();
+		iterator	end = this->end();
+		while (it != end)
+		{
+			if (comp(*el, *it))
+			{
+				this->splice(it, *this, el);
+				return ;
+			}
+			it++;
+		}
+		return ;
 	}
 };
 
