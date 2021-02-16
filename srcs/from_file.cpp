@@ -101,7 +101,7 @@ int				check_if_valid(std::vector<int> puzzle_vec, const int size)
 	return (0);
 }
 
-Node			*get_node_from_file(std::string filename)
+/*Node			*get_node_from_file(std::string filename)
 {
 	Node							*start_node = NULL;
 	std::vector<int>	puzzle_vec;
@@ -121,4 +121,4 @@ Node			*get_node_from_file(std::string filename)
 	start_node = create_start_node(puzzle_vec, size);
 
 	return (start_node);
-}
+}*/

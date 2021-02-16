@@ -14,13 +14,9 @@
 #include "Puzzle.hpp"
 #include "AStar.hpp"
 
-#include <array>
-#include <iostream>
-#include <unistd.h>	// for getopt()
-
 using namespace std;
 
-static int				usage(int ret)
+static int				usage(int ret, Puzzle *puzzle)
 {
 	std::cout << std::endl;	
 	std::cout << "usage: " << std::endl;
@@ -36,6 +32,9 @@ static int				usage(int ret)
 	std::cout << "                3 2 6" << std::endl;
 	std::cout << "                1 4 0" << std::endl;
 	std::cout << "                8 7 5" << std::endl;
+
+	if (puzzle != NULL)
+		delete puzzle;
 
 	return (ret);
 }
@@ -64,20 +63,14 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
     int 			opt;
 
 	if (ac == 1)
-	{
-		delete puzzle;
-		exit (usage(0));
-	}
+		exit (usage(0, puzzle));
 
     while ((opt = getopt(ac, av, "hf:g:un")) != -1)
 	{
         switch (opt)
         {
             case 'h':
-			{
-				delete puzzle;
-				exit (usage(0));
-			}
+				exit (usage(0, puzzle));
             case 'f':
 			{
 				if (puzzle->getMapSize())
@@ -118,53 +111,42 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 		throw (invalid_argument("Wrong argument"));
 	else if (puzzle->getFilename().empty() && !puzzle->getMapSize())
 		throw (invalid_argument("You must specify a puzzle size"));
-	else if (puzzle->getMapSize() < MAP_MIN_SIZE || puzzle->getMapSize() > MAP_MAX_SIZE)
+	else if (puzzle->getFilename().empty() && (puzzle->getMapSize() < MAP_MIN_SIZE
+				|| puzzle->getMapSize() > MAP_MAX_SIZE))
 		throw (invalid_argument("Wrong puzzle size"));
 }
 
 int						main(int ac, char **av)
 {
 	Puzzle			*puzzle = new Puzzle();
-	Node			*start_node;
 	std::string		heuristic_name;
 
 	try {
 		parse_arguments(ac, av, puzzle);
 	} catch (exception &e) {
 		cout << "Exception: " << e.what() << endl;
-		return (usage(1));
+		return (usage(1, puzzle));
 	}
 
 	if ((heuristic_name = choose_heuristic()).empty())
-	{
-		delete puzzle;
-		return (usage(1));
-	}
+		return (usage(1, puzzle));
+
 	puzzle->setHeuristic(heuristic_name);
+	puzzle->create_start_node();
 
-	// mettre dans puzzle
-	if (puzzle->getFilename().empty())
-		start_node = generate_start_node(puzzle);
-	else
-		start_node = get_node_from_file(puzzle->getFilename());
-
-	if (start_node == NULL)
+	if (puzzle->getStartNode() == NULL)
 	{
 		delete puzzle;
 		return (1);
 	}
-
-	puzzle->setStartNode(start_node);
-	puzzle->setMapSize(start_node->getMapSize());
+	puzzle->create_end_node();
 
 	std::cout << "START NODE:" << std::endl;
 	std::cout << *(puzzle->getStartNode()) << std::endl;
-
-	puzzle->setEndNode(create_end_node(puzzle->getMapSize()));
 	std::cout << "END NODE:" << std::endl;
 	std::cout << *(puzzle->getEndNode()) << std::endl;
 
-	if (puzzle->getSolvabilityCheck() && !puzzle->isSolvable())
+	if (puzzle->getSolvabilityCheck() && !puzzle->is_solvable())
 	{
 		std::cout << "This puzzle is not solvable." << std::endl;
 		delete puzzle;

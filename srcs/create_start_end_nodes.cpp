@@ -12,14 +12,14 @@
 
 #include "n-puzzle.hpp"
 
-Node			*create_start_node(std::vector<int> splitted, int size)
+/*Node			*create_start_node(std::vector<int> splitted, int size)
 {
 	Node								*node;
 
 	node = new Node(splitted, size);
 //	node->setEmpty(empty_case);
 	return (node);
-}
+}*/
 
 std::vector<int>				generate_resolved_array(int size)
 {
