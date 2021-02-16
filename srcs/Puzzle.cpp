@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 22:09:44 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 22:53:04 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ IHeuristic const									*Puzzle::getHeuristic() const
 	return _heuristic;
 }
 
-Node const											*Puzzle::getStartNode() const
+Node 														*Puzzle::getStartNode() const
 {
 	return _startNode;
 }

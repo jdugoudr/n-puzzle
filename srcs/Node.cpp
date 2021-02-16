@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 21:46:08 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 23:19:43 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ bool												Node::operator==(Node const &other)
 
 bool												Node::comp(Node *a, Node *b)
 {
-	return *a < *b;
+	return *a > *b;
 }
 
 bool 					Node::find_in_queue(Node *el, Node *toFind)

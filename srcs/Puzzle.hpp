@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 22:09:27 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 22:52:42 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ public:
 	virtual ~Puzzle();
 
 	IHeuristic const		*getHeuristic() const;
-	Node const				*getStartNode() const;
+	Node 							*getStartNode() const;
 	Node const				*getEndNode() const;
 	int						getMapSize() const;
 	std::list<Node *>		getOpenList() const;

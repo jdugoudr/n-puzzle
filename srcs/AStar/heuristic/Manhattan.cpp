@@ -6,11 +6,12 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:51:28 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 19:15:51 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 22:57:55 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Manhattan.hpp"
+#include <vector>
 
 Manhattan::Manhattan():
 	_name("Manhattan")
@@ -28,12 +29,11 @@ Manhattan::~Manhattan()
  *
  * Then we calculate the disctance between the two point
 */
-int		Manhattan::calculate(Node const &current, Node const &goal) const
+int		Manhattan::calculate(std::vector<int> const &map, Node const &goal) const
 {
 	int	coast = 0;
 	int	size = goal.getMapSize();
 
-	std::vector<int> map = current.getMap();
 	std::vector<int> gmap = goal.getMap();
 
 	for (int pos = 0 ; pos < size * size ; pos++)

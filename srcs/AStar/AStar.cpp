@@ -6,101 +6,170 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 19:45:04 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 23:24:40 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AStar.hpp"
 #include "find_if_mix.hpp"
+#include <algorithm>
 #include <iostream>
 
 AStar::~AStar()
 {
-	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase_pair);
-	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
-	_closedList.clear();
-	_openList.clear();
+//	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase_pair);
+//	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
+	_closedSet.clear();
+	_openSet.clear();
+	while (!_openList.empty())
+		_openList.pop();
 }
 
-AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
-																				_size(start.getMapSize()),
+AStar::AStar(Node *start, Node const &goal, IHeuristic const &h):
+																				_size(start->getMapSize()),
 																				_start(start),
 																				_goal(goal),
 																				_h(h),
 																				_curr(nullptr),
-																				_openList(Node::comp),
-																				_closedList()
+																				_closedSet(),
+																				_openSet(),
+																				_openList(Node::comp)
 {
 }
 
-Node			*AStar::swapMap(int src, int dest)
+std::vector<int>		AStar::swapMap(int src, int dest, std::vector<int> map)
 {
-	Node	*neighbor = new Node(*_curr);
+	std::vector<int>	newMap = map;
+	
+	std::swap(newMap[src], newMap[dest]);
 
-	neighbor->swap(src, dest);
-	neighbor->setCostSoFar(_curr->getCostSoFar() + 1);
-	neighbor->setCostToReach(_h.calculate(*neighbor, _goal));
-
-	return neighbor;	
+	return newMap;	
 }
 
-void display(Node *el)
+void display(std::pair<std::vector<int>, Node*> el)
 {
-	std::cout << *el << std::endl;
+	std::cout << *(std::get<1>(el)) << std::endl;
 }
 
 void							AStar::run()
 {
-	_curr	= new Node(_start);
-	_curr->setCostToReach(_h.calculate(_start, _goal));
-	_openList.push_uniq(_curr);
+	// _openList doit etre une hash map aussi
+	// Sa permet de verifer tout de suite si on est dedans ou pas
+	// Et on as en plus une heap qui elle nous permet de gerer les priorite. _openList et heap contienne la representation des meme noeuds. Maid du coup on as pas parcourir sallement une priority_queue !!!
+
+	_start->setCostToReach(_h.calculate(_start->getMap(), _goal));
+	pushOpenList(_start);
 
 	while (!_openList.empty())
 	{
 		_curr = _openList.top();
-		if (*_curr == _goal)
+		if(*_curr == _goal)
 		{
-			std::cout << "You got it !!!" << std::endl;
-std::cout <<"==============================" << std::endl;
+			// The resolution is over. You WIN
 			std::cout << *_curr;
-
 			return ;
 		}
-		_openList.pop();
-		_closedList.insert(std::make_pair(_curr->getMap(), _curr));
-		std::list<Node*> neighbors = getNeighbor();
-		for_each_neighbor(neighbors);
+		pushFromOpenToClose(_curr);//pop priority_queue
+		int	tentative_g = _curr->getCostSoFar() + 1;
+		for (auto it: getNeighbor(_curr))
+		{
+			if (_closedSet.find(it) != _closedSet.end())
+				continue ; // Don't we have to compare tentative_g ????
+			else if (_openSet.find(it) != _openSet.end()) // Don't we have to replace it in priority_queue ???
+			{
+				if (_openSet[it]->getCostSoFar() <= tentative_g)
+					continue ;
+			}
+			else
+			{
+				pushNewNodeToOpen(tentative_g, _h.calculate(it, _goal), it, _curr);
+			}
+			_openSet[it]->setCostSoFar(tentative_g);
+		}
+	//	debug();
 	}
+
+	// Push first node into openList
+	//
+	// while (!_openList.empty()):
+	// 		_curr = _openList.pop
+	// 		if _curr == _goal
+	// 			finished()
+	// 		if _curr in _closedList:
+	// 			continue
+	// 		tentative_g = _curr->getCostSoFar + 1;
+	// 		std::list<std::vector<int>> neighbors = posible_move
+	// 		for n in neighbors:
+	// 			if n in _closedList:
+	// 				continue
+	// 			if n in _openList:
+	// 				if tentative_g => _openList[n]->getCostSoFar:
+	// 					continue
+	// 			else:
+	// 			{
+	//				creation d'un new node qu'on push en heap
+	// 				_openList[n]->setCostToReach(h(n))
+	// 			}
+	// 			_openList[n]-setCostSoFar(tentative_g)
 
 	throw AStar::NoSolution();
 	return ;
 }
 
-void							AStar::for_each_neighbor(std::list<Node*> neighbors)
+void							AStar::pushNewNodeToOpen(int soFar, int toReach, std::vector<int> map, Node *parent)
 {
-	std::list<Node*>::iterator	it = neighbors.begin();
-	std::list<Node*>::iterator	ite = neighbors.end();
-	p_queue_custom<Node*>::iterator	itPos;
+	try {
+		Node	*node = new Node(map, _size, soFar, parent);
 
-	while (it != ite)
-	{
-		if (!is_in_closed(it))
-		{
-			if (is_in_open(it, itPos))
-			{
-				delete *it;
-			}
-			else
-			{
-				_openList.insert(itPos, *it);
-			}
-		}
-		it++;
+		node->setCostToReach(toReach);
+		_openList.push(node);
+		_openSet[map] = node;
+	} catch (std::exception &e) {
+		throw e;
 	}
-
-	//debug(neighbors);
-	
+	return ;
 }
+
+void							AStar::pushOpenList(Node *n)
+{
+	_openList.push(n);
+	_openSet.insert(std::make_pair(n->getMap(), n));
+	return ;
+}
+
+void							AStar::pushFromOpenToClose(Node *n)
+{
+	_closedSet[n->getMap()] = n;
+	_openSet.erase(n->getMap());
+	_openList.pop();
+	return ;
+}
+
+//void							AStar::for_each_neighbor(std::list<Node*> neighbors)
+//{
+//	std::list<Node*>::iterator	it = neighbors.begin();
+//	std::list<Node*>::iterator	ite = neighbors.end();
+//	p_queue_custom<Node*>::iterator	itPos;
+//
+//	while (it != ite)
+//	{
+//		if (!is_in_closed(it))
+//		{
+//			if (is_in_open(it, itPos))
+//			{
+//				delete *it;
+//			}
+//			else
+//			{
+//				_openList.insert(itPos, *it);
+//			}
+//		}
+//		it++;
+//	}
+//
+//	//debug(neighbors);
+//	
+//}
 
 /*
  * If it element is already in openList
@@ -110,83 +179,84 @@ void							AStar::for_each_neighbor(std::list<Node*> neighbors)
  *  itPos is set to the iterator just after the position it should be insert,
  *  to use insert list function.
 */
-bool							AStar::is_in_open(std::list<Node*>::iterator &it,
-																			p_queue_custom<Node*>::iterator	&itPos)
-{
-	bool res = _openList.try_insert(*it, itPos);
-	if (!res)
-	{
-		if ((*it)->getCostSoFar() < (*itPos)->getCostSoFar())
-		{
-		//	std::cout << "We have to replace" << std::endl;
-		//	char c;
-		//	std::cin >> c;
-		//	debug();
-			(*itPos)->setCostSoFar((*it)->getCostSoFar());
-			(*itPos)->setComeFrom(_curr);
-			_openList.replace(itPos);
-		//	debug();
-		}
-		return true;
-	}
-	return false;
-}
-
-bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
-{
-//	std::list<Node*>::iterator itOld;
-	Node	*old;
-
-	try{
-		old = _closedList.at((*it)->getMap());
-		if ((*it)->getCostSoFar() < old->getCostSoFar())
-		{
-			_openList.push_uniq(*it);
-			delete old;
-			_closedList.erase((*it)->getMap());
-		}
-		else
-			delete *it;
-		return true;
-	} catch (std::out_of_range(&e)){
-		return false;
-	}
-//	itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue);
-//	if (itOld != _closedList.end())
+//bool							AStar::is_in_open(std::list<Node*>::iterator &it,
+//																			p_queue_custom<Node*>::iterator	&itPos)
+//{
+//	bool res = _openList.try_insert(*it, itPos);
+//	if (!res)
 //	{
-//		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+//		if ((*it)->getCostSoFar() < (*itPos)->getCostSoFar())
+//		{
+//		//	std::cout << "We have to replace" << std::endl;
+//		//	char c;
+//		//	std::cin >> c;
+//		//	debug();
+//			(*itPos)->setCostSoFar((*it)->getCostSoFar());
+//			(*itPos)->setComeFrom(_curr);
+//			_openList.replace(itPos);
+//		//	debug();
+//		}
+//		return true;
+//	}
+//	return false;
+//}
+//
+//bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
+//{
+////	std::list<Node*>::iterator itOld;
+//	Node	*old;
+//
+//	try{
+//		old = _closedList.at((*it)->getMap());
+//		if ((*it)->getCostSoFar() < old->getCostSoFar())
 //		{
 //			_openList.push_uniq(*it);
-//			delete *itOld;
-//			_closedList.erase(itOld);
+//			delete old;
+//			_closedList.erase((*it)->getMap());
 //		}
 //		else
 //			delete *it;
 //		return true;
+//	} catch (std::out_of_range(&e)){
+//		return false;
 //	}
-//	return false;
-}
+////	itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue);
+////	if (itOld != _closedList.end())
+////	{
+////		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+////		{
+////			_openList.push_uniq(*it);
+////			delete *itOld;
+////			_closedList.erase(itOld);
+////		}
+////		else
+////			delete *it;
+////		return true;
+////	}
+////	return false;
+//}
 
-std::list<Node *>					AStar::getNeighbor()
+std::vector<std::vector<int>>			AStar::getNeighbor(Node *curr)
 {
-	std::list<Node*> lst;
+	std::vector<std::vector<int>> lst;
+	std::vector<int>							curr_map = curr->getMap();
 
-	int posZero = _curr->getEmpty();
+	int posZero = curr->getEmpty();
 	int i = posZero / _size;
 	int j = posZero % _size;
 
 	//Move to right
 	if (j + 1 < _size)
-		lst.push_front(swapMap(posZero, posZero + 1));
+		lst.push_back(swapMap(posZero, posZero + 1, curr_map));
 	//Move to left
 	if (j > 0)
-		lst.push_front(swapMap(posZero, posZero - 1));
+		lst.push_back(swapMap(posZero, posZero - 1, curr_map));
 	//Move down
 	if (i > 0)
-		lst.push_front(swapMap(posZero, posZero - _size));
+		lst.push_back(swapMap(posZero, posZero - _size, curr_map));
 	//Move up
 	if (i + 1 < _size)
-		lst.push_front(swapMap(posZero, posZero + _size));
+		lst.push_back(swapMap(posZero, posZero + _size, curr_map));
 
 	return lst;
 }
@@ -218,10 +288,10 @@ void				AStar::debug() const
 	std::cout << *_curr;
 	std::cout << "============================" << std::endl;
 		std::cout << "==\tOpen\t==" << std::endl;
-	for_each(_openList.begin(), _openList.end(), display);
+	for_each(_openSet.begin(), _openSet.end(), display);
 	std::cout << "============================" << std::endl;
-//		std::cout << "==\tClosed\t==" << std::endl;
-//	for_each(_closedList.begin(), _closedList.end(), display);
+		std::cout << "==\tClosed\t==" << std::endl;
+	for_each(_closedSet.begin(), _closedSet.end(), display);
 	char c;
 	std::cin >> c;
 }
@@ -248,17 +318,19 @@ const char	*AStar::NoSolution::what() const throw()
 	return "No solution found... :'(";
 }
 
-std::ostream	&operator<<(std::ostream &o, p_queue_custom<Node*> &c)
+std::ostream	&operator<<(std::ostream &o, std::map<std::vector<int>, Node*> &c)
 {
 	(void)c;
-	p_queue_custom<Node*>::iterator	it = c.begin();
-	p_queue_custom<Node*>::iterator	eit = c.end();
 	o << "IN QUEUE : " << std::endl;
-	while (it != eit)
-	{
-		o << **it << std::endl;
-		it++;
-	}
+	for (auto it: c)
+		o << *(std::get<1>(it)) << std::endl;
+//	p_queue_custom<Node*>::iterator	it = c.begin();
+//	p_queue_custom<Node*>::iterator	eit = c.end();
+//	while (it != eit)
+//	{
+//		o << **it << std::endl;
+//		it++;
+//	}
 	o << std::endl;
 	return o;
 }
