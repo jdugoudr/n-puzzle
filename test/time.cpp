@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 20:01:38 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 23:32:00 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ int						main(int ac, char **av)
 
 
 	// algo
-	AStar	star(*puzzle->getStartNode(),
+	AStar	star(puzzle->getStartNode(),
 								*puzzle->getEndNode(),
 								*puzzle->getHeuristic());
 

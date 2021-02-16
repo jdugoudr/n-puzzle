@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 23:24:40 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 23:40:50 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,6 @@ void display(std::pair<std::vector<int>, Node*> el)
 
 void							AStar::run()
 {
-	// _openList doit etre une hash map aussi
-	// Sa permet de verifer tout de suite si on est dedans ou pas
-	// Et on as en plus une heap qui elle nous permet de gerer les priorite. _openList et heap contienne la representation des meme noeuds. Maid du coup on as pas parcourir sallement une priority_queue !!!
-
 	_start->setCostToReach(_h.calculate(_start->getMap(), _goal));
 	pushOpenList(_start);
 
@@ -88,29 +84,6 @@ void							AStar::run()
 		}
 	//	debug();
 	}
-
-	// Push first node into openList
-	//
-	// while (!_openList.empty()):
-	// 		_curr = _openList.pop
-	// 		if _curr == _goal
-	// 			finished()
-	// 		if _curr in _closedList:
-	// 			continue
-	// 		tentative_g = _curr->getCostSoFar + 1;
-	// 		std::list<std::vector<int>> neighbors = posible_move
-	// 		for n in neighbors:
-	// 			if n in _closedList:
-	// 				continue
-	// 			if n in _openList:
-	// 				if tentative_g => _openList[n]->getCostSoFar:
-	// 					continue
-	// 			else:
-	// 			{
-	//				creation d'un new node qu'on push en heap
-	// 				_openList[n]->setCostToReach(h(n))
-	// 			}
-	// 			_openList[n]-setCostSoFar(tentative_g)
 
 	throw AStar::NoSolution();
 	return ;
@@ -144,32 +117,6 @@ void							AStar::pushFromOpenToClose(Node *n)
 	_openList.pop();
 	return ;
 }
-
-//void							AStar::for_each_neighbor(std::list<Node*> neighbors)
-//{
-//	std::list<Node*>::iterator	it = neighbors.begin();
-//	std::list<Node*>::iterator	ite = neighbors.end();
-//	p_queue_custom<Node*>::iterator	itPos;
-//
-//	while (it != ite)
-//	{
-//		if (!is_in_closed(it))
-//		{
-//			if (is_in_open(it, itPos))
-//			{
-//				delete *it;
-//			}
-//			else
-//			{
-//				_openList.insert(itPos, *it);
-//			}
-//		}
-//		it++;
-//	}
-//
-//	//debug(neighbors);
-//	
-//}
 
 /*
  * If it element is already in openList

@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 22:53:26 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 23:41:46 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,9 @@ private:
 	void							pushNewNodeToOpen(int soFar, int toReach,
 																				std::vector<int> map, Node *parent);
 
-
-	void							for_each_neighbor(std::list<Node*> neighbors);
 	std::vector<int>	swapMap(int src, int dest, std::vector<int> map);
 	std::vector<std::vector<int>>	getNeighbor(Node *curr);
 
-
-
-//	bool							is_in_open(std::list<Node*>::iterator &it,
-//																	p_queue_custom<Node*>::iterator	&itPos);
-//	bool							is_in_closed(std::list<Node*>::iterator &it);
 
 	void							debug() const;
 
