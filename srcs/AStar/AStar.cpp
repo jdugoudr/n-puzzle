@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 00:31:18 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 01:31:36 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,10 @@
 
 AStar::~AStar()
 {
-	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase);
+//	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase);
 	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
 	_closedList.clear();
 	_openList.clear();
-//	while (_closedList.size() > 0)
-//		_closedList.pop_front();
-//	while (_openList.size() > 0)
-//		_openList.pop();
 }
 
 AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
@@ -71,7 +67,8 @@ std::cout <<"==============================" << std::endl;
 			return ;
 		}
 		_openList.pop();
-		_closedList.push_front(_curr);
+		_closedList.insert(std::make_pair(_curr->getMap(), _curr));
+	//	_closedList.push_front(_curr);
 		std::list<Node*> neighbors = getNeighbor();
 		for_each_neighbor(neighbors);
 	}
@@ -132,22 +129,37 @@ bool							AStar::is_in_open(std::list<Node*>::iterator &it, p_queue_custom<Node
 
 bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
 {
-	std::list<Node*>::iterator itOld;
+//	std::list<Node*>::iterator itOld;
+	Node	*old;
 
-	itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue);
-	if (itOld != _closedList.end())
-	{
-		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+	try{
+		old = _closedList.at((*it)->getMap());
+		if ((*it)->getCostSoFar() < old->getCostSoFar())
 		{
 			_openList.push_uniq(*it);
-			delete *itOld;
-			_closedList.erase(itOld);
+			delete old;
+			_closedList.erase((*it)->getMap());
 		}
 		else
 			delete *it;
 		return true;
+	} catch (std::out_of_range(&e)){
+		return false;
 	}
-	return false;
+//	itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue);
+//	if (itOld != _closedList.end())
+//	{
+//		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
+//		{
+//			_openList.push_uniq(*it);
+//			delete *itOld;
+//			_closedList.erase(itOld);
+//		}
+//		else
+//			delete *it;
+//		return true;
+//	}
+//	return false;
 }
 
 std::list<Node *>					AStar::getNeighbor()

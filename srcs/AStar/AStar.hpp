@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 23:04:55 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/16 01:14:27 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,20 @@
 #include "IHeuristic.hpp"
 #include "p_queue_custom.hpp"
 #include <list>
+#include <map>
 #include <iostream>
 
 class AStar{
 
 private:
-	int	const									_size;
-	Node const								&_start;
-	Node const								&_goal;
-	IHeuristic const					&_h;
-	Node											*_curr;
-	p_queue_custom<Node *>		_openList;
-	std::list<Node *>					_closedList;
+	int	const																_size;
+	Node const															&_start;
+	Node const															&_goal;
+	IHeuristic const												&_h;
+	Node																		*_curr;
+	p_queue_custom<Node *>									_openList;
+	std::map<std::vector<int>, Node *>			_closedList;
+//	std::list<Node *>					_closedList;
 
 	void							for_each_neighbor(std::list<Node*> neighbors);
 	Node							*swapMap(int src, int dest);
