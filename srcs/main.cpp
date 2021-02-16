@@ -14,21 +14,29 @@
 #include "Puzzle.hpp"
 #include "AStar.hpp"
 
-#include <array>
-#include <iostream>
+using namespace std;
 
-static void				usage(void)
+static int				usage(int ret, Puzzle *puzzle)
 {
 	std::cout << std::endl;	
 	std::cout << "usage: " << std::endl;
-	std::cout << "   n-puzzle -h        - print this help" << std::endl;
-	std::cout << "   n-puzzle           - generate a random puzzle" << std::endl;
-	std::cout << "   n-puzzle [file]    - use puzzle from file with following format:" << std::endl;
+	std::cout << "   n-puzzle -h                 - print this help" << std::endl;
+	std::cout << "   n-puzzle -g [size]          - generate a solvable random puzzle with given size" << std::endl;
+	std::cout << "                      -u       - randomly generated puzzle must be unsolvable (optionnal)" << std::endl;
+	std::cout << "   n-puzzle -f [file]          - use puzzle from file" << std::endl;
+	std::cout << "                      -n       - do not check if puzzle is solvable (optionnal)" << std::endl;
 	std::cout << std::endl;	
+
+	std::cout << "Input file format:" << std::endl;
 	std::cout << "                3     #size. must be between 3 and 100" << std::endl;
 	std::cout << "                3 2 6" << std::endl;
 	std::cout << "                1 4 0" << std::endl;
 	std::cout << "                8 7 5" << std::endl;
+
+	if (puzzle != NULL)
+		delete puzzle;
+
+	return (ret);
 }
 
 static std::string		choose_heuristic(void)
@@ -50,39 +58,101 @@ static std::string		choose_heuristic(void)
 	return (array[x - 1]);
 }
 
-int	main(int ac, char **av)
+static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 {
-	Puzzle			*puzzle;
-	Node			*start_node;
-	std::string		heuristic_name;
-
-	if (ac > 2 || (ac > 1 && std::string(av[1]) == "-h"))
-	{
-		usage();
-		return (0);
-	}
-	
-	if ((heuristic_name = choose_heuristic()).empty())
-		return (0);
+    int 			opt;
 
 	if (ac == 1)
-		start_node = generate_start_node();
-	else
-		start_node = get_node_from_file(av[1]);
+		exit (usage(0, puzzle));
 
-	if (start_node == NULL)
-		return (0);
+    while ((opt = getopt(ac, av, "hf:g:un")) != -1)
+	{
+        switch (opt)
+        {
+            case 'h':
+				exit (usage(0, puzzle));
+            case 'f':
+			{
+				if (puzzle->getMapSize())
+					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
+				if (std::string(optarg).empty())
+					throw (invalid_argument("Wrong or missing argument"));
+				puzzle->setFilename(optarg);
+				break;
+			}
+            case 'g':
+			{
+				if (!puzzle->getFilename().empty())
+					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
+				puzzle->setMapSize(atoi(optarg));
+				break;
+			}
+            case 'u':
+			{
+				if (!puzzle->getFilename().empty())
+					throw (invalid_argument("Incompatible arguments"));
+				puzzle->setMustBeSolvable(0);
+				puzzle->setSolvabilityCheck(0);
+				break;
+			}
+            case 'n':
+			{
+				if (puzzle->getMapSize())
+					throw (invalid_argument("Incompatible arguments"));
+				puzzle->setSolvabilityCheck(0);
+				break;
+			}
+			case '?':
+				throw (invalid_argument("Wrong or missing argument"));
+        }
+	}
 
-	puzzle = new Puzzle(heuristic_name);
-	puzzle->setStartNode(start_node);
-	puzzle->setMapSize(start_node->getMapSize());
+	if (optind < ac)
+		throw (invalid_argument("Wrong argument"));
+	else if (puzzle->getFilename().empty() && !puzzle->getMapSize())
+		throw (invalid_argument("You must specify a puzzle size"));
+	else if (puzzle->getFilename().empty() && (puzzle->getMapSize() < MAP_MIN_SIZE
+				|| puzzle->getMapSize() > MAP_MAX_SIZE))
+		throw (invalid_argument("Wrong puzzle size"));
+}
+
+int						main(int ac, char **av)
+{
+	Puzzle			*puzzle = new Puzzle();
+	std::string		heuristic_name;
+
+	try {
+		parse_arguments(ac, av, puzzle);
+	} catch (exception &e) {
+		cout << "Exception: " << e.what() << endl;
+		return (usage(1, puzzle));
+	}
+
+	if ((heuristic_name = choose_heuristic()).empty())
+		return (usage(1, puzzle));
+
+	puzzle->setHeuristic(heuristic_name);
+	puzzle->create_start_node();
+
+	if (puzzle->getStartNode() == NULL)
+	{
+		delete puzzle;
+		return (1);
+	}
+	puzzle->create_end_node();
 
 	std::cout << "START NODE:" << std::endl;
 	std::cout << *(puzzle->getStartNode()) << std::endl;
-
-	puzzle->setEndNode(create_end_node(puzzle->getMapSize()));
 	std::cout << "END NODE:" << std::endl;
 	std::cout << *(puzzle->getEndNode()) << std::endl;
+
+	if (puzzle->getSolvabilityCheck() && !puzzle->is_solvable())
+	{
+		std::cout << "This puzzle is not solvable." << std::endl;
+		delete puzzle;
+		return(0);
+	}
+
 
 	// algo
 	AStar	star(*puzzle->getStartNode(),
@@ -97,5 +167,5 @@ int	main(int ac, char **av)
 
 
 	delete puzzle;
-	return 0;
+	return (0);
 }
