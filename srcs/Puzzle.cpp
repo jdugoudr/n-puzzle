@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 22:53:04 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 01:19:56 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,6 +265,17 @@ void												Puzzle::create_start_node()
 		_startNode = this->generate_start_node(_mapSize);
 	else
 		_startNode = this->get_start_node_from_file(_filename);
+
+	// set the empty case into Node
+	std::vector<int> tmp = _startNode->getMap();
+	for (int i = 0; i < _mapSize * _mapSize; i++)
+	{
+		if (tmp[i] == 0)
+		{
+			_startNode->setEmpty(i);
+			return ;
+		}
+	}
 }
 
 std::vector<int>									Puzzle::generate_resolved_array(int size)

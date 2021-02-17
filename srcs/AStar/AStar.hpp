@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 23:41:46 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 01:05:59 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,16 @@ private:
 	std::map<std::vector<int>, Node *>		_closedSet;
 	std::map<std::vector<int>, Node *>		_openSet;
 	std::priority_queue<Node *,
-		std::vector<Node*>, bool (*)(Node*, Node*)>	_openList;
+	std::vector<Node*>, bool (*)(Node*, Node*)>	_openList;
 
 
 	void							pushOpenList(Node *n);
 	void							pushFromOpenToClose(Node *n);
 	void							pushNewNodeToOpen(int soFar, int toReach,
-																				std::vector<int> map, Node *parent);
+																				t_map map, Node *parent);
 
-	std::vector<int>	swapMap(int src, int dest, std::vector<int> map);
-	std::vector<std::vector<int>>	getNeighbor(Node *curr);
+	std::vector<int>		swapMap(int src, int dest, std::vector<int> map);
+	std::vector<t_map>	getNeighbor(Node *curr);
 
 
 	void							debug() const;

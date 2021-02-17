@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 19:13:45 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 01:04:03 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,18 @@
 # include <iostream>
 # include <vector>
 
+typedef struct				s_map{
+	std::vector<int>		map;
+	int									empty;
+}											t_map;
+
 class Node{
 
 private:
-	std::vector<int>												_map;
+	t_map																		_map;
 	int const																_mapSize;
 	int																			_costSoFar;
 	int																			_costToReach;
-	int 																		_empty;
 	Node																		*_comeFrom;
 
 	Node();
@@ -34,6 +38,7 @@ public:
 	Node(Node const &other);
 	Node(std::vector<int> map, int mapSize);
 	Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev);
+	Node(t_map map, int mapSize, int costSoFar, Node *prev);
 	virtual ~Node();
 
 	Node	&operator=(Node const &other);

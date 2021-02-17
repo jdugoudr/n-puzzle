@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 23:40:50 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 01:31:41 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,18 +69,18 @@ void							AStar::run()
 		int	tentative_g = _curr->getCostSoFar() + 1;
 		for (auto it: getNeighbor(_curr))
 		{
-			if (_closedSet.find(it) != _closedSet.end())
+			if (_closedSet.find(it.map) != _closedSet.end())
 				continue ; // Don't we have to compare tentative_g ????
-			else if (_openSet.find(it) != _openSet.end()) // Don't we have to replace it in priority_queue ???
+			else if (_openSet.find(it.map) != _openSet.end()) // Don't we have to replace it in priority_queue ???
 			{
-				if (_openSet[it]->getCostSoFar() <= tentative_g)
+				if (_openSet[it.map]->getCostSoFar() <= tentative_g)
 					continue ;
 			}
 			else
 			{
-				pushNewNodeToOpen(tentative_g, _h.calculate(it, _goal), it, _curr);
+				pushNewNodeToOpen(tentative_g, _h.calculate(it.map, _goal), it, _curr);
 			}
-			_openSet[it]->setCostSoFar(tentative_g);
+			_openSet[it.map]->setCostSoFar(tentative_g);
 		}
 	//	debug();
 	}
@@ -89,14 +89,14 @@ void							AStar::run()
 	return ;
 }
 
-void							AStar::pushNewNodeToOpen(int soFar, int toReach, std::vector<int> map, Node *parent)
+void							AStar::pushNewNodeToOpen(int soFar, int toReach, t_map map, Node *parent)
 {
 	try {
 		Node	*node = new Node(map, _size, soFar, parent);
 
 		node->setCostToReach(toReach);
 		_openList.push(node);
-		_openSet[map] = node;
+		_openSet[map.map] = node;
 	} catch (std::exception &e) {
 		throw e;
 	}
@@ -183,10 +183,11 @@ void							AStar::pushFromOpenToClose(Node *n)
 ////	return false;
 //}
 
-std::vector<std::vector<int>>			AStar::getNeighbor(Node *curr)
+std::vector<t_map>			AStar::getNeighbor(Node *curr)
 {
-	std::vector<std::vector<int>> lst;
-	std::vector<int>							curr_map = curr->getMap();
+	std::vector<t_map>	lst;
+	t_map								str_map;
+	std::vector<int>		curr_map = curr->getMap();
 
 	int posZero = curr->getEmpty();
 	int i = posZero / _size;
@@ -194,16 +195,32 @@ std::vector<std::vector<int>>			AStar::getNeighbor(Node *curr)
 
 	//Move to right
 	if (j + 1 < _size)
-		lst.push_back(swapMap(posZero, posZero + 1, curr_map));
+	{
+		str_map.map = swapMap(posZero, posZero + 1, curr_map);
+		str_map.empty = posZero + 1;
+		lst.push_back(str_map);
+	}
 	//Move to left
 	if (j > 0)
-		lst.push_back(swapMap(posZero, posZero - 1, curr_map));
+	{
+		str_map.map = swapMap(posZero, posZero - 1, curr_map);
+		str_map.empty = posZero - 1;
+		lst.push_back(str_map);
+	}
 	//Move down
 	if (i > 0)
-		lst.push_back(swapMap(posZero, posZero - _size, curr_map));
+	{
+		str_map.map = swapMap(posZero, posZero - _size, curr_map);
+		str_map.empty = posZero - _size;
+		lst.push_back(str_map);
+	}
 	//Move up
 	if (i + 1 < _size)
-		lst.push_back(swapMap(posZero, posZero + _size, curr_map));
+	{
+		str_map.map = swapMap(posZero, posZero + _size, curr_map);
+		str_map.empty = posZero + _size;
+		lst.push_back(str_map);
+	}
 
 	return lst;
 }

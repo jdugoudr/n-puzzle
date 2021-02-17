@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 23:19:43 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 01:24:57 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,26 +41,40 @@ Node	&Node::operator=(Node const &other)
 }
 
 Node::Node(std::vector<int> map, int mapSize):
-															_map(map),
+															_map(),
 															_mapSize(mapSize),
 															_costSoFar(0),
 															_costToReach(0)
 {
+	_map.map = map;
 }
 
 Node::Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev):
-																				_map(map),
+																				_map(),
 																				_mapSize(mapSize),
 																				_costSoFar(costSoFar),
 																				_costToReach(0),
 																				_comeFrom(prev)
 
 {
+	_map.map = map;
+}
+
+Node::Node(t_map map, int mapSize, int costSoFar, Node *prev):
+																				_map(),
+																				_mapSize(mapSize),
+																				_costSoFar(costSoFar),
+																				_costToReach(0),
+																				_comeFrom(prev)
+
+{
+	_map.map = map.map;
+	_map.empty = map.empty;
 }
 
 std::vector<int> const						Node::getMap() const
 {
-	return _map;
+	return _map.map;
 }
 
 int													Node::getMapSize() const
@@ -80,12 +94,7 @@ int													Node::getCostToReach() const
 
 int													Node::getEmpty() const
 {
-	for (int pos = 0 ; pos < _mapSize * _mapSize ; pos++)
-		if (_map[pos] == 0)
-			return pos;
-	throw std::out_of_range("Out of Range while looking for neighbor ");
-	return 0;
-	//return _empty;
+	return _map.empty;
 }
 Node												*Node::getPrev() const
 {
@@ -106,7 +115,7 @@ void												Node::setCostToReach(int nc)
 
 void												Node::setEmpty(int empty)
 {
-	_empty = empty;
+	_map.empty = empty;
 	return ;
 }
 
@@ -118,7 +127,7 @@ void												Node::setComeFrom(Node *p)
 
 void												Node::swap(size_t src, size_t dest)
 {
-	std::swap(_map[src], _map[dest]);
+	std::swap(_map.map[src], _map.map[dest]);
 	return ;
 }
 
@@ -140,7 +149,7 @@ bool												Node::operator>(Node const &other)
 
 bool												Node::operator==(Node const &other)
 {
-	return _map == other._map;
+	return _map.map == other._map.map;
 }
 
 bool												Node::comp(Node *a, Node *b)
