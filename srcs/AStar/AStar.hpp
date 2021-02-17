@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 02:12:11 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 13:54:58 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ private:
 	std::map<std::vector<int>, Node *>		_closedSet;
 	std::map<std::vector<int>, Node *>		_openSet;
 	std::priority_queue<Node *,
-	std::vector<Node*>, bool (*)(Node*, Node*)>	_openList;
+				std::vector<Node*>, bool (*)(Node*, Node*)>	_openList;
 
 
 	void							pushOpenList(Node *n);
