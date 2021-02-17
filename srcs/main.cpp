@@ -128,14 +128,13 @@ int						main(int ac, char **av)
 		return (usage(1, puzzle));
 	}
 
-	puzzle->create_start_node();
+	puzzle->create_start_end_nodes();
 
 	if (puzzle->getStartNode() == NULL)
 	{
 		delete puzzle;
 		return (1);
 	}
-	puzzle->create_end_node();
 
 	std::cout << "START NODE:" << std::endl;
 	std::cout << *(puzzle->getStartNode()) << std::endl;

@@ -42,7 +42,7 @@ private:
 	bool					_solvabilityCheck;	// option -n => don't check puzzle solvability
 	bool					_mustBeSolvable;	// option -u => generate unsolvable map 
 
-	Node					*generate_start_node(int size);
+	Node					*generate_random_start_node(Node *endNode, int solvable);
 	Node					*get_start_node_from_file(std::string filename);
 	int						count_inversions(std::vector<int> const &map, int size) const;
 	void					check_validity(std::vector<int> map, const int size);
@@ -78,8 +78,8 @@ public:
 	void					setSolvabilityCheck(bool state);
 	void					setMustBeSolvable(bool state);
 
-	void					create_start_node();
-	void					create_end_node();
+	void					create_start_end_nodes();
+	Node					*create_end_node(int size);
 	bool					is_solvable(void) const;
 };
 
