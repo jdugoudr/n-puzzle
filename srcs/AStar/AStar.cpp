@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 01:31:41 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 02:25:08 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,33 @@ void							AStar::run()
 			return ;
 		}
 		pushFromOpenToClose(_curr);//pop priority_queue
+
 		int	tentative_g = _curr->getCostSoFar() + 1;
 		for (auto it: getNeighbor(_curr))
 		{
-			if (_closedSet.find(it.map) != _closedSet.end())
-				continue ; // Don't we have to compare tentative_g ????
-			else if (_openSet.find(it.map) != _openSet.end()) // Don't we have to replace it in priority_queue ???
+			auto inClosed = _closedSet.find(it.map);
+			auto inOpen = _openSet.find(it.map);
+			if ( inClosed != _closedSet.end()
+					||  inOpen != _openSet.end())
 			{
-				if (_openSet[it.map]->getCostSoFar() <= tentative_g)
+				Node	*oldNode = inClosed != _closedSet.end() ? _closedSet[it.map] : _openSet[it.map];
+				if (oldNode->getCostSoFar() > tentative_g)
+				{
+					oldNode->setComeFrom(_curr);
+					oldNode->setCostSoFar(tentative_g);
+					if (inClosed != _closedSet.end())
+					{
+//						std::cout << "Oh my god Yes !" << std::endl;
+						pushFromCloseToOpen(oldNode);
+					}
+				}
+				else
 					continue ;
 			}
 			else
 			{
 				pushNewNodeToOpen(tentative_g, _h.calculate(it.map, _goal), it, _curr);
 			}
-			_openSet[it.map]->setCostSoFar(tentative_g);
 		}
 	//	debug();
 	}
@@ -115,6 +127,14 @@ void							AStar::pushFromOpenToClose(Node *n)
 	_closedSet[n->getMap()] = n;
 	_openSet.erase(n->getMap());
 	_openList.pop();
+	return ;
+}
+
+void							AStar::pushFromCloseToOpen(Node *n)
+{
+	_openSet[n->getMap()] = n;
+	_closedSet.erase(n->getMap());
+	_openList.push(n);
 	return ;
 }
 

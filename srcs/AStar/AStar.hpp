@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 01:05:59 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 02:12:11 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ private:
 
 	void							pushOpenList(Node *n);
 	void							pushFromOpenToClose(Node *n);
+	void							pushFromCloseToOpen(Node *n);
 	void							pushNewNodeToOpen(int soFar, int toReach,
 																				t_map map, Node *parent);
 
