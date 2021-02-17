@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 22:24:57 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 22:38:30 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,16 @@ std::vector<int>		AStar::swapMap(int src, int dest, std::vector<int> map)
 	return newMap;	
 }
 
-void display_open(std::pair<std::vector<int>, Map> const &el)
+void display_open(std::pair<std::vector<int>, Map*> const &el)
 {
-	Map	const &m = std::get<1>(el);
+	Map	const &m = *std::get<1>(el);
 
 	if (m._isOpen)
 		std::cout << m << std::endl;
 }
-void display_close(std::pair<std::vector<int>, Map> const &el)
+void display_close(std::pair<std::vector<int>, Map*> const &el)
 {
-	Map	const &m = std::get<1>(el);
+	Map	const &m = *std::get<1>(el);
 
 	if (!m._isOpen)
 		std::cout << m << std::endl;
@@ -70,14 +70,14 @@ void							AStar::run()
 				_start->getEmpty());
 
 	_openList.push(&start);
-	_set.insert(std::make_pair(start._map, start));
+	_set.insert(std::make_pair(start._map, &start));//Attention il doit etre malloc, gare au invalid free !!
 
 	while (!_openList.empty())
 	{
 		_curr = *_openList.top();
 		if(_curr._map == _goal.getMap())
 		{
-			std::cout << _set[_curr._map];
+			std::cout << *_set[_curr._map];
 			return ;
 		}
 
@@ -89,7 +89,7 @@ void							AStar::run()
 			auto el = _set.find(it._map);
 			if ( el != _set.end())
 			{
-				Map	&oldNode = std::get<1>(*el);
+				Map	&oldNode = *(std::get<1>(*el));
 				if (oldNode._gscore > tentative_g)
 				{
 					oldNode._parent = &_curr;
@@ -121,15 +121,18 @@ void							AStar::run()
 void							AStar::pushNewNodeToOpen(int soFar, int toReach, Map &map, Map &parent)
 {
 	try {
-		_set[map._map] = Map(map, parent);
+		Map	&ref = *(new Map(map, parent));
+	//	_set[map._map] = Map(map, parent);
 
-		Map	&ref = _set[map._map];
+	//	Map	&ref = *_set[map._map];
 
 		ref._gscore = soFar;
 		ref._fscore = soFar + toReach;
 
 		_openList.push(&ref);
 		ref._isOpen = true;
+
+		_set[map._map] = &ref;
 
 
 	} catch (std::exception &e) {
