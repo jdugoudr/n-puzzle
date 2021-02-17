@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 01:04:03 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 17:45:48 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,55 @@
 # define NODE_HPP
 
 //# include "Case.hpp"
+#include <limits.h>
 # include <iomanip>
 # include <iostream>
 # include <vector>
 
-typedef struct				s_map{
-	std::vector<int>		map;
-	int									empty;
-}											t_map;
+struct								Map{
+	std::vector<int>		_map;
+	std::vector<int>		_parent;
+	int									_gscore;
+	int									_fscore;
+	int									_empty;
+
+	Map():_map({0}),_parent({0}),_gscore(INT_MAX), _fscore(INT_MAX), _empty(0){}
+	Map(Map const &o, std::vector<int>p)
+	{
+		_map = o._map;
+		_parent = p;
+		_gscore = o._gscore;
+		_fscore = o._fscore;
+		_empty = o._empty;
+	}
+	Map(std::vector<int> m, std::vector<int> p, int g, int f, int e):_map(m),
+																								_parent(p),
+																								_gscore(g),
+																								_fscore(f),
+																								_empty(e)
+	{}
+};
+
+struct							PairMap{
+	std::vector<int>	_map;
+	int								_fscore;
+
+	PairMap():_map{0}, _fscore(INT_MAX){}
+	PairMap(std::vector<int> m, int f):_map(m), _fscore(f){}
+
+	// Mendatory part to be used by pq_custom
+	bool							operator>(const PairMap &p) const {
+		return _fscore > p._fscore;
+	}
+	bool							operator==(const PairMap &p) const {
+		return _map == p._map;
+	}
+};
 
 class Node{
 
 private:
-	t_map																		_map;
+	Map																			_map;
 	int const																_mapSize;
 	int																			_costSoFar;
 	int																			_costToReach;
@@ -38,7 +74,7 @@ public:
 	Node(Node const &other);
 	Node(std::vector<int> map, int mapSize);
 	Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev);
-	Node(t_map map, int mapSize, int costSoFar, Node *prev);
+	Node(Map	 map, int mapSize, int costSoFar, Node *prev);
 	virtual ~Node();
 
 	Node	&operator=(Node const &other);
@@ -65,6 +101,8 @@ public:
 };
 
 std::ostream	&operator<<(std::ostream &o, Node const &c);
+std::ostream	&operator<<(std::ostream &o, Map const &c);
+std::ostream	&operator<<(std::ostream &o, PairMap const &c);
 
 #endif
 
