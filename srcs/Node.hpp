@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 17:45:48 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 22:08:27 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,43 +21,44 @@
 
 struct								Map{
 	std::vector<int>		_map;
-	std::vector<int>		_parent;
-	int									_gscore;
 	int									_fscore;
+//	std::vector<int>		_parent;
+	Map									*_parent;
+	int									_gscore;
 	int									_empty;
+	bool								_isOpen;
 
-	Map():_map({0}),_parent({0}),_gscore(INT_MAX), _fscore(INT_MAX), _empty(0){}
-	Map(Map const &o, std::vector<int>p)
+	Map():_map({0}), _fscore(INT_MAX), _parent(nullptr),_gscore(INT_MAX), _empty(0), _isOpen(1)
+	{}
+	Map(Map const &o, Map &p)
 	{
 		_map = o._map;
-		_parent = p;
-		_gscore = o._gscore;
 		_fscore = o._fscore;
+		_parent = &p;
+		_gscore = o._gscore;
 		_empty = o._empty;
 	}
-	Map(std::vector<int> m, std::vector<int> p, int g, int f, int e):_map(m),
+	Map(std::vector<int> m, Map *p, int g, int f, int e):
+																								_map(m),
+																								_fscore(f),
 																								_parent(p),
 																								_gscore(g),
-																								_fscore(f),
-																								_empty(e)
-	{}
-};
+																								_empty(e),
+																								_isOpen(1)
+	{
+	}
 
-struct							PairMap{
-	std::vector<int>	_map;
-	int								_fscore;
-
-	PairMap():_map{0}, _fscore(INT_MAX){}
-	PairMap(std::vector<int> m, int f):_map(m), _fscore(f){}
-
-	// Mendatory part to be used by pq_custom
-	bool							operator>(const PairMap &p) const {
+	bool	operator>(const Map &p) const {
 		return _fscore > p._fscore;
 	}
-	bool							operator==(const PairMap &p) const {
+	bool	operator==(const Map &p) const {
 		return _map == p._map;
 	}
+	static bool	comp(Map *a, Map *b){
+		return *a > *b;
+	}
 };
+
 
 class Node{
 
@@ -102,7 +103,6 @@ public:
 
 std::ostream	&operator<<(std::ostream &o, Node const &c);
 std::ostream	&operator<<(std::ostream &o, Map const &c);
-std::ostream	&operator<<(std::ostream &o, PairMap const &c);
 
 #endif
 

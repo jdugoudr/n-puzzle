@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 15:25:14 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 21:37:44 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,13 @@ using namespace std;
 
 template<typename T>
 class pq_custom: public
-						priority_queue<T, vector<T>, std::greater<T>>{
+						priority_queue<T *, vector<T *>, bool (*)(T*,T*)>{
 
 private:
+	bool	(*f)(T *, T *);
 
 public:
-	pq_custom<T>():priority_queue<T,vector<T>,greater<T>>()
+	pq_custom<T*,vector<T*>,bool (*com)(T*,T*)>():priority_queue<T*,vector<T*>,bool (*)(T*,T*)>()
 	{
 	}
 	virtual ~pq_custom(){}
@@ -49,7 +50,9 @@ public:
 				break ;
 		}
 		if (it == end || newPos == end)
+		{
 			throw std::out_of_range("Element not find in pq_custom");
+		}
 		priority_queue<T,vector<T>,greater<T>>::c.erase(it);
 		priority_queue<T,vector<T>,greater<T>>::c.insert(newPos, el);
 

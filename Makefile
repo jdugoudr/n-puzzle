@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/17 15:48:53 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/17 21:39:32 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,8 +64,8 @@ TEST_UNARY=	case \
 					 	node \
 						puzzle \
 						astar \
-						time \
-						pq_custom
+						time
+#						pq_custom
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
 OBJECTS			=	$(addprefix $(OBJDIR),  $(SRCS:.cpp=.o))

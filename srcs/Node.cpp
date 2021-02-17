@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 17:45:22 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 21:56:03 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,28 +208,5 @@ std::ostream	&operator<<(std::ostream &o, Map const &c)
 			o << std::endl;
 	}
 	o <<std::setw(width) <<  c._gscore << " - " << c._fscore - c._gscore << std::endl;
-	return o;
-}
-
-std::ostream	&operator<<(std::ostream &o, PairMap const &c)
-{
-	int		width = 1;
-	int		size = AStar::getSize();
-	int		total_size = size * size - 1;
-
-	while (total_size > 0)
-	{
-		total_size /= 10;
-		width++;
-	}
-
-	int	i = 0;
-	for (auto &it1: c._map)
-	{
-		o << std::setw(width) << it1;
-		i++;
-		if (i % size == 0)
-			o << std::endl;
-	}
 	return o;
 }
