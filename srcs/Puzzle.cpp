@@ -26,6 +26,12 @@ Puzzle::Puzzle():
 
 Puzzle::~Puzzle()
 {
+	if (_heuristic)
+		delete _heuristic;
+	if (_startNode)
+		delete _startNode;
+	if (_endNode)
+		delete _endNode;
 }
 
 IHeuristic const									*Puzzle::getHeuristic() const
