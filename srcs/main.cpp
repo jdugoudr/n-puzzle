@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 18:12:12 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:19:25 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,11 @@ int						main(int ac, char **av)
 				std::cout << el << " ";
 			std::cout << ")" << std::endl;
 		}
+	//	for (auto n: res)
+	//	{
+	//		std::cout << *n << " ";
+	//		std::cout << "==================" << std::endl;
+	//	}
 	} catch (std::exception &e){
 		std::cerr << e.what() << std::endl;
 	}
