@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 23:36:49 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:18:19 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,45 @@
 # define ASTAR_HPP
 
 #include "Node.hpp"
+//#include "pq_custom.hpp"
 #include "IHeuristic.hpp"
-#include "p_queue_custom.hpp"
 #include <list>
+#include <queue>
+#include <map>
 #include <iostream>
 
 class AStar{
 
 private:
-	int	const								_size;
-	Node const							&_start;
-	Node const							&_goal;
-	IHeuristic const				&_h;
-	Node										*_curr;
-	p_queue_custom<Node *>	_openList;
-	p_queue_custom<Node *>	_closedList;
+	static	int																								_size;
+	Node const																								&_goal;
+	IHeuristic const																					&_h;
+	Node																											*_start;
 
-	void		isAlreadyKnown(std::list<Node*> *lst);
-	void		for_each_neighbor(Node *curr, std::list<Node*> neighbors);
-//	Node							*swapMap(int, int, int, int);
-	Node							*swapMap(int src, int dest);
-	std::list<Node *>	getNeighbor();
-	void							createNeighbor(std::list<Node *> &lst,
-																						int i,
-																						int j,
-																						int pos);
+	std::map<std::vector<int>, Node*>													_set;
+	std::priority_queue<
+		Node*,std::vector<Node*>, bool (*)(Node*,Node*)>						_openList;
+
+
+	void					pushOpenList(Node &node);
+	void					pushFromOpenToClose(Node &m);
+	void					pushFromCloseToOpen(Node &m);
+	void					pushNewNodeToOpen(int const soFar, int const toReach,
+																				Node &map, Node *parent);
+
+	std::vector<Node>		getNeighbor(Node &m);
+
+
+	void							debug() const;
 
 public:
-	AStar(Node const &start, Node const &goal, IHeuristic const &h);
+	AStar(Node *start, Node const &goal, IHeuristic const &h);
 	virtual ~AStar();
 
 	void							run();
-	std::list<Node*>	getPath() const;
-	Node const				*getCurrent() const;
 	
+	static int				getSize();
+//	std::list<Node*>	getPath() const;
 
 	class NoSolution: public std::exception{
 		public:
@@ -57,6 +62,7 @@ public:
 	};
 
 };
+
 
 std::ostream	&operator<<(std::ostream &o, AStar const &c);
 

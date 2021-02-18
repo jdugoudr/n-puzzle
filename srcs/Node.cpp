@@ -6,55 +6,53 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 22:36:32 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:23:44 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Node.hpp"
+#include "AStar.hpp"
+#include <limits.h>
+# include <vector>
 
-Node::Node():_map(),
-															_mapSize(0)
+Node::Node():_map({0}), _fscore(INT_MAX), _parent(nullptr),_gscore(0),
+													_empty(0), _isOpen(1), _mapSize(0)
+{}
+
+Node::Node(std::vector<int> m, int s):_map(m), _fscore(INT_MAX),
+															_parent(nullptr),_gscore(0),
+															_empty(0), _isOpen(1), _mapSize(s)
+{}
+
+Node::Node(Node const &o, Node *p)
+{
+	_map = o._map;
+	_fscore = o._fscore;
+	_parent = p;
+	_gscore = o._gscore;
+	_empty = o._empty;
+	_mapSize = o._mapSize;
+}
+
+Node::Node(std::vector<int> m, Node *p, int g, int f, int e, int s):
+																								_map(m),
+																								_fscore(f),
+																								_parent(p),
+																								_gscore(g),
+																								_empty(e),
+																								_isOpen(1),
+																								_mapSize(s)
 {
 }
 
-Node::Node(Node const &other):_map(),
-															_mapSize(other._mapSize)
-{
-	*this = other;
+bool	Node::operator>(const Node &p) const {
+	return _fscore > p._fscore;
 }
-
-Node::~Node()
-{
+bool	Node::operator==(const Node &p) const {
+	return _map == p._map;
 }
-
-Node	&Node::operator=(Node const &other)
-{
-	if (this != &other)
-	{
-		_costSoFar = other._costSoFar;
-		_costToReach = other._costToReach;
-		_comeFrom = other._comeFrom;
-		_map = other._map;
-	}
-	return *this;
-}
-
-Node::Node(std::vector<int> map, int mapSize):
-															_map(map),
-															_mapSize(mapSize),
-															_costSoFar(0),
-															_costToReach(0)
-{
-}
-
-Node::Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev):
-																				_map(map),
-																				_mapSize(mapSize),
-																				_costSoFar(costSoFar),
-																				_costToReach(0),
-																				_comeFrom(prev)
-
-{
+bool	Node::comp(Node *a, Node *b){
+	return *a > *b;
 }
 
 std::vector<int> const								&Node::getMap() const
@@ -67,51 +65,14 @@ int													Node::getMapSize() const
 	return _mapSize;
 }
 
-int													Node::getCostSoFar() const
-{
-	return _costSoFar;
-}
-
-int													Node::getCostToReach() const
-{
-	return _costToReach;
-}
-
 int													Node::getEmpty() const
 {
-	for (int pos = 0 ; pos < _mapSize * _mapSize ; pos++)
-		if (_map[pos] == 0)
-			return pos;
-	throw std::out_of_range("Out of Range while looking for neighbor ");
-	return 0;
-	//return _empty;
-}
-Node												*Node::getPrev() const
-{
-	return _comeFrom;
-}
-
-void												Node::setCostSoFar(int nc)
-{
-	_costSoFar = nc;
-	return ;
-}
-
-void												Node::setCostToReach(int nc)
-{
-	_costToReach = nc;
-	return ;
+	return _empty;
 }
 
 void												Node::setEmpty(int empty)
 {
 	_empty = empty;
-	return ;
-}
-
-void												Node::setComeFrom(Node *p)
-{
-	_comeFrom = p;
 	return ;
 }
 
@@ -121,36 +82,10 @@ void												Node::swap(size_t src, size_t dest)
 	return ;
 }
 
-bool												Node::operator<(Node const &other)
-{
-	int	totalO = other.getCostSoFar() + other.getCostToReach();
-	int	totalT = this->_costSoFar + this->_costToReach;
-
-	return totalT < totalO;
-}
-
-bool												Node::operator>(Node const &other)
-{
-	int	totalO = other.getCostSoFar() + other.getCostToReach();
-	int	totalT = this->_costSoFar + this->_costToReach;
-
-	return totalT > totalO;
-}
-
-bool												Node::operator==(Node const &other)
-{
-	return _map == other._map;
-}
-
-bool												Node::comp(Node *a, Node *b)
-{
-	return *a > *b;
-}
-
 std::ostream	&operator<<(std::ostream &o, Node const &c)
 {
 	int		width = 1;
-	int		size = c.getMapSize();
+	int		size = c._mapSize;
 	int		total_size = size * size - 1;
 
 	while (total_size > 0)
@@ -160,13 +95,14 @@ std::ostream	&operator<<(std::ostream &o, Node const &c)
 	}
 
 	int	i = 0;
-	for (auto &it1: c.getMap())
+	for (auto &it1: c._map)
 	{
 		o << std::setw(width) << it1;
 		i++;
 		if (i % size == 0)
 			o << std::endl;
 	}
-	o <<std::setw(width) <<  c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
+	if (c._fscore != INT_MAX)
+		o <<std::setw(width) <<  c._gscore << " - " << c._fscore - c._gscore << std::endl;
 	return o;
 }

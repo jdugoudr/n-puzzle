@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IHeuristic.hpp                                     :+:      :+:    :+:   */
+/*   find_if_mix.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/08 20:48:15 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 22:56:02 by jdugoudr         ###   ########.fr       */
+/*   Created: 2021/02/11 18:39:01 by jdugoudr          #+#    #+#             */
+/*   Updated: 2021/02/11 20:44:56 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	IHEURISTIC_HPP
-# define IHEURISTIC_HPP
+#ifndef FIND_IF_CMP_HPP
+# define FIND_IF_CMP_HPP
 
-#include "Node.hpp"
-#include <vector>
-
-class IHeuristic{
-
-public:
-	virtual ~IHeuristic() {}
-
-	virtual int					calculate(std::vector<int> const &current, Node const &goal) const = 0;
-	virtual std::string const	getName() const = 0;
-};
+template<class C, class T>
+C	find_if_mix(C start, C end,
+								T const &val, bool (*f)( T, T))
+{
+	while (start != end)
+	{
+		if (f(*start, val))
+			break ;
+		start++;
+	}
+	return start;
+}
 
 #endif
-

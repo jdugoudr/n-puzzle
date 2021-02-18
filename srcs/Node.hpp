@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:18:18 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/12 22:03:16 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:23:32 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,44 +18,29 @@
 # include <iostream>
 # include <vector>
 
-class Node{
-
-private:
-	std::vector<int>												_map;
-	int const																_mapSize;
-	int																			_costSoFar;
-	int																			_costToReach;
-	int 																		_empty;
-	Node																		*_comeFrom;
+struct								Node{
+	std::vector<int>		_map;
+	int									_fscore;
+	Node								*_parent;
+	int									_gscore;
+	int									_empty;
+	bool								_isOpen;
+	int									_mapSize;
 
 	Node();
+	Node(std::vector<int> m, int s);
+	Node(Node const &o, Node *p);
+	Node(std::vector<int> m, Node *p, int g, int f, int e, int s);
 
-public:
-	Node(Node const &other);
-	Node(std::vector<int> map, int mapSize);
-	Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev);
-	virtual ~Node();
-
-	Node	&operator=(Node const &other);
-
+	bool	operator>(const Node &p) const;
+	bool	operator==(const Node &p) const;
+	static bool	comp(Node *a, Node *b);
 
 	std::vector<int> const			&getMap() const;
 	int								getMapSize() const;
-	int								getCostSoFar() const;
-	int								getCostToReach() const;
-	Node							*getPrev() const;
-	int								getEmpty() const;
-	void							setCostSoFar(int nc);
-	void							setCostToReach(int nc);
 	void							setEmpty(int);
-	void							setComeFrom(Node *p);
-
-	bool							operator<(Node const &other);
-	bool							operator>(Node const &other);
-	bool							operator==(Node const &other);
-
+	int								getEmpty() const;
 	void							swap(size_t src, size_t dest);
-	static bool				comp(Node *a, Node *b);
 };
 
 std::ostream	&operator<<(std::ostream &o, Node const &c);
