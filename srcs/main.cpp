@@ -57,7 +57,8 @@ static std::string		choose_heuristic(void)
 
 static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 {
-    int 			opt;
+    int 			opt = 0;
+	bool			generate_flag = 0, file_flag = 0;
 
 	if (ac == 1)
 		exit (usage(0, puzzle));
@@ -70,23 +71,26 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 				exit (usage(0, puzzle));
             case 'f':
 			{
-				if (puzzle->getMapSize())
+				if (generate_flag)
 					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
-				if (std::string(optarg).empty())
-					throw (invalid_argument("Wrong or missing argument"));
 				puzzle->setFilename(optarg);
 				break;
 			}
             case 'g':
 			{
-				if (!puzzle->getFilename().empty())
+				if (file_flag)
 					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
+				std::string tmp(optarg);
+				if (tmp.find_first_not_of("0123456789") != std::string::npos)
+					throw (invalid_argument("Invalid puzzle size"));
+
 				puzzle->setMapSize(atoi(optarg));
+				std::cout << puzzle->getMapSize() << std::endl;	
 				break;
 			}
             case 'u':
 			{
-				if (!puzzle->getFilename().empty())
+				if (file_flag)
 					throw (invalid_argument("Incompatible arguments"));
 				puzzle->setMustBeSolvable(0);
 				puzzle->setSolvabilityCheck(0);
@@ -94,7 +98,7 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 			}
             case 'n':
 			{
-				if (puzzle->getMapSize())
+				if (generate_flag)
 					throw (invalid_argument("Incompatible arguments"));
 				puzzle->setSolvabilityCheck(0);
 				break;
@@ -106,11 +110,11 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 
 	if (optind < ac)
 		throw (invalid_argument("Wrong argument"));
-	else if (puzzle->getFilename().empty() && !puzzle->getMapSize())
+	else if (generate_flag && !puzzle->getMapSize())
 		throw (invalid_argument("You must specify a puzzle size"));
-	else if (puzzle->getFilename().empty() && (puzzle->getMapSize() < MAP_MIN_SIZE
+	else if (generate_flag && (puzzle->getMapSize() < MAP_MIN_SIZE
 				|| puzzle->getMapSize() > MAP_MAX_SIZE))
-		throw (invalid_argument("Wrong puzzle size"));
+		throw (invalid_argument("Invalid puzzle size"));
 }
 
 int						main(int ac, char **av)
