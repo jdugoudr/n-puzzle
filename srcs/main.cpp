@@ -42,10 +42,10 @@ static int				usage(int ret, Puzzle *puzzle)
 static std::string		choose_heuristic(void)
 {
 	unsigned long				x = 0;
-	std::array<std::string, 1>	array = {"Manhattan"};	//completer avec les autres heuristiques
+	std::array<std::string, 2>	array = {"Manhattan", "Hamming"};
 	
 	std::cout << std::endl;	
-	std::cout << "Choose a heuristic function : [1] Manhattan" << std::endl;	
+	std::cout << "Choose a heuristic function : [1] Manhattan  [2] Hamming" << std::endl;	
 	std::cout << "Type a number : ";	
 	std::cin >> x;
 	std::cout << std::endl;	
@@ -137,7 +137,6 @@ int						main(int ac, char **av)
 	}
 
 	puzzle->create_start_end_nodes();
-
 	if (puzzle->getStartNode() == NULL)
 	{
 		delete puzzle;
@@ -153,10 +152,9 @@ int						main(int ac, char **av)
 	{
 		std::cout << "This puzzle is not solvable." << std::endl;
 		delete puzzle;
-		return(0);
+		return (0);
 	}
 
-	// algo
 	AStar	star(puzzle->getStartNode(),
 								*puzzle->getEndNode(),
 								*puzzle->getHeuristic());
@@ -171,6 +169,7 @@ int						main(int ac, char **av)
 				std::cout << el << " ";
 			std::cout << ")" << std::endl;
 		}
+		std::cout << "Number of move : " << res.size()-1 << std::endl;
 	//	for (auto n: res)
 	//	{
 	//		std::cout << *n << " ";

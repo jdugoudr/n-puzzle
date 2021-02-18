@@ -15,6 +15,7 @@
 
 # include "IHeuristic.hpp"
 # include "Manhattan.hpp"
+# include "Hamming.hpp"
 # include "Node.hpp"
 
 # include <iostream>
@@ -57,7 +58,7 @@ public:
 	virtual ~Puzzle();
 
 	IHeuristic const		*getHeuristic() const;
-	Node 							*getStartNode() const;
+	Node 					*getStartNode() const;
 	Node const				*getEndNode() const;
 	int						getMapSize() const;
 	std::list<Node *>		getOpenList() const;

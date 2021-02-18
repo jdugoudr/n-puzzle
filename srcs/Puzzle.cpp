@@ -15,6 +15,7 @@
 using namespace	std;
 
 static IHeuristic		*createManhattanHeuristic();
+static IHeuristic		*createHammingHeuristic();
 
 Puzzle::Puzzle():
 	_heuristic(nullptr),
@@ -89,14 +90,22 @@ static IHeuristic									*createManhattanHeuristic()
 	return (new Manhattan);
 }
 
+static IHeuristic									*createHammingHeuristic()
+{
+	return (new Hamming);
+}
+
+
+
 void												Puzzle::setHeuristic(std::string heuristic_name)
 {
 	typedef IHeuristic *(*func)();
 	typedef struct {std::string name; func heuristic_func;} HeurCreateType;
 
-	HeurCreateType			array[1] =
+	HeurCreateType			array[2] =
 	{
-		{"Manhattan", &createManhattanHeuristic}
+		{"Manhattan", &createManhattanHeuristic},
+		{"Hamming", &createHammingHeuristic}
 	};
 
 	for (auto &it: array)
