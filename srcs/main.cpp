@@ -48,6 +48,7 @@ static std::string		choose_heuristic(void)
 	std::cout << "Choose a heuristic function : [1] Manhattan" << std::endl;	
 	std::cout << "Type a number : ";	
 	std::cin >> x;
+	std::cout << std::endl;	
 
 	if (!(x >= 1 && x <= array.size()))
 		throw (invalid_argument("Invalid number"));
@@ -57,8 +58,10 @@ static std::string		choose_heuristic(void)
 
 static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 {
-    int 			opt;
+    int 			opt = 0;
+	bool			g_flag, f_flag, u_flag, n_flag;
 
+	g_flag = f_flag = u_flag = n_flag = 0;
 	if (ac == 1)
 		exit (usage(0, puzzle));
 
@@ -70,32 +73,36 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 				exit (usage(0, puzzle));
             case 'f':
 			{
-				if (puzzle->getMapSize())
-					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
-				if (std::string(optarg).empty())
-					throw (invalid_argument("Wrong or missing argument"));
+				if (g_flag || u_flag)
+					throw (invalid_argument("Incompatible arguments"));
+				f_flag = 1;
 				puzzle->setFilename(optarg);
 				break;
 			}
             case 'g':
 			{
-				if (!puzzle->getFilename().empty())
-					throw (invalid_argument("You must choose between reading from a file and generating a puzzle"));
+				if (f_flag || n_flag)
+					throw (invalid_argument("Incompatible arguments"));
+				g_flag = 1;
+				if (std::string(optarg).find_first_not_of("0123456789") != std::string::npos)
+					throw (invalid_argument("Invalid puzzle size"));
 				puzzle->setMapSize(atoi(optarg));
 				break;
 			}
             case 'u':
 			{
-				if (!puzzle->getFilename().empty())
+				if (f_flag || n_flag)
 					throw (invalid_argument("Incompatible arguments"));
+				u_flag = 1;
 				puzzle->setMustBeSolvable(0);
 				puzzle->setSolvabilityCheck(0);
 				break;
 			}
             case 'n':
 			{
-				if (puzzle->getMapSize())
+				if (g_flag || u_flag)
 					throw (invalid_argument("Incompatible arguments"));
+				n_flag = 1;
 				puzzle->setSolvabilityCheck(0);
 				break;
 			}
@@ -106,11 +113,11 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 
 	if (optind < ac)
 		throw (invalid_argument("Wrong argument"));
-	else if (puzzle->getFilename().empty() && !puzzle->getMapSize())
-		throw (invalid_argument("You must specify a puzzle size"));
-	else if (puzzle->getFilename().empty() && (puzzle->getMapSize() < MAP_MIN_SIZE
+	else if (!f_flag && !g_flag)
+		throw (invalid_argument("Missing argument"));
+	else if (g_flag && (puzzle->getMapSize() < MAP_MIN_SIZE
 				|| puzzle->getMapSize() > MAP_MAX_SIZE))
-		throw (invalid_argument("Wrong puzzle size"));
+		throw (invalid_argument("Invalid puzzle size"));
 }
 
 int						main(int ac, char **av)

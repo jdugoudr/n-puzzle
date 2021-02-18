@@ -17,6 +17,9 @@ using namespace	std;
 static IHeuristic		*createManhattanHeuristic();
 
 Puzzle::Puzzle():
+	_heuristic(nullptr),
+	_startNode(nullptr),
+	_endNode(nullptr),
 	_numberOfStates(0),
 	_numberOfMoves(0),
 	_solvabilityCheck(1),
@@ -26,12 +29,9 @@ Puzzle::Puzzle():
 
 Puzzle::~Puzzle()
 {
-	if (_heuristic)
-		delete _heuristic;
-	if (_startNode)
-		delete _startNode;
-	if (_endNode)
-		delete _endNode;
+	delete _heuristic;
+	delete _startNode;
+	delete _endNode;
 }
 
 IHeuristic const									*Puzzle::getHeuristic() const
