@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 20:01:38 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 15:42:29 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,15 @@ static std::string		choose_heuristic(void)
 {
 	unsigned long				x = 0;
 	std::array<std::string, 1>	array = {"Manhattan"};	//completer avec les autres heuristiques
-	return (array[0]);
 	
+	return "Manhattan";
 	std::cout << std::endl;	
 	std::cout << "Choose a heuristic function : [1] Manhattan" << std::endl;	
 	std::cout << "Type a number : ";	
 	std::cin >> x;
 
 	if (!(x >= 1 && x <= array.size()))
-	{
-		std::cout << "Invalid number" << std::endl;	
-		return ("");
-	}
+		throw (invalid_argument("Invalid number"));
 
 	return (array[x - 1]);
 }
@@ -120,27 +117,25 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 int						main(int ac, char **av)
 {
 	Puzzle			*puzzle = new Puzzle();
-	std::string		heuristic_name;
 
-	try {
+	try
+	{
 		parse_arguments(ac, av, puzzle);
-	} catch (exception &e) {
-		cout << "Exception: " << e.what() << endl;
+		puzzle->setHeuristic(choose_heuristic());
+	}
+	catch (exception &e)
+	{
+		std::cerr << "Invalid argument exception: " << e.what() << std::endl;
 		return (usage(1, puzzle));
 	}
 
-	if ((heuristic_name = choose_heuristic()).empty())
-		return (usage(1, puzzle));
-
-	puzzle->setHeuristic(heuristic_name);
-	puzzle->create_start_node();
+	puzzle->create_start_end_nodes();
 
 	if (puzzle->getStartNode() == NULL)
 	{
 		delete puzzle;
 		return (1);
 	}
-	puzzle->create_end_node();
 
 	std::cout << "START NODE:" << std::endl;
 	std::cout << *(puzzle->getStartNode()) << std::endl;
@@ -154,8 +149,6 @@ int						main(int ac, char **av)
 		return(0);
 	}
 
-
-	// algo
 	AStar	star(*puzzle->getStartNode(),
 								*puzzle->getEndNode(),
 								*puzzle->getHeuristic());
@@ -165,7 +158,6 @@ int						main(int ac, char **av)
 	} catch (std::exception &e){
 		std::cerr << e.what() << std::endl;
 	}
-
 
 	delete puzzle;
 	return (0);
