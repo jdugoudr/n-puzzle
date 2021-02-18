@@ -233,18 +233,10 @@ Node												*Puzzle::get_start_node_from_file(std::string filename)
 	std::vector<int>	map;
 	unsigned long 		size = 0;
 
-	try
-	{
-		map = this->parse_file(filename, size);
-		start_node = new Node(map, size);
-		this->setMapSize(size);
-		this->check_validity(map, size);
-	}
-	catch (const char *msg)
-	{
-		std::cerr << "Input file error: " << msg << std::endl;	
-		return (NULL);
-	}
+	map = this->parse_file(filename, size);
+	start_node = new Node(map, size);
+	this->setMapSize(size);
+	this->check_validity(map, size);
 
 	return (start_node);
 }
@@ -309,7 +301,15 @@ void												Puzzle::create_start_end_nodes()
 	}
 	else
 	{
-		_startNode = this->get_start_node_from_file(_filename);
+		try
+		{
+			_startNode = this->get_start_node_from_file(_filename); 
+		}
+		catch (const char *msg)
+		{
+			std::cerr << "Input file error: " << msg << std::endl;	
+			return ;
+		}
 		_endNode = this->create_end_node(_mapSize);
 	}
 	//
