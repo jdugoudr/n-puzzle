@@ -49,6 +49,7 @@ private:
 	std::vector<int>		parse_file(std::string filename, unsigned long &size);
 	std::vector<int>		split_stoi(std::string line);
 	std::vector<int>		generate_resolved_array(int size);
+	int						find_empty_index(std::vector<int> const &map);
 
 
 public:

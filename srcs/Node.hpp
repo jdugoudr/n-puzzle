@@ -38,8 +38,8 @@ struct								Node{
 
 	std::vector<int> const			&getMap() const;
 	int								getMapSize() const;
-	void							setEmpty(int);
-	int								getEmpty() const;
+	//void							setEmpty(int);
+	//int								getEmpty() const;
 	void							swap(size_t src, size_t dest);
 };
 

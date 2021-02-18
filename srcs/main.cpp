@@ -87,6 +87,7 @@ static void				parse_arguments(int ac, char **av, Puzzle *puzzle)
 				if (std::string(optarg).find_first_not_of("0123456789") != std::string::npos)
 					throw (invalid_argument("Invalid puzzle size"));
 				puzzle->setMapSize(atoi(optarg));
+				puzzle->setSolvabilityCheck(0);
 				break;
 			}
             case 'u':

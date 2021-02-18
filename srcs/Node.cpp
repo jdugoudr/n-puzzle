@@ -65,16 +65,16 @@ int													Node::getMapSize() const
 	return _mapSize;
 }
 
-int													Node::getEmpty() const
+/*int													Node::getEmpty() const
 {
 	return _empty;
-}
+}*/
 
-void												Node::setEmpty(int empty)
+/*void												Node::setEmpty(int empty)
 {
 	_empty = empty;
 	return ;
-}
+}*/
 
 void												Node::swap(size_t src, size_t dest)
 {

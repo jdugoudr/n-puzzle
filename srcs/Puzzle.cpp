@@ -244,45 +244,42 @@ Node												*Puzzle::get_start_node_from_file(std::string filename)
 Node												*Puzzle::generate_random_start_node(Node *endNode, int must_be_solvable)
 {
 	Node	*node = new Node(*endNode);
-	int		size = node->getMapSize();
-	int		empty = node->getEmpty();
+	int		size = node->_mapSize;
 	int		rnd, x, y;
 
 	srand(time(NULL));	// initialize random seed
 
 	for (int steps = 0; steps < 1000; steps++)
 	{
-		y = empty / size;
-		x = empty % size;
+		y = node->_empty / size;
+		x = node->_empty % size;
 		rnd = rand() % 4 + 1;
 
 		if (rnd == 1 && y > 0)	// move empty up
 		{
-			node->swap(empty, empty - size);
-			empty -= size;
+			node->swap(node->_empty, node->_empty - size);
+			node->_empty -= size;
 		}
 		else if (rnd == 2 && y + 1 < size)	// move empty down
 		{
-			node->swap(empty, empty + size);
-			empty += size;
+			node->swap(node->_empty, node->_empty + size);
+			node->_empty += size;
 		}
 		else if (rnd == 3 && x > 0) // move empty left
 		{
-			node->swap(empty, empty - 1);
-			empty -= 1;
+			node->swap(node->_empty, node->_empty - 1);
+			node->_empty -= 1;
 		}
 		else if (rnd == 4 && x + 1 < size) // move empty right
 		{
-			node->swap(empty, empty + 1);
-			empty += 1;
+			node->swap(node->_empty, node->_empty + 1);
+			node->_empty += 1;
 		}
 	}
 
-	node->setEmpty(empty);
-
 	if (!must_be_solvable)	// make unsolvable if option -u
 	{
-		if (node->getMap()[0] == 0 || node->getMap()[1] == 0)
+		if (node->_map[0] == 0 || node->_map[1] == 0)
 			node->swap(size * size - 2, size * size - 1); // swap last 2 elems
 		else
 			node->swap(0, 1); // swap first 2 elems
@@ -297,13 +294,16 @@ void												Puzzle::create_start_end_nodes()
 	if (_filename.empty())
 	{
 		_endNode = this->create_end_node(_mapSize);
+		_endNode->_empty = find_empty_index(_endNode->_map); 
 		_startNode = this->generate_random_start_node(_endNode, _mustBeSolvable);
+		_startNode->_empty = find_empty_index(_startNode->_map);
 	}
 	else
 	{
 		try
 		{
 			_startNode = this->get_start_node_from_file(_filename); 
+			_startNode->_empty = find_empty_index(_startNode->_map);
 		}
 		catch (const char *msg)
 		{
@@ -311,17 +311,7 @@ void												Puzzle::create_start_end_nodes()
 			return ;
 		}
 		_endNode = this->create_end_node(_mapSize);
-	}
-	//
-	// set the empty case into Node
-	std::vector<int> tmp = _startNode->getMap();
-	for (int i = 0; i < _mapSize * _mapSize; i++)
-	{
-		if (tmp[i] == 0)
-		{
-			_startNode->setEmpty(i);
-			return ;
-		}
+		_endNode->_empty = find_empty_index(_endNode->_map); 
 	}
 }
 
@@ -388,10 +378,25 @@ std::vector<int>									Puzzle::generate_resolved_array(int size)
 	return (map);
 }
 
+int													Puzzle::find_empty_index(std::vector<int> const &map)
+{
+	for (unsigned long i = 0; i < map.size(); i++)
+	{
+		if (map[i] == 0)
+			return (i);
+	}
+	return (0);
+}
+
 Node												*Puzzle::create_end_node(int size)
 {
-	std::vector<int>	resolved_map = this->generate_resolved_array(size);
-	return(new Node (resolved_map, _mapSize));
+	Node				*end_node;
+	std::vector<int>	resolved_map;
+	
+	resolved_map = this->generate_resolved_array(size);
+	end_node = new Node(resolved_map, _mapSize);
+
+	return(end_node);
 }
 
 int													Puzzle::count_inversions(std::vector<int> const &map, int size) const
@@ -418,13 +423,13 @@ bool												Puzzle::is_solvable(void) const
 	if (!_startNode || !_endNode)
 		return (0);
 
-	start_inversions = this->count_inversions(_startNode->getMap(), _mapSize);
-	end_inversions = this->count_inversions(_endNode->getMap(), _mapSize);
+	start_inversions = this->count_inversions(_startNode->_map, _mapSize);
+	end_inversions = this->count_inversions(_endNode->_map, _mapSize);
 
 	if (this->_mapSize % 2 == 0)
 	{
-		start_inversions += (_startNode->getEmpty() / _mapSize);
-		end_inversions += (_endNode->getEmpty() / _mapSize);
+		start_inversions += (_startNode->_empty / _mapSize);
+		end_inversions += (_endNode->_empty / _mapSize);
 	}
 
 	return (start_inversions % 2 == end_inversions % 2);
