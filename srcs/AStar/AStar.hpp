@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 17:18:19 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:07:08 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ private:
 	Node const																								&_goal;
 	IHeuristic const																					&_h;
 	Node																											*_start;
+	std::vector<Node*>																				_finaleResult;
 
 	std::map<std::vector<int>, Node*>													_set;
 	std::priority_queue<
@@ -42,6 +43,8 @@ private:
 
 	std::vector<Node>		getNeighbor(Node &m);
 
+	std::vector<Node*>	getPath(Node *);
+
 
 	void							debug() const;
 
@@ -49,10 +52,9 @@ public:
 	AStar(Node *start, Node const &goal, IHeuristic const &h);
 	virtual ~AStar();
 
-	void							run();
+	std::vector<Node*>	run();
 	
-	static int				getSize();
-//	std::list<Node*>	getPath() const;
+	static int					getSize();
 
 	class NoSolution: public std::exception{
 		public:

@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 15:46:54 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:12:12 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,15 @@ int						main(int ac, char **av)
 								*puzzle->getHeuristic());
 
 	try {
-		star.run();
+		std::vector<Node*> res = star.run();
+		std::cout << "Number of move : " << res.size()-1 << std::endl;
+		for (auto n: res)
+		{
+			std::cout << "( ";
+			for (auto el: n->_map)
+				std::cout << el << " ";
+			std::cout << ")" << std::endl;
+		}
 	} catch (std::exception &e){
 		std::cerr << e.what() << std::endl;
 	}
