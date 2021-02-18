@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 17:18:29 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 18:07:01 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ AStar::AStar(Node *start, Node const &goal, IHeuristic const &h):
 	AStar::_size = start->getMapSize();
 }
 
-void							AStar::run()
+std::vector<Node*>		AStar::run()
 {
 	pushNewNodeToOpen(0, _h.calculate(_start->getMap(), _goal), *_start, nullptr);
 
@@ -47,8 +47,7 @@ void							AStar::run()
 		Node &_curr = *_openList.top();
 		if(_curr._map == _goal.getMap())
 		{
-			std::cout << *_set[_curr._map];
-			return ;
+			return getPath(&_curr);
 		}
 
 		pushFromOpenToClose(_curr);//pop priority_queue
@@ -78,7 +77,7 @@ void							AStar::run()
 	}
 
 	throw AStar::NoSolution();
-	return ;
+	return std::vector<Node*>();
 }
 
 void							AStar::pushNewNodeToOpen(int soFar, int toReach, Node &map, Node *parent)
@@ -174,10 +173,14 @@ int				AStar::getSize()
 	return _size;
 }
 
-//std::list<Node*>	AStar::getPath() const
-//{
-//	return std::list<Node *>();
-//}
+std::vector<Node*>		AStar::getPath(Node *ptr)
+{
+	if (ptr == nullptr)
+		return _finaleResult;
+	getPath(ptr->_parent);
+	_finaleResult.push_back(ptr);
+	return _finaleResult;
+}
 
 int	AStar::_size = 0;
 
