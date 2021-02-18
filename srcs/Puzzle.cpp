@@ -26,6 +26,12 @@ Puzzle::Puzzle():
 
 Puzzle::~Puzzle()
 {
+	if (_heuristic)
+		delete _heuristic;
+	if (_startNode)
+		delete _startNode;
+	if (_endNode)
+		delete _endNode;
 }
 
 IHeuristic const									*Puzzle::getHeuristic() const
@@ -133,22 +139,20 @@ void												Puzzle::setMustBeSolvable(bool state)
 /*
  * Check that input puzzle has no missing/duplicate numbers
  */
-int													Puzzle::check_validity(std::vector<int> map, const int size)
+void												Puzzle::check_validity(std::vector<int> map, const int size)
 {
 	int			size_array = size * size;
 
 	std::sort(map.begin(), map.end());
 
 	if (map[0] != 0 || map[size_array - 1] != size_array - 1)
-		throw ("Invalid puzzle. Check for missing or duplicate numbers.");
+		throw ("invalid puzzle. Check for missing or duplicate numbers.");
 
 	for (int i = 0; i < size_array - 1; i++)
 	{
 		if (map[i] != map[i + 1] - 1)
-			throw ("Invalid puzzle. Check for missing or duplicate numbers.");
+			throw ("invalid puzzle. Check for missing or duplicate numbers.");
 	}
-
-	return (0);
 }
 
 std::vector<int>									Puzzle::split_stoi(std::string line)
@@ -172,99 +176,142 @@ std::vector<int>									Puzzle::parse_file(std::string const filename, unsigned
 	std::string					str;
 	std::string					line;
 	std::size_t					hashtag_index;
+	std::size_t					first_char_index;
 	std::vector<int>			splitted_line;
 	std::vector<int>			map;
 
 	if (!ifs.is_open())
-		throw ("Failed to open file");
+		throw ("failed to open file");
 
 	while (std::getline(ifs, line))
 	{
 		if (line.empty())
-			throw ("Input file format error: empty line found");
+			throw ("empty line found");
 		
-		hashtag_index = line.find('#');
-		if (hashtag_index == std::string::npos)
+		if ((hashtag_index = line.find('#')) == std::string::npos)
 			str = line;
+		else if ((first_char_index = line.find_first_not_of(" ")) != hashtag_index)
+			str = line.substr(first_char_index, hashtag_index);
 		else
-			str = line.substr(0, hashtag_index);
+			continue ;
 
-		if (!str.empty())
+		if (str.find_first_not_of(" 0123456789") != std::string::npos)
+			throw ("non-numeric character found (only exceptions are space ' ' and hashtag '#')");
+		else if (str.find_first_of("0123456789") == std::string::npos)
+			throw ("empty line found");
+
+		splitted_line = split_stoi(str);
+
+		if (!size)
 		{
-			if (str.find_first_not_of(" 0123456789") != std::string::npos
-			|| str.find_first_of("0123456789") == std::string::npos)
-				throw ("Input file format error");
-
-			splitted_line = split_stoi(str);
-
-			if (!size)
-			{
-				if (splitted_line.size() > 1)
-					throw ("Input file format error: wrong size definition");
-				size = splitted_line[0];
-				if (size < MAP_MIN_SIZE || size > MAP_MAX_SIZE)
-					throw ("Input file format error: wrong size definition");
-			}
-			else
-			{
-				if (splitted_line.size() != size)
-					throw ("Input file format error: wronged-sized line");
-				map.insert(map.end(), splitted_line.begin(), splitted_line.end());
-			}
+			if (splitted_line.size() > 1)
+				throw ("wrong size definition");
+			size = splitted_line[0];
+			if (size < MAP_MIN_SIZE || size > MAP_MAX_SIZE)
+				throw ("wrong size definition");
+		}
+		else
+		{
+			if (splitted_line.size() != size)
+				throw ("wronged-sized line");
+			map.insert(map.end(), splitted_line.begin(), splitted_line.end());
 		}
 	}
 
 	if (map.empty())
-		throw ("Empty file");
+		throw ("empty file");
 
 	if (map.size() != size * size)
-		throw ("Input file format error: wrong-sized map");
+		throw ("wrong-sized map");
 
 	return (map);
 }
 
 Node												*Puzzle::get_start_node_from_file(std::string filename)
 {
+	Node				*start_node;
 	std::vector<int>	map;
 	unsigned long 		size = 0;
 
 	try
 	{
 		map = this->parse_file(filename, size);
+		start_node = new Node(map, size);
 		this->setMapSize(size);
 		this->check_validity(map, size);
 	}
 	catch (const char *msg)
 	{
-		std::cerr << "Exception: " << msg << std::endl;	
+		std::cerr << "Input file error: " << msg << std::endl;	
 		return (NULL);
 	}
-
-	return (new Node(map, size));
-}
-
-
-Node												*Puzzle::generate_start_node(int size)
-{
-	Node		*start_node = NULL;
-
-	std::cout << "We have to generate ";
-	if (_mustBeSolvable)
-		std::cout << "a solvable ";
-	else
-		std::cout << "an unsolvable ";
-	std::cout << "puzzle of size " << size << std::endl;	
 
 	return (start_node);
 }
 
+Node												*Puzzle::generate_random_start_node(Node *endNode, int must_be_solvable)
+{
+	Node	*node = new Node(*endNode);
+	int		size = node->getMapSize();
+	int		empty = node->getEmpty();
+	int		rnd, x, y;
 
-void												Puzzle::create_start_node()
+	srand(time(NULL));	// initialize random seed
+
+	for (int steps = 0; steps < 1000; steps++)
+	{
+		y = empty / size;
+		x = empty % size;
+		rnd = rand() % 4 + 1;
+
+		if (rnd == 1 && y > 0)	// move empty up
+		{
+			node->swap(empty, empty - size);
+			empty -= size;
+		}
+		else if (rnd == 2 && y + 1 < size)	// move empty down
+		{
+			node->swap(empty, empty + size);
+			empty += size;
+		}
+		else if (rnd == 3 && x > 0) // move empty left
+		{
+			node->swap(empty, empty - 1);
+			empty -= 1;
+		}
+		else if (rnd == 4 && x + 1 < size) // move empty right
+		{
+			node->swap(empty, empty + 1);
+			empty += 1;
+		}
+	}
+
+	node->setEmpty(empty);
+
+	if (!must_be_solvable)	// make unsolvable if option -u
+	{
+		if (node->getMap()[0] == 0 || node->getMap()[1] == 0)
+			node->swap(size * size - 2, size * size - 1); // swap last 2 elems
+		else
+			node->swap(0, 1); // swap first 2 elems
+	}
+
+	return (node);
+}
+
+
+void												Puzzle::create_start_end_nodes()
 {
 	if (_filename.empty())
-		_startNode = this->generate_start_node(_mapSize);
+	{
+		_endNode = this->create_end_node(_mapSize);
+		_startNode = this->generate_random_start_node(_endNode, _mustBeSolvable);
+	}
 	else
+	{
 		_startNode = this->get_start_node_from_file(_filename);
+		_endNode = this->create_end_node(_mapSize);
+	}
 }
 
 std::vector<int>									Puzzle::generate_resolved_array(int size)
@@ -330,10 +377,10 @@ std::vector<int>									Puzzle::generate_resolved_array(int size)
 	return (map);
 }
 
-void												Puzzle::create_end_node()
+Node												*Puzzle::create_end_node(int size)
 {
-	std::vector<int>	resolved_map = this->generate_resolved_array(_mapSize);
-	_endNode = new Node (resolved_map, _mapSize);
+	std::vector<int>	resolved_map = this->generate_resolved_array(size);
+	return(new Node (resolved_map, _mapSize));
 }
 
 int													Puzzle::count_inversions(std::vector<int> const &map, int size) const

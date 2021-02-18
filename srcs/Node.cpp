@@ -58,7 +58,7 @@ Node::Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev):
 {
 }
 
-std::vector<int> const						Node::getMap() const
+std::vector<int> const								&Node::getMap() const
 {
 	return _map;
 }

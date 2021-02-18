@@ -39,7 +39,7 @@ public:
 	Node	&operator=(Node const &other);
 
 
-	std::vector<int> const				getMap() const;
+	std::vector<int> const			&getMap() const;
 	int								getMapSize() const;
 	int								getCostSoFar() const;
 	int								getCostToReach() const;
