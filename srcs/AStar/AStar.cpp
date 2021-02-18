@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 15:53:19 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:18:29 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <iostream>
 
-void	erase(std::pair<std::vector<int>, Map *> el)
+void	erase(std::pair<std::vector<int>, Node *> el)
 {
 	delete std::get<1>(el);
 }
@@ -33,24 +33,18 @@ AStar::AStar(Node *start, Node const &goal, IHeuristic const &h):
 																				_h(h),
 																				_start(start),
 																				_set(),
-																				_openList(Map::comp)
+																				_openList(Node::comp)
 {
 	AStar::_size = start->getMapSize();
 }
 
 void							AStar::run()
 {
-	_start->setCostToReach(_h.calculate(_start->getMap(), _goal));
-	Map *start = new Map(_start->getMap(),
-				nullptr, 0, _start->getCostToReach(),
-				_start->getEmpty());
-
-	_openList.push(start);
-	_set.insert(std::make_pair(start->_map, start));//Attention il doit etre malloc, gare au invalid free !!
+	pushNewNodeToOpen(0, _h.calculate(_start->getMap(), _goal), *_start, nullptr);
 
 	while (!_openList.empty())
 	{
-		Map &_curr = *_openList.top();
+		Node &_curr = *_openList.top();
 		if(_curr._map == _goal.getMap())
 		{
 			std::cout << *_set[_curr._map];
@@ -65,7 +59,7 @@ void							AStar::run()
 			auto el = _set.find(it._map);
 			if ( el != _set.end())
 			{
-				Map	&oldNode = *(std::get<1>(*el));
+				Node	&oldNode = *(std::get<1>(*el));
 				if (oldNode._gscore > tentative_g)
 				{
 					oldNode._parent = &_curr;
@@ -78,22 +72,23 @@ void							AStar::run()
 					continue ;
 			}
 			else
-				pushNewNodeToOpen(tentative_g, _h.calculate(it._map, _goal), it, _curr);
+				pushNewNodeToOpen(tentative_g, _h.calculate(it._map, _goal), it, &_curr);
 		}
-//		debug();
+	//	debug();
 	}
 
 	throw AStar::NoSolution();
 	return ;
 }
 
-void							AStar::pushNewNodeToOpen(int soFar, int toReach, Map &map, Map &parent)
+void							AStar::pushNewNodeToOpen(int soFar, int toReach, Node &map, Node *parent)
 {
 	try {
-		Map	&ref = *(new Map(map, parent));
+		Node	&ref = *(new Node(map, parent));
 
 		ref._gscore = soFar;
 		ref._fscore = soFar + toReach;
+		ref._mapSize = _size;
 
 		_openList.push(&ref);
 		ref._isOpen = true;
@@ -107,30 +102,30 @@ void							AStar::pushNewNodeToOpen(int soFar, int toReach, Map &map, Map &paren
 	return ;
 }
 
-void							AStar::pushOpenList(Map &node)
+void							AStar::pushOpenList(Node &node)
 {
 	(void)node;
 	return ;
 }
 
-void							AStar::pushFromOpenToClose(Map &m)
+void							AStar::pushFromOpenToClose(Node &m)
 {
 	m._isOpen = false;
 	_openList.pop();
 	return ;
 }
 
-void							AStar::pushFromCloseToOpen(Map &n)
+void							AStar::pushFromCloseToOpen(Node &n)
 {
 	n._isOpen = true;
 	_openList.push(&n);
 	return ;
 }
 
-std::vector<Map>			AStar::getNeighbor(Map &m)
+std::vector<Node>			AStar::getNeighbor(Node &m)
 {
-	std::vector<Map>					lst;
-	Map												str_map;
+	std::vector<Node>					lst;
+	Node											str_map;
 	std::vector<int> const		&curr_map = m._map;
 
 	int posZero = m._empty;
@@ -186,16 +181,16 @@ int				AStar::getSize()
 
 int	AStar::_size = 0;
 
-void display_open(std::pair<std::vector<int>, Map*> const &el)
+void display_open(std::pair<std::vector<int>, Node*> const &el)
 {
-	Map	const &m = *std::get<1>(el);
+	Node	const &m = *std::get<1>(el);
 
 	if (m._isOpen)
 		std::cout << m << std::endl;
 }
-void display_close(std::pair<std::vector<int>, Map*> const &el)
+void display_close(std::pair<std::vector<int>, Node*> const &el)
 {
-	Map	const &m = *std::get<1>(el);
+	Node	const &m = *std::get<1>(el);
 
 	if (!m._isOpen)
 		std::cout << m << std::endl;
@@ -203,8 +198,6 @@ void display_close(std::pair<std::vector<int>, Map*> const &el)
 
 void				AStar::debug() const
 {
-//	std:: cout << *_curr->getEmpty() << std::endl;
-//	std::cout << *_curr;
 	std::cout << "============================" << std::endl;
 	std::cout << "==\tOpen\t==" << std::endl;
 	for_each(_set.begin(), _set.end(), display_open);

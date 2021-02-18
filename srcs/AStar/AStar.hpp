@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 15:11:36 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 17:18:19 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,18 @@ private:
 	IHeuristic const																					&_h;
 	Node																											*_start;
 
-	std::map<std::vector<int>, Map*>													_set;
+	std::map<std::vector<int>, Node*>													_set;
 	std::priority_queue<
-		Map*,std::vector<Map*>, bool (*)(Map*,Map*)>						_openList;
+		Node*,std::vector<Node*>, bool (*)(Node*,Node*)>						_openList;
 
 
-	void					pushOpenList(Map &node);
-	void					pushFromOpenToClose(Map &m);
-	void					pushFromCloseToOpen(Map &m);
+	void					pushOpenList(Node &node);
+	void					pushFromOpenToClose(Node &m);
+	void					pushFromCloseToOpen(Node &m);
 	void					pushNewNodeToOpen(int const soFar, int const toReach,
-																				Map &map, Map &parent);
+																				Node &map, Node *parent);
 
-//	std::vector<int>		swapMap(int src, int dest, std::vector<int> map);
-	std::vector<Map>		getNeighbor(Map &m);
+	std::vector<Node>		getNeighbor(Node &m);
 
 
 	void							debug() const;
@@ -54,9 +53,6 @@ public:
 	
 	static int				getSize();
 //	std::list<Node*>	getPath() const;
-	
-//	static void				erase(Node *el);
-//	static void				erase_pair(std::pair<std::vector<int>, Node *> el);
 
 	class NoSolution: public std::exception{
 		public:
