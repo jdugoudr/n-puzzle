@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/08 22:09:44 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 15:49:32 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ IHeuristic const									*Puzzle::getHeuristic() const
 	return _heuristic;
 }
 
-Node const											*Puzzle::getStartNode() const
+Node 														*Puzzle::getStartNode() const
 {
 	return _startNode;
 }
@@ -311,6 +311,17 @@ void												Puzzle::create_start_end_nodes()
 	{
 		_startNode = this->get_start_node_from_file(_filename);
 		_endNode = this->create_end_node(_mapSize);
+	}
+	//
+	// set the empty case into Node
+	std::vector<int> tmp = _startNode->getMap();
+	for (int i = 0; i < _mapSize * _mapSize; i++)
+	{
+		if (tmp[i] == 0)
+		{
+			_startNode->setEmpty(i);
+			return ;
+		}
 	}
 }
 

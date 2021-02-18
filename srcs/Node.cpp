@@ -6,11 +6,12 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 20:35:56 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/15 21:46:08 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/17 21:56:03 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Node.hpp"
+#include "AStar.hpp"
 #include <limits.h>
 
 Node::Node():_map(),
@@ -41,26 +42,40 @@ Node	&Node::operator=(Node const &other)
 }
 
 Node::Node(std::vector<int> map, int mapSize):
-															_map(map),
+															_map(),
 															_mapSize(mapSize),
 															_costSoFar(0),
 															_costToReach(0)
 {
+	_map._map = map;
 }
 
 Node::Node(std::vector<int> map, int mapSize, int costSoFar, Node *prev):
-																				_map(map),
+																				_map(),
 																				_mapSize(mapSize),
 																				_costSoFar(costSoFar),
 																				_costToReach(0),
 																				_comeFrom(prev)
 
 {
+	_map._map = map;
+}
+
+Node::Node(Map	 map, int mapSize, int costSoFar, Node *prev):
+																				_map(),
+																				_mapSize(mapSize),
+																				_costSoFar(costSoFar),
+																				_costToReach(0),
+																				_comeFrom(prev)
+
+{
+	_map._map = map._map;
+	_map._empty = map._empty;
 }
 
 std::vector<int> const								&Node::getMap() const
 {
-	return _map;
+	return _map._map;
 }
 
 int													Node::getMapSize() const
@@ -80,12 +95,7 @@ int													Node::getCostToReach() const
 
 int													Node::getEmpty() const
 {
-	for (int pos = 0 ; pos < _mapSize * _mapSize ; pos++)
-		if (_map[pos] == 0)
-			return pos;
-	throw std::out_of_range("Out of Range while looking for neighbor ");
-	return 0;
-	//return _empty;
+	return _map._empty;
 }
 Node												*Node::getPrev() const
 {
@@ -106,7 +116,7 @@ void												Node::setCostToReach(int nc)
 
 void												Node::setEmpty(int empty)
 {
-	_empty = empty;
+	_map._empty = empty;
 	return ;
 }
 
@@ -118,7 +128,7 @@ void												Node::setComeFrom(Node *p)
 
 void												Node::swap(size_t src, size_t dest)
 {
-	std::swap(_map[src], _map[dest]);
+	std::swap(_map._map[src], _map._map[dest]);
 	return ;
 }
 
@@ -140,12 +150,12 @@ bool												Node::operator>(Node const &other)
 
 bool												Node::operator==(Node const &other)
 {
-	return _map == other._map;
+	return _map._map == other._map._map;
 }
 
 bool												Node::comp(Node *a, Node *b)
 {
-	return *a < *b;
+	return *a > *b;
 }
 
 bool 					Node::find_in_queue(Node *el, Node *toFind)
@@ -174,5 +184,29 @@ std::ostream	&operator<<(std::ostream &o, Node const &c)
 			o << std::endl;
 	}
 	o <<std::setw(width) <<  c.getCostSoFar() << " - " << c.getCostToReach() << std::endl;
+	return o;
+}
+
+std::ostream	&operator<<(std::ostream &o, Map const &c)
+{
+	int		width = 1;
+	int		size = AStar::getSize();
+	int		total_size = size * size - 1;
+
+	while (total_size > 0)
+	{
+		total_size /= 10;
+		width++;
+	}
+
+	int	i = 0;
+	for (auto &it1: c._map)
+	{
+		o << std::setw(width) << it1;
+		i++;
+		if (i % size == 0)
+			o << std::endl;
+	}
+	o <<std::setw(width) <<  c._gscore << " - " << c._fscore - c._gscore << std::endl;
 	return o;
 }

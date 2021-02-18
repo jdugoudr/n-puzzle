@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/15 16:59:44 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/17 21:39:32 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ INCLUDES	= n-puzzle.hpp \
 						IHeuristic.hpp \
 						Manhattan.hpp \
 						AStar.hpp \
-						p_queue_custom.hpp \
+						pq_custom.hpp \
 						find_if_mix.hpp
 
 TEST_UNARY=	case \
@@ -65,6 +65,7 @@ TEST_UNARY=	case \
 						puzzle \
 						astar \
 						time
+#						pq_custom
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))
 OBJECTS			=	$(addprefix $(OBJDIR),  $(SRCS:.cpp=.o))

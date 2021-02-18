@@ -6,222 +6,211 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/16 19:45:04 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/18 15:53:19 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AStar.hpp"
-#include "find_if_mix.hpp"
+//#include "find_if_mix.hpp"
+#include <algorithm>
 #include <iostream>
+
+void	erase(std::pair<std::vector<int>, Map *> el)
+{
+	delete std::get<1>(el);
+}
 
 AStar::~AStar()
 {
-	std::for_each(_closedList.begin(), _closedList.end(), AStar::erase_pair);
-	std::for_each(_openList.begin(), _openList.end(), AStar::erase);
-	_closedList.clear();
-	_openList.clear();
+	while (!_openList.empty())
+		_openList.pop();
+	std::for_each(_set.begin(), _set.end(), erase);
+	_set.clear();
 }
 
-AStar::AStar(Node const &start, Node const &goal, IHeuristic const &h):
-																				_size(start.getMapSize()),
-																				_start(start),
+AStar::AStar(Node *start, Node const &goal, IHeuristic const &h):
 																				_goal(goal),
 																				_h(h),
-																				_curr(nullptr),
-																				_openList(Node::comp),
-																				_closedList()
+																				_start(start),
+																				_set(),
+																				_openList(Map::comp)
 {
-}
-
-Node			*AStar::swapMap(int src, int dest)
-{
-	Node	*neighbor = new Node(*_curr);
-
-	neighbor->swap(src, dest);
-	neighbor->setCostSoFar(_curr->getCostSoFar() + 1);
-	neighbor->setCostToReach(_h.calculate(*neighbor, _goal));
-
-	return neighbor;	
-}
-
-void display(Node *el)
-{
-	std::cout << *el << std::endl;
+	AStar::_size = start->getMapSize();
 }
 
 void							AStar::run()
 {
-	_curr	= new Node(_start);
-	_curr->setCostToReach(_h.calculate(_start, _goal));
-	_openList.push_uniq(_curr);
+	_start->setCostToReach(_h.calculate(_start->getMap(), _goal));
+	Map *start = new Map(_start->getMap(),
+				nullptr, 0, _start->getCostToReach(),
+				_start->getEmpty());
+
+	_openList.push(start);
+	_set.insert(std::make_pair(start->_map, start));//Attention il doit etre malloc, gare au invalid free !!
 
 	while (!_openList.empty())
 	{
-		_curr = _openList.top();
-		if (*_curr == _goal)
+		Map &_curr = *_openList.top();
+		if(_curr._map == _goal.getMap())
 		{
-			std::cout << "You got it !!!" << std::endl;
-std::cout <<"==============================" << std::endl;
-			std::cout << *_curr;
-
+			std::cout << *_set[_curr._map];
 			return ;
 		}
-		_openList.pop();
-		_closedList.insert(std::make_pair(_curr->getMap(), _curr));
-		std::list<Node*> neighbors = getNeighbor();
-		for_each_neighbor(neighbors);
+
+		pushFromOpenToClose(_curr);//pop priority_queue
+
+		int	tentative_g = _curr._gscore + 1;
+		for (auto it: getNeighbor(_curr))
+		{
+			auto el = _set.find(it._map);
+			if ( el != _set.end())
+			{
+				Map	&oldNode = *(std::get<1>(*el));
+				if (oldNode._gscore > tentative_g)
+				{
+					oldNode._parent = &_curr;
+					oldNode._fscore = oldNode._gscore - (oldNode._gscore - tentative_g);
+					oldNode._gscore = tentative_g;
+					if (!oldNode._isOpen)
+						pushFromCloseToOpen(oldNode);
+				}
+				else
+					continue ;
+			}
+			else
+				pushNewNodeToOpen(tentative_g, _h.calculate(it._map, _goal), it, _curr);
+		}
+//		debug();
 	}
 
 	throw AStar::NoSolution();
 	return ;
 }
 
-void							AStar::for_each_neighbor(std::list<Node*> neighbors)
+void							AStar::pushNewNodeToOpen(int soFar, int toReach, Map &map, Map &parent)
 {
-	std::list<Node*>::iterator	it = neighbors.begin();
-	std::list<Node*>::iterator	ite = neighbors.end();
-	p_queue_custom<Node*>::iterator	itPos;
+	try {
+		Map	&ref = *(new Map(map, parent));
 
-	while (it != ite)
-	{
-		if (!is_in_closed(it))
-		{
-			if (is_in_open(it, itPos))
-			{
-				delete *it;
-			}
-			else
-			{
-				_openList.insert(itPos, *it);
-			}
-		}
-		it++;
+		ref._gscore = soFar;
+		ref._fscore = soFar + toReach;
+
+		_openList.push(&ref);
+		ref._isOpen = true;
+
+		_set[map._map] = &ref;
+
+
+	} catch (std::exception &e) {
+		throw e;
 	}
-
-	//debug(neighbors);
-	
+	return ;
 }
 
-/*
- * If it element is already in openList
- * 	itPos is set to this position and return true
- * 
- * If it element is not in openList
- *  itPos is set to the iterator just after the position it should be insert,
- *  to use insert list function.
-*/
-bool							AStar::is_in_open(std::list<Node*>::iterator &it,
-																			p_queue_custom<Node*>::iterator	&itPos)
+void							AStar::pushOpenList(Map &node)
 {
-	bool res = _openList.try_insert(*it, itPos);
-	if (!res)
-	{
-		if ((*it)->getCostSoFar() < (*itPos)->getCostSoFar())
-		{
-		//	std::cout << "We have to replace" << std::endl;
-		//	char c;
-		//	std::cin >> c;
-		//	debug();
-			(*itPos)->setCostSoFar((*it)->getCostSoFar());
-			(*itPos)->setComeFrom(_curr);
-			_openList.replace(itPos);
-		//	debug();
-		}
-		return true;
-	}
-	return false;
+	(void)node;
+	return ;
 }
 
-bool							AStar::is_in_closed(std::list<Node*>::iterator &it)
+void							AStar::pushFromOpenToClose(Map &m)
 {
-//	std::list<Node*>::iterator itOld;
-	Node	*old;
-
-	try{
-		old = _closedList.at((*it)->getMap());
-		if ((*it)->getCostSoFar() < old->getCostSoFar())
-		{
-			_openList.push_uniq(*it);
-			delete old;
-			_closedList.erase((*it)->getMap());
-		}
-		else
-			delete *it;
-		return true;
-	} catch (std::out_of_range(&e)){
-		return false;
-	}
-//	itOld = find_if_mix(_closedList.begin(), _closedList.end(), *it, Node::find_in_queue);
-//	if (itOld != _closedList.end())
-//	{
-//		if ((*it)->getCostSoFar() < (*itOld)->getCostSoFar())
-//		{
-//			_openList.push_uniq(*it);
-//			delete *itOld;
-//			_closedList.erase(itOld);
-//		}
-//		else
-//			delete *it;
-//		return true;
-//	}
-//	return false;
+	m._isOpen = false;
+	_openList.pop();
+	return ;
 }
 
-std::list<Node *>					AStar::getNeighbor()
+void							AStar::pushFromCloseToOpen(Map &n)
 {
-	std::list<Node*> lst;
+	n._isOpen = true;
+	_openList.push(&n);
+	return ;
+}
 
-	int posZero = _curr->getEmpty();
+std::vector<Map>			AStar::getNeighbor(Map &m)
+{
+	std::vector<Map>					lst;
+	Map												str_map;
+	std::vector<int> const		&curr_map = m._map;
+
+	int posZero = m._empty;
 	int i = posZero / _size;
 	int j = posZero % _size;
 
 	//Move to right
 	if (j + 1 < _size)
-		lst.push_front(swapMap(posZero, posZero + 1));
+	{
+//		str_map._map = swapMap(posZero, posZero + 1, curr_map);
+		str_map._map = curr_map;
+		std::swap(str_map._map[posZero], str_map._map[posZero + 1]);
+		str_map._empty = posZero + 1;
+		lst.push_back(str_map);
+	}
 	//Move to left
 	if (j > 0)
-		lst.push_front(swapMap(posZero, posZero - 1));
+	{
+		str_map._map = curr_map;
+		std::swap(str_map._map[posZero], str_map._map[posZero - 1]);
+		str_map._empty = posZero - 1;
+		lst.push_back(str_map);
+	}
 	//Move down
 	if (i > 0)
-		lst.push_front(swapMap(posZero, posZero - _size));
+	{
+		str_map._map = curr_map;
+		std::swap(str_map._map[posZero], str_map._map[posZero - _size]);
+		str_map._empty = posZero - _size;
+		lst.push_back(str_map);
+	}
 	//Move up
 	if (i + 1 < _size)
-		lst.push_front(swapMap(posZero, posZero + _size));
+	{
+		str_map._map = curr_map;
+		std::swap(str_map._map[posZero], str_map._map[posZero + _size]);
+		str_map._empty = posZero + _size;
+		lst.push_back(str_map);
+	}
 
 	return lst;
 }
 
-
-std::list<Node*>	AStar::getPath() const
+int				AStar::getSize()
 {
-	return std::list<Node *>();
+	return _size;
 }
 
-Node const	*AStar::getCurrent() const
-{
-	return _curr;
-}
+//std::list<Node*>	AStar::getPath() const
+//{
+//	return std::list<Node *>();
+//}
 
-void				AStar::erase(Node *el)
-{
-	delete el;
-}
+int	AStar::_size = 0;
 
-void				AStar::erase_pair(std::pair<std::vector<int>, Node *> el)
+void display_open(std::pair<std::vector<int>, Map*> const &el)
 {
-	delete std::get<1>(el);
+	Map	const &m = *std::get<1>(el);
+
+	if (m._isOpen)
+		std::cout << m << std::endl;
+}
+void display_close(std::pair<std::vector<int>, Map*> const &el)
+{
+	Map	const &m = *std::get<1>(el);
+
+	if (!m._isOpen)
+		std::cout << m << std::endl;
 }
 
 void				AStar::debug() const
 {
 //	std:: cout << *_curr->getEmpty() << std::endl;
-	std::cout << *_curr;
+//	std::cout << *_curr;
 	std::cout << "============================" << std::endl;
-		std::cout << "==\tOpen\t==" << std::endl;
-	for_each(_openList.begin(), _openList.end(), display);
+	std::cout << "==\tOpen\t==" << std::endl;
+	for_each(_set.begin(), _set.end(), display_open);
 	std::cout << "============================" << std::endl;
-//		std::cout << "==\tClosed\t==" << std::endl;
-//	for_each(_closedList.begin(), _closedList.end(), display);
+	std::cout << "==\tClosed\t==" << std::endl;
+	for_each(_set.begin(), _set.end(), display_close);
 	char c;
 	std::cin >> c;
 }
@@ -229,13 +218,8 @@ void				AStar::debug() const
 std::ostream	&operator<<(std::ostream &o, AStar const &c)
 {
 	//use this to display a significant message;
-	Node const 	*n = c.getCurrent();
+	(void)c;
 
-	if (n == nullptr)
-		o << "(nullptr)";
-	else
-		o << *n;
-	o << std::endl;
 	return o;
 }
 
@@ -248,17 +232,12 @@ const char	*AStar::NoSolution::what() const throw()
 	return "No solution found... :'(";
 }
 
-std::ostream	&operator<<(std::ostream &o, p_queue_custom<Node*> &c)
+std::ostream	&operator<<(std::ostream &o, std::map<std::vector<int>, Node*> &c)
 {
 	(void)c;
-	p_queue_custom<Node*>::iterator	it = c.begin();
-	p_queue_custom<Node*>::iterator	eit = c.end();
 	o << "IN QUEUE : " << std::endl;
-	while (it != eit)
-	{
-		o << **it << std::endl;
-		it++;
-	}
+	for (auto it: c)
+		o << *(std::get<1>(it)) << std::endl;
 	o << std::endl;
 	return o;
 }
