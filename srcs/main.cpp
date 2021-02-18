@@ -48,6 +48,7 @@ static std::string		choose_heuristic(void)
 	std::cout << "Choose a heuristic function : [1] Manhattan" << std::endl;	
 	std::cout << "Type a number : ";	
 	std::cin >> x;
+	std::cout << std::endl;	
 
 	if (!(x >= 1 && x <= array.size()))
 		throw (invalid_argument("Invalid number"));
