@@ -35,17 +35,17 @@ AStar::AStar(Node *start, Node const &goal, IHeuristic const &h):
 																				_set(),
 																				_openList(Node::comp)
 {
-	AStar::_size = start->getMapSize();
+	AStar::_size = start->_mapSize;
 }
 
 std::vector<Node*>		AStar::run()
 {
-	pushNewNodeToOpen(0, _h.calculate(_start->getMap(), _goal), *_start, nullptr);
+	pushNewNodeToOpen(0, _h.calculate(_start->_map, _goal), *_start, nullptr);
 
 	while (!_openList.empty())
 	{
 		Node &_curr = *_openList.top();
-		if(_curr._map == _goal.getMap())
+		if(_curr._map == _goal._map)
 		{
 			return getPath(&_curr);
 		}

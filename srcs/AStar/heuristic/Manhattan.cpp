@@ -32,9 +32,9 @@ Manhattan::~Manhattan()
 int		Manhattan::calculate(std::vector<int> const &map, Node const &goal) const
 {
 	int	coast = 0;
-	int	size = goal.getMapSize();
+	int	size = goal._mapSize;
 
-	std::vector<int> gmap = goal.getMap();
+	std::vector<int> gmap = goal._map;
 
 	for (int pos = 0 ; pos < size * size ; pos++)
 	{

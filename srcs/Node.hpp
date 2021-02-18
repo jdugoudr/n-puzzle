@@ -19,7 +19,7 @@
 # include <vector>
 
 struct								Node{
-	std::vector<int>		_map;
+	std::vector<int>					_map;
 	int									_fscore;
 	Node								*_parent;
 	int									_gscore;
@@ -35,12 +35,6 @@ struct								Node{
 	bool	operator>(const Node &p) const;
 	bool	operator==(const Node &p) const;
 	static bool	comp(Node *a, Node *b);
-
-	std::vector<int> const			&getMap() const;
-	int								getMapSize() const;
-	//void							setEmpty(int);
-	//int								getEmpty() const;
-	void							swap(size_t src, size_t dest);
 };
 
 std::ostream	&operator<<(std::ostream &o, Node const &c);

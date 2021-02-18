@@ -55,33 +55,6 @@ bool	Node::comp(Node *a, Node *b){
 	return *a > *b;
 }
 
-std::vector<int> const								&Node::getMap() const
-{
-	return _map;
-}
-
-int													Node::getMapSize() const
-{
-	return _mapSize;
-}
-
-/*int													Node::getEmpty() const
-{
-	return _empty;
-}*/
-
-/*void												Node::setEmpty(int empty)
-{
-	_empty = empty;
-	return ;
-}*/
-
-void												Node::swap(size_t src, size_t dest)
-{
-	std::swap(_map[src], _map[dest]);
-	return ;
-}
-
 std::ostream	&operator<<(std::ostream &o, Node const &c)
 {
 	int		width = 1;

@@ -257,22 +257,22 @@ Node												*Puzzle::generate_random_start_node(Node *endNode, int must_be_s
 
 		if (rnd == 1 && y > 0)	// move empty up
 		{
-			node->swap(node->_empty, node->_empty - size);
+			std::swap(node->_map[node->_empty], node->_map[node->_empty - size]);
 			node->_empty -= size;
 		}
 		else if (rnd == 2 && y + 1 < size)	// move empty down
 		{
-			node->swap(node->_empty, node->_empty + size);
+			std::swap(node->_map[node->_empty], node->_map[node->_empty + size]);
 			node->_empty += size;
 		}
 		else if (rnd == 3 && x > 0) // move empty left
 		{
-			node->swap(node->_empty, node->_empty - 1);
+			std::swap(node->_map[node->_empty], node->_map[node->_empty - 1]);
 			node->_empty -= 1;
 		}
 		else if (rnd == 4 && x + 1 < size) // move empty right
 		{
-			node->swap(node->_empty, node->_empty + 1);
+			std::swap(node->_map[node->_empty], node->_map[node->_empty + 1]);
 			node->_empty += 1;
 		}
 	}
@@ -280,9 +280,9 @@ Node												*Puzzle::generate_random_start_node(Node *endNode, int must_be_s
 	if (!must_be_solvable)	// make unsolvable if option -u
 	{
 		if (node->_map[0] == 0 || node->_map[1] == 0)
-			node->swap(size * size - 2, size * size - 1); // swap last 2 elems
+			std::swap(node->_map[size * size - 2], node->_map[size * size - 1]);
 		else
-			node->swap(0, 1); // swap first 2 elems
+			std::swap(node->_map[0], node->_map[1]);
 	}
 
 	return (node);
