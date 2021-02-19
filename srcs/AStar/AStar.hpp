@@ -59,6 +59,8 @@ public:
 	static int					_totalStatesSelected; // complexity in time
 	static int					_maximumStatesRepresented; // complexity in size
 
+	int							getSetSize();
+
 	class NoSolution: public std::exception{
 		public:
 			NoSolution() throw();

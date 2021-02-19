@@ -16,7 +16,6 @@
 #include <iostream>
 
 int AStar::_totalStatesSelected = 0;
-int AStar::_maximumStatesRepresented = 0;
 
 void	erase(std::pair<std::vector<int>, Node *> el)
 {
@@ -44,7 +43,6 @@ AStar::AStar(Node *start, Node const &goal, IHeuristic const &h):
 std::vector<Node*>		AStar::run()
 {
 	pushNewNodeToOpen(0, _h.calculate(_start->_map, _goal), *_start, nullptr);
-	_maximumStatesRepresented++; //complexity in size++
 
 	while (!_openList.empty())
 	{
@@ -76,10 +74,7 @@ std::vector<Node*>		AStar::run()
 					continue ;
 			}
 			else
-			{
 				pushNewNodeToOpen(tentative_g, _h.calculate(it._map, _goal), it, &_curr);
-				_maximumStatesRepresented++; //complexity in size++
-			}
 		}
 	//	debug();
 	}
@@ -180,6 +175,13 @@ int				AStar::getSize()
 {
 	return _size;
 }
+
+int				AStar::getSetSize()
+{
+	return _set.size();
+}
+
+
 
 std::vector<Node*>		AStar::getPath(Node *ptr)
 {
