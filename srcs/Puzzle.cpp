@@ -21,8 +21,6 @@ Puzzle::Puzzle():
 	_heuristic(nullptr),
 	_startNode(nullptr),
 	_endNode(nullptr),
-	_numberOfStates(0),
-	_numberOfMoves(0),
 	_solvabilityCheck(1),
 	_mustBeSolvable(1)
 {
@@ -53,16 +51,6 @@ Node const											*Puzzle::getEndNode() const
 int													Puzzle::getMapSize() const
 {
 	return _mapSize;
-}
-
-int													Puzzle::getNumberOfStates() const
-{
-	return _numberOfStates;
-}
-
-int													Puzzle::getNumberOfMoves() const
-{
-	return _numberOfMoves;
 }
 
 std::string											Puzzle::getFilename() const
@@ -118,16 +106,6 @@ void												Puzzle::setHeuristic(std::string heuristic_name)
 void												Puzzle::setMapSize(int size)
 {
 	_mapSize = size;
-}
-
-void												Puzzle::setNumberOfStates(int nb)
-{
-	_numberOfStates = nb;
-}
-
-void												Puzzle::setNumberOfMoves(int nb)
-{
-	_numberOfMoves = nb;
 }
 
 void												Puzzle::setFilename(std::string filename)

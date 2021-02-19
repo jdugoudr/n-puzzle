@@ -36,12 +36,10 @@ private:
 	Node					*_startNode;
 	Node					*_endNode;
 	int						_mapSize;
-	int						_numberOfStates;	// complexity in size (memory)
-	int						_numberOfMoves;		// complexity in time
 
 	std::string				_filename;
-	bool					_solvabilityCheck;	// option -n => don't check puzzle solvability
-	bool					_mustBeSolvable;	// option -u => generate unsolvable map 
+	bool					_solvabilityCheck;	// if option -n => don't check puzzle solvability
+	bool					_mustBeSolvable;	// if option -u => generate unsolvable map 
 
 	Node					*generate_random_start_node(Node *endNode, int solvable);
 	Node					*get_start_node_from_file(std::string filename);

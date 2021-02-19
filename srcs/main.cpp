@@ -161,7 +161,9 @@ int						main(int ac, char **av)
 
 	try {
 		std::vector<Node*> res = star.run();
-		std::cout << "Number of move : " << res.size()-1 << std::endl;
+		std::cout << "Total states selected (complexity in time) : " << star._totalStatesSelected << std::endl;
+		std::cout << "Maximum states represented (complexity in size) : " << star._maximumStatesRepresented << std::endl;
+		std::cout << "Number of moves : " << res.size()-1 << std::endl;
 		for (auto n: res)
 		{
 			std::cout << "( ";
@@ -169,7 +171,6 @@ int						main(int ac, char **av)
 				std::cout << el << " ";
 			std::cout << ")" << std::endl;
 		}
-		std::cout << "Number of move : " << res.size()-1 << std::endl;
 	//	for (auto n: res)
 	//	{
 	//		std::cout << *n << " ";
