@@ -42,10 +42,10 @@ static int				usage(int ret, Puzzle *puzzle)
 static std::string		choose_heuristic(void)
 {
 	unsigned long				x = 0;
-	std::array<std::string, 2>	array = {"Manhattan", "Hamming"};
+	std::array<std::string, 3>	array = {"Manhattan", "Hamming", "LinearConflicts"};
 	
 	std::cout << std::endl;	
-	std::cout << "Choose a heuristic function : [1] Manhattan  [2] Hamming" << std::endl;	
+	std::cout << "Choose a heuristic function : [1] Manhattan  [2] Hamming  [3] Linear Conflicts" << std::endl;	
 	std::cout << "Type a number : ";	
 	std::cin >> x;
 	std::cout << std::endl;	

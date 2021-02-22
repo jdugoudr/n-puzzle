@@ -16,6 +16,7 @@
 # include "IHeuristic.hpp"
 # include "Manhattan.hpp"
 # include "Hamming.hpp"
+# include "LinearConflicts.hpp"
 # include "Node.hpp"
 
 # include <iostream>

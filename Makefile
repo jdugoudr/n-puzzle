@@ -50,6 +50,7 @@ SRCS			=	main.cpp \
 						Puzzle.cpp \
 						Manhattan.cpp \
 						Hamming.cpp \
+						LinearConflicts.cpp \
 						AStar.cpp
 
 INCLUDES	= n-puzzle.hpp \
@@ -58,6 +59,7 @@ INCLUDES	= n-puzzle.hpp \
 						IHeuristic.hpp \
 						Manhattan.hpp \
 						Hamming.hpp \
+						LinearConflicts.hpp \
 						AStar.hpp \
 						pq_custom.hpp \
 						find_if_mix.hpp
