@@ -24,7 +24,7 @@ private:
 	std::string						_name;
 	IHeuristic						*_manhattan;
 
-	std::vector<std::vector<int>>	vec_to_2dvec(std::vector<int> const &map, int size, bool columns_to_lines) const;
+	std::vector<std::vector<int>>	create_2d_vector(std::vector<int> const &map, int size, bool columns_to_lines) const;
 	int								count_conflicts(std::vector<int> const &map, std::vector<int> const &goal_map, int size, bool columns_to_lines) const;
 	int								treat_conflicts(std::vector<std::vector<int>> &line_conflicts, int size) const;
 	int								get_most_conflicted_tile(std::vector<std::vector<int>> &vec, int size) const;
@@ -34,8 +34,11 @@ public:
 	LinearConflicts();
 	virtual ~LinearConflicts();
 
-	virtual int					calculate(std::vector<int> const &map, Node const &goal) const;
-	virtual std::string const	getName() const;
+	virtual std::string const		getName() const;
+
+	virtual int						calculate(std::vector<int> const &map, Node const &goal) const;
+	std::vector<std::vector<int>>	create_2d_vector(std::vector<int> const &map, int size, bool columns);
+
 };
 
 #endif

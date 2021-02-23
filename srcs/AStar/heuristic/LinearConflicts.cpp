@@ -45,7 +45,7 @@ LinearConflicts::~LinearConflicts()
 	delete _manhattan;
 }
 
-std::vector<std::vector<int>>		LinearConflicts::vec_to_2dvec(std::vector<int> const &map, int size, bool columns_to_lines) const
+std::vector<std::vector<int>>		LinearConflicts::create_2d_vector(std::vector<int> const &map, int size, bool columns) const
 {
 	std::vector<std::vector<int>>		lines;
 
@@ -61,7 +61,7 @@ std::vector<std::vector<int>>		LinearConflicts::vec_to_2dvec(std::vector<int> co
 		lines.push_back(line);
 	}
 
-	if (columns_to_lines)
+	if (columns)
 	{
 		std::vector<std::vector<int>>		columns;
 
@@ -156,8 +156,8 @@ int		LinearConflicts::count_conflicts(std::vector<int> const &map,
 	std::vector<std::vector<int>>	goal;
 	std::vector<std::vector<int>>	conflicts;
 
-	state = this->vec_to_2dvec(map, size, columns_to_lines);
-	goal = this->vec_to_2dvec(goal_map, size, columns_to_lines);
+	state = this->create_2d_vector(map, size, columns_to_lines);
+	goal = this->create_2d_vector(goal_map, size, columns_to_lines);
 
 	for (int y = 0; y < size; y++)
 	{
@@ -181,8 +181,8 @@ int		LinearConflicts::calculate(std::vector<int> const &map, Node const &goal_no
 
 	manhattan_cost = this->_manhattan->calculate(map, goal_node);
 
-	conflicts_cost += this->count_conflicts(map, goal_node._map, goal_node._mapSize, 0); 
-	conflicts_cost += this->count_conflicts(map, goal_node._map, goal_node._mapSize, 1); 
+	conflicts_cost += this->count_conflicts(map, goal_node._map, goal_node._mapSize, 0);
+	conflicts_cost += this->count_conflicts(map, goal_node._map, goal_node._mapSize, 1);
 
 	return (manhattan_cost + (2 * conflicts_cost));
 }
