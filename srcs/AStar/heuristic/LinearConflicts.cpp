@@ -10,25 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
- * This heuristic is an improved version of the Manhattan heuristic.
- * It adds, to the Manhattan Distance cost of each tile, the cost of
- * conflict resolutions that may appear on that path.
- *
- * For each line and column of the goal map, we look for tiles in conflict.
- * We add a cost of 2 for each conflicting pair.
- *
- * Two tiles A and B are in linear conflict if :
- * - they are on the same line
- * - their goal positions also are on this line
- * - A is to the right of B, and the goal position of A is to the left of the goal
- * position of B.
- *
- * When 3 or more tiles are in linear conflict, we pick the tile involved in
- * the most conflicts to move first. This way we can minimize the number of
- * additional moves, and the heuristic stays optimistic and admissible.
-*/
-
 #include "LinearConflicts.hpp"
 #include "Manhattan.hpp"
 #include <vector>
