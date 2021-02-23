@@ -104,9 +104,6 @@ int		LinearConflicts::get_most_conflicted_tile(std::vector<std::vector<int>> &ve
 	return most_conflicts;
 }
 
-/*
- * Treat tiles with most conflicts first
- */
 int		LinearConflicts::treat_conflicts(std::vector<std::vector<int>> &line_conflicts, int size) const
 {
 	int					conflicts = 0;
@@ -158,11 +155,11 @@ int		LinearConflicts::count_conflicts(std::vector<int> const &map,
 int		LinearConflicts::calculate(std::vector<int> const &map, Node const &goal_node) const
 {
 	int	manhattan_cost;
-	int	conflicts_cost = 0;
+	int	conflicts_cost;
 
 	manhattan_cost = this->_manhattan->calculate(map, goal_node);
 
-	conflicts_cost += this->count_conflicts(map, goal_node._map, goal_node._mapSize, 0);
+	conflicts_cost = this->count_conflicts(map, goal_node._map, goal_node._mapSize, 0);
 	conflicts_cost += this->count_conflicts(map, goal_node._map, goal_node._mapSize, 1);
 
 	return (manhattan_cost + (2 * conflicts_cost));
