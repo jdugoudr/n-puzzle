@@ -95,6 +95,7 @@ if __name__ == "__main__":
     textLayout.setReadOnly(True)
 
     _rightBar = RightBar(size)
+    _rightBar.setCurrentRow(0)
     for el in _maps:
         _rightBar.fillRightBar(el)
     _rightBar.setMinimumWidth(widget.sizeHint().width())
@@ -118,6 +119,7 @@ if __name__ == "__main__":
         global counter
         if counter < nb_move:
             counter += 1
+            _rightBar.setCurrentRow(counter)
             _map.copy(_maps[counter].numbers)
         else:
             global timer
@@ -129,6 +131,7 @@ if __name__ == "__main__":
         global counter
         if counter > 0:
             counter -= 1
+            _rightBar.setCurrentRow(counter)
             _map.copy(_maps[counter].numbers)
 
     # Connect all signals and slots
