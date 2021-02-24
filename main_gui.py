@@ -134,6 +134,13 @@ if __name__ == "__main__":
             _rightBar.setCurrentRow(counter)
             _map.copy(_maps[counter].numbers)
 
+    @QtCore.Slot()
+    def itemClicked(row):
+        global counter
+        counter = row
+        _map.copy(_maps[counter].numbers)
+
+
     # Connect all signals and slots
     timer.timeout.connect(nextPress)
 
@@ -141,6 +148,7 @@ if __name__ == "__main__":
     interactionBar.prev.clicked.connect(prevPress)
     interactionBar.next.clicked.connect(nextPress)
     
+    _rightBar.currentRowChanged.connect(itemClicked)
 
     # Fill the MainWindow with proper content
     widget.setRightBar(_rightBar)
