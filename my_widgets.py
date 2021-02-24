@@ -36,10 +36,13 @@ class RightBar(QtWidgets.QListWidget):
 class MyTable(QtWidgets.QWidget):
     def __init__(self, sizeMap, sizeEl, content, parent=None):
         super(MyTable, self).__init__(parent)
+
         self.size = sizeMap
         self.sizeEl = sizeEl
         self.numbers = content
         self.table = QtWidgets.QTableWidget(sizeMap,sizeMap)
+
+        self.__creatFont()
 
         self.cells = []
 
@@ -65,6 +68,17 @@ class MyTable(QtWidgets.QWidget):
 
         self.resize(sizeMap * sizeEl, sizeMap * sizeEl)
 
+    def __creatFont(self):
+        self.font = QtGui.QFont()
+        self.font.setBold(True)
+        self.font.setPointSize(18)
+        self.textBrush = QtGui.QBrush(QtGui.QColor(0,0,0))
+
+        if self.sizeEl >= 80:
+            self.backBrush = QtGui.QBrush(QtGui.QColor(250,250,200))
+        else:
+            self.backBrush = QtGui.QBrush()
+
     def __populate(self, numbers):
         for i in range(0, self.size):
             for j in range(0, self.size):
@@ -73,6 +87,12 @@ class MyTable(QtWidgets.QWidget):
                     item = QtWidgets.QTableWidgetItem("")
                 else:
                     item = QtWidgets.QTableWidgetItem(value)
+
+                item.setFont(self.font)
+                item.setForeground(self.textBrush)
+                item.setBackground(self.backBrush)
+                item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+
                 self.table.setItem(i, j, item)
 
     def copy(self, other):

@@ -86,6 +86,7 @@ if __name__ == "__main__":
 
     # Creation of MainWindow contents
     _map = MyTable(size, 80, _maps[0].numbers)
+    _map.setBackgroundRole(QtGui.QPalette.WindowText)
 
     _leftBar = LeftBar(size, 'default', nb_move)
 
