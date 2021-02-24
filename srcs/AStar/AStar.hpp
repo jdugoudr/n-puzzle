@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 14:12:59 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/24 19:03:34 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/24 21:20:44 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ private:
 	void					pushNewNodeToOpen(int const soFar, int const toReach,
 																				Node &map, Node *parent);
 
-	std::vector<Node>		getNeighbor(Node &m);
+//	std::vector<Node>		getNeighbor(Node &m);
+	//void								getNeighbor(std::vector<int> const &m, std::array<Node,4> &lst, int &nb);
+	void								getNeighbor(Node const &m, std::array<Node,4> &lst, int &nb);
 
 	std::vector<Node*>	getPath(Node *);
 
