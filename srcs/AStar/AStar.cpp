@@ -6,12 +6,11 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/18 18:07:01 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/24 21:21:15 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AStar.hpp"
-//#include "find_if_mix.hpp"
 #include <algorithm>
 #include <iostream>
 
@@ -46,29 +45,35 @@ std::vector<Node*>		AStar::run()
 
 	while (!_openList.empty())
 	{
-		Node &_curr = *_openList.top();
+		Node &_curr = *_openList.pop();// pop
 		_totalStatesSelected++;	// complexity in time++
 		if(_curr._map == _goal._map)
 		{
 			return getPath(&_curr);
 		}
 
-		pushFromOpenToClose(_curr);//pop priority_queue
+		_curr._isOpen = false;//push to closed
 
 		int	tentative_g = _curr._gscore + 1;
-		for (auto it: getNeighbor(_curr))
+
+		std::array<Node, 4>	lst_neighbor;
+		int nbNeighbor = 0;
+		getNeighbor(_curr, lst_neighbor, nbNeighbor);
+
+		for (int i = 0; i < nbNeighbor ; i++)
 		{
+			Node &it = lst_neighbor[i];
 			auto el = _set.find(it._map);
 			if ( el != _set.end())
 			{
 				Node	&oldNode = *(std::get<1>(*el));
-				if (oldNode._gscore > tentative_g)
+				if (oldNode._isOpen && oldNode._gscore > tentative_g)
 				{
 					oldNode._parent = &_curr;
-					oldNode._fscore = oldNode._gscore - (oldNode._gscore - tentative_g);
+					oldNode._fscore = oldNode._fscore - (oldNode._gscore - tentative_g);
 					oldNode._gscore = tentative_g;
-					if (!oldNode._isOpen)
-						pushFromCloseToOpen(oldNode);
+
+					_openList.sort();
 				}
 				else
 					continue ;
@@ -110,25 +115,10 @@ void							AStar::pushOpenList(Node &node)
 	return ;
 }
 
-void							AStar::pushFromOpenToClose(Node &m)
+void							AStar::getNeighbor(Node const &m,
+										std::array<Node,4> &lst, int &nb)
 {
-	m._isOpen = false;
-	_openList.pop();
-	return ;
-}
-
-void							AStar::pushFromCloseToOpen(Node &n)
-{
-	n._isOpen = true;
-	_openList.push(&n);
-	return ;
-}
-
-std::vector<Node>			AStar::getNeighbor(Node &m)
-{
-	std::vector<Node>					lst;
-	Node											str_map;
-	std::vector<int> const		&curr_map = m._map;
+	std::vector<int> const &curr_map = m._map;
 
 	int posZero = m._empty;
 	int i = posZero / _size;
@@ -137,38 +127,38 @@ std::vector<Node>			AStar::getNeighbor(Node &m)
 	//Move to right
 	if (j + 1 < _size)
 	{
-//		str_map._map = swapMap(posZero, posZero + 1, curr_map);
-		str_map._map = curr_map;
-		std::swap(str_map._map[posZero], str_map._map[posZero + 1]);
-		str_map._empty = posZero + 1;
-		lst.push_back(str_map);
+		lst[nb]._map = curr_map;
+		std::swap(lst[nb]._map[posZero], lst[nb]._map[posZero + 1]);
+		lst[nb]._empty = posZero + 1;
+		nb += 1;
 	}
 	//Move to left
 	if (j > 0)
 	{
-		str_map._map = curr_map;
-		std::swap(str_map._map[posZero], str_map._map[posZero - 1]);
-		str_map._empty = posZero - 1;
-		lst.push_back(str_map);
+		lst[nb]._map = curr_map;
+		std::swap(lst[nb]._map[posZero], lst[nb]._map[posZero - 1]);
+		lst[nb]._empty = posZero - 1;
+		nb += 1;
 	}
 	//Move down
 	if (i > 0)
 	{
-		str_map._map = curr_map;
-		std::swap(str_map._map[posZero], str_map._map[posZero - _size]);
-		str_map._empty = posZero - _size;
-		lst.push_back(str_map);
+		lst[nb]._map = curr_map;
+		std::swap(lst[nb]._map[posZero], lst[nb]._map[posZero - _size]);
+		lst[nb]._empty = posZero - _size;
+		nb += 1;
 	}
 	//Move up
 	if (i + 1 < _size)
 	{
-		str_map._map = curr_map;
-		std::swap(str_map._map[posZero], str_map._map[posZero + _size]);
-		str_map._empty = posZero + _size;
-		lst.push_back(str_map);
+		lst[nb]._map = curr_map;
+		std::swap(lst[nb]._map[posZero], lst[nb]._map[posZero + _size]);
+		lst[nb]._empty = posZero + _size;
+		nb += 1;
 	}
 
-	return lst;
+	//return lst;
+	return ;
 }
 
 int				AStar::getSize()

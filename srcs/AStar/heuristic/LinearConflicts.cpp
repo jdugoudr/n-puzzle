@@ -72,7 +72,7 @@ std::vector<int>		LinearConflicts::get_tile_conflicts(std::vector<int> const &st
 	std::vector<int>	conflicts;
 
 	auto it = std::find(goal_line.begin(), goal_line.end(), state_line[a]);
-	if (state_line[a] == 0 || state_line[a] == goal_line[a] || it == goal_line.end())
+	if (state_line[a] == 0 || it == goal_line.end())
 		return (conflicts);
 
 	goal_a = it - goal_line.begin();
@@ -80,7 +80,7 @@ std::vector<int>		LinearConflicts::get_tile_conflicts(std::vector<int> const &st
 	for (b = 0; b < state_line.size(); b++)
 	{
 		auto it = std::find(goal_line.begin(), goal_line.end(), state_line[b]);
-		if (b == a || state_line[b] == 0 || state_line[b] == goal_line[b] || it == goal_line.end())
+		if (b == a || state_line[b] == 0 || it == goal_line.end())
 			continue ;
 
 		goal_b = it - goal_line.begin();
