@@ -47,7 +47,6 @@ def parseLines(rawText):
     nb_move = 0
     nodeList = []
 
-    test = "( 8 )"
     node = re.compile(r'\( ((?:[0-9]+ ?)*) \)', re.M)
     nb = re.compile(r'Number of moves : ([0-9]*)')
 
@@ -88,7 +87,7 @@ if __name__ == "__main__":
     # Creation of MainWindow contents
     _map = MyTable(size, 80, _maps[0].numbers)
 
-    _leftBar = LeftBar()
+    _leftBar = LeftBar(size, 'default', nb_move)
 
     interactionBar = InteractionBar()
 

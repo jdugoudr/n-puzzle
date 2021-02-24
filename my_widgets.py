@@ -1,10 +1,10 @@
 from PySide6 import QtCore, QtWidgets, QtGui
 
 class LeftBar(QtWidgets.QPlainTextEdit):
-    def __init__(self):
+    def __init__(self, size, heuristic, moves):
         super().__init__()
-        self.value = "Size :\t{size}\nHeuristic :\t{heuristic}\nNumbe of move :\t{moves}\n"
-        self.value = self.value.format(size='toto', heuristic='', moves='')
+        self.value = "Size :\t\t{sz}x{sz}\t\nHeuristic :\t\t{hrtc}\nNumbe of move :\t{mv}\n"
+        self.value = self.value.format(sz=size, hrtc=heuristic, mv=moves)
         self.setPlainText(self.value)
         self.setReadOnly(True)
         self.setMinimumWidth(135)
