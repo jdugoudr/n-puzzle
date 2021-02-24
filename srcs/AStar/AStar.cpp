@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/24 17:43:37 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/24 19:04:00 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@ std::vector<Node*>		AStar::run()
 
 	while (!_openList.empty())
 	{
-		Node &_curr = *_openList.top();
+		Node &_curr = *_openList.pop();// pop
 		_totalStatesSelected++;	// complexity in time++
 		if(_curr._map == _goal._map)
 		{
 			return getPath(&_curr);
 		}
 
-		pushFromOpenToClose(_curr);//pop priority_queue
+		_curr._isOpen = false;//push to closed
 
 		int	tentative_g = _curr._gscore + 1;
 		for (auto it: getNeighbor(_curr))
@@ -110,12 +110,11 @@ void							AStar::pushOpenList(Node &node)
 	return ;
 }
 
-void							AStar::pushFromOpenToClose(Node &m)
-{
-	m._isOpen = false;
-	_openList.pop();
-	return ;
-}
+//void							AStar::pushFromOpenToClose(Node &m)
+//{
+////	_openList.pop();
+//	return ;
+//}
 
 void							AStar::pushFromCloseToOpen(Node &n)
 {

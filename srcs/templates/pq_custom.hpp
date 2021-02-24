@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/17 21:37:44 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/24 18:51:54 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,54 +15,80 @@
 
 //#include "Node.hpp"
 //#include <list>
-#include <queue>
+//#include <queue>
+#include <vector>
 #include <algorithm>
 #include <iostream>
 
 using namespace std;
 
 template<typename T>
-class pq_custom: public
-						priority_queue<T *, vector<T *>, bool (*)(T*,T*)>{
+class pq_custom {
 
 private:
-	bool	(*f)(T *, T *);
+	bool	(*f)(T*, T*);
+	std::vector<T *>	queue;
+
 
 public:
-	pq_custom<T*,vector<T*>,bool (*com)(T*,T*)>():priority_queue<T*,vector<T*>,bool (*)(T*,T*)>()
+	pq_custom<T*>(bool (*func)(T*,T*)):f(func), queue()
 	{
 	}
+
 	virtual ~pq_custom(){}
 
+	typedef typename std::vector<T*>::iterator	iterator;
+	//typedef typename priority_queue<T,vector<T>,greater<T>>::container_type::iterator	iterator;
 
-	typedef typename priority_queue<T,vector<T>,greater<T>>::container_type::iterator	iterator;
-
-	void	re_push(T el) {
-		iterator	it = this->begin();
-		iterator	end = this->end();
-		iterator	newPos = end;
-
-		for (it = this->begin() ; it != end ; it++)
-		{
-			if (newPos == end && *it > el)
-				newPos = it;
-			if (*it == el)
-				break ;
-		}
-		if (it == end || newPos == end)
-		{
-			throw std::out_of_range("Element not find in pq_custom");
-		}
-		priority_queue<T,vector<T>,greater<T>>::c.erase(it);
-		priority_queue<T,vector<T>,greater<T>>::c.insert(newPos, el);
-
+	void	push(T* el){
+		queue.push_back(el);
+		std::push_heap(queue.begin(), queue.end(), f);
 	}
 
+	T	*pop(){
+		T *tmp = queue.front();
+
+		std::pop_heap(queue.begin(), queue.end(), f);
+		queue.pop_back();
+
+		return tmp;
+	}
+
+	void sort(){
+		std::sort_heap(queue.begin(), queue.end(), f);
+	}
+
+	bool empty(){
+		return queue.empty();
+	}
+
+
+//	void	re_push(T el) {
+//		iterator	it = this->begin();
+//		iterator	end = this->end();
+//		iterator	newPos = end;
+//
+//		for (it = this->begin() ; it != end ; it++)
+//		{
+//			if (newPos == end && *it > el)
+//				newPos = it;
+//			if (*it == el)
+//				break ;
+//		}
+//		if (it == end || newPos == end)
+//		{
+//			throw std::out_of_range("Element not find in pq_custom");
+//		}
+//		priority_queue<T,vector<T>,greater<T>>::c.erase(it);
+//		priority_queue<T,vector<T>,greater<T>>::c.insert(newPos, el);
+//
+//	}
+//
 	iterator	begin(){
-		return priority_queue<T,vector<T>,greater<T>>::c.begin();
+		return queue.begin();
 	}
 	iterator	end(){
-		return priority_queue<T,vector<T>,greater<T>>::c.end();
+		return queue.end();
 	}
 
 };
