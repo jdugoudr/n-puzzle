@@ -46,6 +46,7 @@ VPATH		= $(INCLUDESDIR) \
 
 
 SRCS			=	main.cpp \
+						arguments_parsing.cpp \
 						Node.cpp \
 						Puzzle.cpp \
 						Manhattan.cpp \

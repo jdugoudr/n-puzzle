@@ -18,10 +18,15 @@
 # include <array>
 # include <unistd.h>
 
+# include "Puzzle.hpp"
 
 typedef struct	s_coord{
 	int						col;
 	int						lin;
 }								t_coord;
+
+int				usage(int ret, Puzzle *puzzle);
+void			parse_arguments(int ac, char **av, Puzzle *puzzle);
+std::string		choose_heuristic(void);
 
 #endif
