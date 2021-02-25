@@ -1,11 +1,29 @@
 from PySide6 import QtCore, QtWidgets, QtGui
 
-class LeftBar(QtWidgets.QPlainTextEdit):
-    def __init__(self, size, heuristic, moves):
+#class LeftBar(QtWidgets.QPlainTextEdit):
+class LeftBar(QtWidgets.QTextEdit):
+    #def __init__(self, size, heuristic, moves, timeC, sizeC):
+    def __init__(self, values):
         super().__init__()
-        self.value = "Size :\t\t{sz}x{sz}\t\nHeuristic :\t\t{hrtc}\nNumbe of move :\t{mv}\n"
-        self.value = self.value.format(sz=size, hrtc=heuristic, mv=moves)
-        self.setPlainText(self.value)
+        titles = ("Size", "Heuristic", "Number of move", "Time complexity", "Size complexity")
+
+        cursor = QtGui.QTextCursor(self.textCursor())
+        for i, el in enumerate(values):
+            form = QtGui.QTextCharFormat()
+            form.setFontWeight(QtGui.QFont.Bold)
+            formDefault = QtGui.QTextCharFormat()
+            cursor.insertText(titles[i] + " :", form)
+            cursor.insertText(" \t{}\n".format(el), formDefault)
+
+#        self.value = "<strong>Size :</strong>             {sz}x{sz}<br>"
+#        self.value += "<strong>Heuristic :</strong>       {hrtc}<br>"
+#        self.value += "<strong>Numbe of move :</strong>   {mv}<br>"
+#        self.value += "<strong>Time complexity :</strong> {tc}<br>"
+#        self.value += "<strong>Size complexity :</strong> {sc}"
+
+#        self.value = self.value.format(sz=size, hrtc=heuristic, mv=moves, tc=timeC, sc=sizeC)
+        #self.setPlainText(self.value)
+#        self.setHtml(self.value)
         self.setReadOnly(True)
         self.setMinimumWidth(135)
 

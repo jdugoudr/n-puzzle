@@ -47,6 +47,9 @@ def parseLines(rawText):
     nb_move = 0
     nodeList = []
 
+    timeC = re.findall('.*complexity in time.* ([0-9]*)', rawText)
+    sizeC = re.findall('.*complexity in size.* ([0-9]*)', rawText)
+
     node = re.compile(r'\( ((?:[0-9]+ ?)*) \)', re.M)
     nb = re.compile(r'Number of moves : ([0-9]*)')
 
@@ -60,7 +63,7 @@ def parseLines(rawText):
         for el in tmp:
             nodeList.append(el.split(' '))
 
-    return nodeList, int(math.sqrt(len(nodeList[0]))), nb_move
+    return nodeList, int(math.sqrt(len(nodeList[0]))), nb_move, timeC[0], sizeC[0]
 
 
 if __name__ == "__main__":
@@ -76,7 +79,7 @@ if __name__ == "__main__":
         print(line, end='')
         text += line
 
-    nodes, size, nb_move = parseLines(text)
+    nodes, size, nb_move, timeC, sizeC = parseLines(text)
 
     _maps = fillListMove(size, nodes)
 
@@ -88,7 +91,7 @@ if __name__ == "__main__":
     _map = MyTable(size, 80, _maps[0].numbers)
     _map.setBackgroundRole(QtGui.QPalette.WindowText)
 
-    _leftBar = LeftBar(size, 'default', nb_move)
+    _leftBar = LeftBar((size, 'default', nb_move, timeC, sizeC))
 
     interactionBar = InteractionBar()
 
