@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:14:19 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/23 23:04:38 by jd               ###   ########.fr       */
+/*   Updated: 2021/02/25 23:42:17 by jd               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int						main(int ac, char **av)
 	//		std::cout << "==================" << std::endl;
 	//	}
 	} catch (std::exception &e){
-		std::cerr << e.what() << std::endl;
+		std::cout << e.what() << std::endl;
 	}
 
 	delete puzzle;

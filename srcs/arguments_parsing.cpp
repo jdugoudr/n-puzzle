@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/25 22:51:42 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/25 22:51:44 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/25 23:50:59 by jd               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ std::string			choose_heuristic(void)
 
 	if (!(x >= 1 && x <= array.size()))
 		throw (std::invalid_argument("Invalid heuristic number"));
+
+	std::cout << "Heuristic : " << array[x - 1] << std::endl;
 
 	return (array[x - 1]);
 }

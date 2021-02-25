@@ -54,19 +54,31 @@ def parseLines(rawText):
     nb = re.compile(r'Number of moves : ([0-9]*)')
 
     tmp = node.findall(rawText)
+
+    heuristic = ["default"]
+
     if not tmp:
         nodeList = [["1", "2", "3", "8", "4", "","7", "6", "5"],
             ["1", "2", "3", "8","", "4", "7", "6", "5"]]
         nb_move = 1
+        timeC = [2]
+        sizeC = [2]
     else:
+        heuristic = re.findall("^Heuristic : (.*)$", rawText, re.M)
         nb_move = int(nb.search(rawText).group(1))
         for el in tmp:
             nodeList.append(el.split(' '))
 
-    return nodeList, int(math.sqrt(len(nodeList[0]))), nb_move, timeC[0], sizeC[0]
+    return nodeList, int(math.sqrt(len(nodeList[0]))), nb_move, timeC[0], sizeC[0], heuristic[0]
 
 
 if __name__ == "__main__":
+    text = ""
+    for line in sys.stdin:
+        print(line, end='')
+        text += line
+
+
     app = QtWidgets.QApplication([])
 
 
@@ -74,12 +86,8 @@ if __name__ == "__main__":
     timer = QtCore.QTimer()
     timer.setInterval(800)
 
-    text = ""
-    for line in sys.stdin:
-        print(line, end='')
-        text += line
 
-    nodes, size, nb_move, timeC, sizeC = parseLines(text)
+    nodes, size, nb_move, timeC, sizeC, heuri = parseLines(text)
 
     _maps = fillListMove(size, nodes)
 
@@ -91,7 +99,7 @@ if __name__ == "__main__":
     _map = MyTable(size, 80, _maps[0].numbers)
     _map.setBackgroundRole(QtGui.QPalette.WindowText)
 
-    _leftBar = LeftBar((size, 'default', nb_move, timeC, sizeC))
+    _leftBar = LeftBar((size, heuri, nb_move, timeC, sizeC))
 
     interactionBar = InteractionBar()
 
