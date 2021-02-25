@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/25 16:08:35 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/25 21:27:34 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ std::vector<Node*>		AStar::run()
 						oldNode._isOpen = true;
 						_openList.push(&oldNode);
 					}
-					else
-						_openList.sort();
+					//else
+					//	_openList.sort();
 				}
 				else
 					continue ;
