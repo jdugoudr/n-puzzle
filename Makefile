@@ -6,7 +6,7 @@
 #    By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/09 17:09:22 by jdugoudr          #+#    #+#              #
-#    Updated: 2021/02/17 21:39:32 by jdugoudr         ###   ########.fr        #
+#    Updated: 2021/02/25 21:32:52 by jdugoudr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,7 @@ VPATH		= $(INCLUDESDIR) \
 
 
 SRCS			=	main.cpp \
+						arguments_parsing.cpp \
 						Node.cpp \
 						Puzzle.cpp \
 						Manhattan.cpp \
@@ -67,8 +68,8 @@ INCLUDES	= n-puzzle.hpp \
 TEST_UNARY=	case \
 					 	node \
 						puzzle \
-						astar \
-						time
+						astar
+#						time
 #						pq_custom
 
 #OBJECTS			=	$(addprefix $(OBJDIR), $(notdir $(SRCS:.cpp=.o)))

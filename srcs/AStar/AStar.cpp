@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/24 21:21:15 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/25 21:27:34 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,19 @@ std::vector<Node*>		AStar::run()
 			if ( el != _set.end())
 			{
 				Node	&oldNode = *(std::get<1>(*el));
-				if (oldNode._isOpen && oldNode._gscore > tentative_g)
+				if (/*oldNode._isOpen &&*/ oldNode._gscore > tentative_g)
 				{
 					oldNode._parent = &_curr;
 					oldNode._fscore = oldNode._fscore - (oldNode._gscore - tentative_g);
 					oldNode._gscore = tentative_g;
 
-					_openList.sort();
+					if (!oldNode._isOpen) // This block is normally not use full
+					{
+						oldNode._isOpen = true;
+						_openList.push(&oldNode);
+					}
+					//else
+					//	_openList.sort();
 				}
 				else
 					continue ;
