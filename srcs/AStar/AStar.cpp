@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/25 21:27:34 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/25 22:10:20 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ int AStar::_totalStatesSelected = 0;
 
 void	erase(std::pair<std::vector<int>, Node *> el)
 {
-	delete std::get<1>(el);
+	//delete std::get<1>(el);
+	delete el.second;
 }
 
 AStar::~AStar()
@@ -66,7 +67,8 @@ std::vector<Node*>		AStar::run()
 			auto el = _set.find(it._map);
 			if ( el != _set.end())
 			{
-				Node	&oldNode = *(std::get<1>(*el));
+				Node	&oldNode = *(el->second);
+				//Node	&oldNode = *(std::get<1>(*el));
 				if (/*oldNode._isOpen &&*/ oldNode._gscore > tentative_g)
 				{
 					oldNode._parent = &_curr;
@@ -192,14 +194,16 @@ int	AStar::_size = 0;
 
 void display_open(std::pair<std::vector<int>, Node*> const &el)
 {
-	Node	const &m = *std::get<1>(el);
+	Node	const &m = *(el.second);
+	//Node	const &m = *std::get<1>(el);
 
 	if (m._isOpen)
 		std::cout << m << std::endl;
 }
 void display_close(std::pair<std::vector<int>, Node*> const &el)
 {
-	Node	const &m = *std::get<1>(el);
+	Node	const &m = *(el.second);
+	//Node	const &m = *std::get<1>(el);
 
 	if (!m._isOpen)
 		std::cout << m << std::endl;
@@ -239,7 +243,8 @@ std::ostream	&operator<<(std::ostream &o, std::map<std::vector<int>, Node*> &c)
 	(void)c;
 	o << "IN QUEUE : " << std::endl;
 	for (auto it: c)
-		o << *(std::get<1>(it)) << std::endl;
+		//o << *(std::get<1>(it)) << std::endl;
+		o << *(it.second) << std::endl;
 	o << std::endl;
 	return o;
 }
