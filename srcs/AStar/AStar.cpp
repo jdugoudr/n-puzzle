@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 17:20:50 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/25 14:12:15 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/25 16:08:35 by jdugoudr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,13 @@ std::vector<Node*>		AStar::run()
 					oldNode._fscore = oldNode._fscore - (oldNode._gscore - tentative_g);
 					oldNode._gscore = tentative_g;
 
-					//_openList.sort();
 					if (!oldNode._isOpen) // This block is normally not use full
 					{
 						oldNode._isOpen = true;
 						_openList.push(&oldNode);
 					}
+					else
+						_openList.sort();
 				}
 				else
 					continue ;
