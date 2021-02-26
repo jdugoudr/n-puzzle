@@ -16,6 +16,8 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.setColumnStretch(1, 1)
         self.layout.setRowStretch(1, 1)
 
+        self.setWindowTitle("N-Puzzle")
+
     def setInteractionBar(self, interact):
         self.interact = interact
         self.layout.addLayout(self.interact,3,0,1,4)
