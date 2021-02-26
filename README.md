@@ -150,4 +150,5 @@ Run it with n-puzzle program
 
 # Authors
 jdugoudr
+
 MrgxF
