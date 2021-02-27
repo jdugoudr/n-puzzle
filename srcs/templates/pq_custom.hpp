@@ -6,7 +6,7 @@
 /*   By: jdugoudr <jdugoudr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 20:11:14 by jdugoudr          #+#    #+#             */
-/*   Updated: 2021/02/24 18:51:54 by jdugoudr         ###   ########.fr       */
+/*   Updated: 2021/02/27 17:50:26 by jd               ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ public:
 	virtual ~pq_custom(){}
 
 	typedef typename std::vector<T*>::iterator	iterator;
-	//typedef typename priority_queue<T,vector<T>,greater<T>>::container_type::iterator	iterator;
 
 	void	push(T* el){
 		queue.push_back(el);
@@ -55,35 +54,13 @@ public:
 	}
 
 	void sort(){
-		std::sort_heap(queue.begin(), queue.end(), f);
+		std::make_heap(queue.begin(), queue.end(), f);
 	}
 
 	bool empty(){
 		return queue.empty();
 	}
 
-
-//	void	re_push(T el) {
-//		iterator	it = this->begin();
-//		iterator	end = this->end();
-//		iterator	newPos = end;
-//
-//		for (it = this->begin() ; it != end ; it++)
-//		{
-//			if (newPos == end && *it > el)
-//				newPos = it;
-//			if (*it == el)
-//				break ;
-//		}
-//		if (it == end || newPos == end)
-//		{
-//			throw std::out_of_range("Element not find in pq_custom");
-//		}
-//		priority_queue<T,vector<T>,greater<T>>::c.erase(it);
-//		priority_queue<T,vector<T>,greater<T>>::c.insert(newPos, el);
-//
-//	}
-//
 	iterator	begin(){
 		return queue.begin();
 	}
