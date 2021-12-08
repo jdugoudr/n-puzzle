@@ -4,7 +4,7 @@ This is a project for testing A-Star algorithm in a N-Puzzle context.
 
 It is developed in C++ for Linux environment (tested on Ubuntu 20.04 and Xubuntu 18.04)
 
-It also provid a User Interface develpoed in Python with Qt for Python.
+It also provid a User Interface develpoed in Python with Qt for Python (working only on Ubuntu 20.04).
 
 ![npuzzle-img](ui_npuzzle.png)
 
@@ -12,9 +12,9 @@ It also provid a User Interface develpoed in Python with Qt for Python.
 
 This is a first-best-find algorithm usually use as pathfinding in video games.
 
-It will find the shorest path between two point. Here we use it to find the way between two state. The state of the grid given as input at the begining of the program, and the goal state wich is the grid resolved.
+It will find the shortest path between two point. Here we use it to find a path between two state. The state of the grid given as input at the begining of the program, and the goal state which is the grid resolved.
 
-It use Heuristic functions wich will calculate a theoric cost to go from the actual state to the goal state.
+It use Heuristic functions which will calculate a theoric cost to go from the actual state to the goal state.
 
 ## Heuristics
 
@@ -23,7 +23,7 @@ In this project we implement the following heuristic functions:
 
 ### Hamming
 
-This heuristic counts all the misplaced tiles on a state, compared to the goal state.
+This heuristic counts all the misplaced tiles for a state, compared to the goal state.
 
 The given grid:
 ```
@@ -150,5 +150,4 @@ Run it with n-puzzle program
 
 # Authors
 jdugoudr
-
 MrgxF
